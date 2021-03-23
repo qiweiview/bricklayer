@@ -1,5 +1,8 @@
 package build;
 
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -7,6 +10,7 @@ import freemarker.template.TemplateExceptionHandler;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,20 +24,27 @@ public class FreemarkerTemplateBuilder {
         URL template = classloader.getResource("template");
         path = template.getFile();
 
+        List<String> templateScanPaths = StructureConstant.getTemplateScanPaths();
 
 
         cfg = new Configuration(Configuration.VERSION_2_3_29);
-        try {
-            File file = new File(path);
-            cfg.setDirectoryForTemplateLoading(file);
-            cfg.setDefaultEncoding("UTF-8");
-            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-            cfg.setLogTemplateExceptions(false);
-            cfg.setWrapUncheckedExceptions(true);
-            cfg.setFallbackOnNullLoopVariable(false);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        TemplateLoader[] templateLoaders = templateScanPaths.stream().map(x -> {
+            try {
+                FileTemplateLoader ftl1 = new FileTemplateLoader(new File(path + File.separator+x));
+                return ftl1;
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("crate template fail");
+            }
+        }).toArray(TemplateLoader[]::new);
+
+        MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoaders);
+        cfg.setTemplateLoader(mtl);
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setLogTemplateExceptions(false);
+        cfg.setWrapUncheckedExceptions(true);
+        cfg.setFallbackOnNullLoopVariable(false);
     }
 
 

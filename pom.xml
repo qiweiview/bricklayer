@@ -31,7 +31,8 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>template/*.ftl</include>
+                    <include>template/*/*.ftl</include>
+                    <include>template/*/*/*.ftl</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
