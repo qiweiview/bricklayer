@@ -9,6 +9,7 @@ public class MysqlTypeConvert implements TypeConvertI {
     static {
         map.put("VARCHAR", "java.lang.String");
         map.put("CHAR", "java.lang.String");
+        map.put("LONGBLOB", "java.lang.byte[]");
         map.put("BLOB", "java.lang.byte[]");
         map.put("TEXT", "java.lang.String");
         map.put("INTEGER", "java.lang.Long");

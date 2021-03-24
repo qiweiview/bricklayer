@@ -291,7 +291,7 @@ public class ProjectBuilder {
                 String returnStr = "void ";
                 String inputStr = "";
                 if (y.hasInput()) {
-                    inputStr = name + "DTO " + name.toLowerCase()+"DTO";
+                    inputStr = name + "DTO " + name.substring(0,1).toLowerCase()+name.substring(1)+"DTO";
                 }
                 if (y.hasReturn()) {
                     returnStr = name + "DTO ";
