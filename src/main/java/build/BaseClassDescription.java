@@ -3,10 +3,20 @@ package build;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseDescription {
+public class BaseClassDescription {
     private String belongPackage;
-    private String className;
+    private String shortName;
+    private String fullName;
     private List<String> dependents=new ArrayList<>();
+
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     public void addDependent(String dependent){
         dependents.add(dependent);
@@ -28,11 +38,11 @@ public class BaseDescription {
         this.belongPackage = belongPackage;
     }
 
-    public String getClassName() {
-        return className;
+    public String getShortName() {
+        return shortName;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 }

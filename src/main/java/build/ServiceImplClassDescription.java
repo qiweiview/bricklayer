@@ -3,7 +3,7 @@ package build;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceImplDescription  extends BaseDescription{
+public class ServiceImplClassDescription extends BaseClassDescription {
     private String innerDao;
     private String interfaceName;
     private List<InnerMethodDescription> methods = new ArrayList<>();

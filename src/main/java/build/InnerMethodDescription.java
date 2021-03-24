@@ -4,6 +4,7 @@ public class InnerMethodDescription {
     private String path;
     private String  name;
     private String description;
+    private boolean hasReturn=false;
 
 
     public InnerMethodDescription() {
@@ -40,5 +41,13 @@ public class InnerMethodDescription {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isHasReturn() {
+        return hasReturn;
+    }
+
+    public void setHasReturn(boolean hasReturn) {
+        this.hasReturn = hasReturn;
     }
 }

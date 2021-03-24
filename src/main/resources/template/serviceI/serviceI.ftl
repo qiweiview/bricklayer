@@ -1,11 +1,12 @@
 ${belongPackage}
 
 <#list dependents as dependent>
-    ${dependent}
+${dependent}
 </#list>
 
-public interface ${className} {
+<#include "signature.ftl">
+public interface ${fullName} {
 <#list methods as method>
-    ${method.description}
+    ${method.description};
 </#list>
 }

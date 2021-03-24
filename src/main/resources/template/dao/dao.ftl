@@ -5,11 +5,12 @@ ${dependent}
 </#list>
 import org.springframework.stereotype.Repository;
 
+<#include "signature.ftl">
 @Repository
-public interface ${className} {
-
+public interface ${fullName} {
 <#list methods as method>
-    ${method.description}
+
+    ${method.description};
 </#list>
 
 }

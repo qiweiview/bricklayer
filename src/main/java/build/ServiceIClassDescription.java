@@ -3,7 +3,7 @@ package build;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceIDescription extends BaseDescription {
+public class ServiceIClassDescription extends BaseClassDescription {
     private List<InnerMethodDescription> methods = new ArrayList<>();
 
     public void addInterfaceMethods(InnerMethodDescription innerMethodDescription){

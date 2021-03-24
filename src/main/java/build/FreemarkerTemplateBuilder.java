@@ -24,11 +24,11 @@ public class FreemarkerTemplateBuilder {
         URL template = classloader.getResource("template");
         path = template.getFile();
 
-        List<String> templateScanPaths = StructureConstant.getTemplateScanPaths();
+
 
 
         cfg = new Configuration(Configuration.VERSION_2_3_29);
-        TemplateLoader[] templateLoaders = templateScanPaths.stream().map(x -> {
+        TemplateLoader[] templateLoaders = StructureConstant.templateScanPath.stream().map(x -> {
             try {
                 FileTemplateLoader ftl1 = new FileTemplateLoader(new File(path + File.separator+x));
                 return ftl1;

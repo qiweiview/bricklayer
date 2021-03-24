@@ -3,7 +3,7 @@ package build;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControllerDescription  extends BaseDescription{
+public class ControllerClassDescription extends BaseClassDescription {
 
     private String baseMapping;
     private String innerService;

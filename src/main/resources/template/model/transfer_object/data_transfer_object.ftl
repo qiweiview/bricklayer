@@ -4,7 +4,7 @@ ${belongPackage}
 ${dependent}
 </#list>
 
-<#include "signature.ftl">
+<#include "/signature.ftl">
 public class ${fullName} {
 <#list attributes as attribute>
     private  ${attribute.type} ${attribute.name};
@@ -12,12 +12,20 @@ public class ${fullName} {
 
 
 /*  ------------ data conversion ------------  */
-public  ${shortName}DTO to${shortName}DTO(){
-${shortName}DTO ${shortName?uncap_first}DTO =new ${shortName}DTO();
+public  ${shortName}DO to${shortName}DO(){
+    ${shortName}DO ${shortName?uncap_first}DO =new ${shortName}DO();
 <#list attributes as attribute>
-    ${shortName?uncap_first}DTO.set${attribute.name?cap_first}(get${attribute.name?cap_first}());
+    ${shortName?uncap_first}DO.set${attribute.name?cap_first}(get${attribute.name?cap_first}());
 </#list>
-return ${shortName?uncap_first}DTO;
+    return ${shortName?uncap_first}DO;
+}
+
+public  ${shortName}VO to${shortName}VO(){
+${shortName}VO ${shortName?uncap_first}VO =new ${shortName}VO();
+<#list attributes as attribute>
+    ${shortName?uncap_first}VO.set${attribute.name?cap_first}(get${attribute.name?cap_first}());
+</#list>
+return ${shortName?uncap_first}VO;
 }
 
 /*  ------------ getter setter ------------  */

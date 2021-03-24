@@ -3,7 +3,7 @@ package build;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DaoDescription extends BaseDescription {
+public class DaoClassDescription extends BaseClassDescription {
     private List<InnerMethodDescription> methods = new ArrayList<>();
 
     public void addInterfaceMethods(InnerMethodDescription innerMethodDescription){
