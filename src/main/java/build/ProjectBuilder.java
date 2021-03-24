@@ -29,31 +29,33 @@ public class ProjectBuilder {
     private String before ;
 
 
-    public static void main(String[] args) {
-        List<DBTableModel> dbTableModels = new ArrayList<>();
-        List<DBColumnModel> dbColumnModelList = new ArrayList();
-        DBColumnModel dbColumnModel = new DBColumnModel();
-        dbColumnModel.setName("id");
-        dbColumnModel.setType("int");
-        dbColumnModelList.add(dbColumnModel);
-
-        DBColumnModel dbColumnModel2 = new DBColumnModel();
-        dbColumnModel2.setName("name");
-        dbColumnModel2.setType("varchar");
-        dbColumnModelList.add(dbColumnModel2);
-
-        DBTableModel dbTableModel = new DBTableModel();
-        dbTableModel.setName("User");
-        dbTableModel.setDbColumnModelList(dbColumnModelList);
-        dbTableModels.add(dbTableModel);
-        ProjectBuilder projectBuilder = new ProjectBuilder();
-        String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
-        try {
-            projectBuilder.build(dbTableModels, basePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//
+//
+//        List<DBTableModel> dbTableModels = new ArrayList<>();
+//        List<DBColumnModel> dbColumnModelList = new ArrayList();
+//        DBColumnModel dbColumnModel = new DBColumnModel();
+//        dbColumnModel.setName("id");
+//        dbColumnModel.setType("int");
+//        dbColumnModelList.add(dbColumnModel);
+//
+//        DBColumnModel dbColumnModel2 = new DBColumnModel();
+//        dbColumnModel2.setName("name");
+//        dbColumnModel2.setType("varchar");
+//        dbColumnModelList.add(dbColumnModel2);
+//
+//        DBTableModel dbTableModel = new DBTableModel();
+//        dbTableModel.setName("User");
+//        dbTableModel.setDbColumnModelList(dbColumnModelList);
+//        dbTableModels.add(dbTableModel);
+//        ProjectBuilder projectBuilder = new ProjectBuilder();
+//        String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
+//        try {
+//            projectBuilder.build(dbTableModels, basePath);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      *

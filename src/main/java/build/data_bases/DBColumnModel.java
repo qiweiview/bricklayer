@@ -5,9 +5,16 @@ public class DBColumnModel {
 
     private String type;
 
-    private String length;
-
     private String comment;
+
+    @Override
+    public String toString() {
+        return "DBColumnModel{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 
     public String getName() {
         return name;
@@ -25,13 +32,7 @@ public class DBColumnModel {
         this.type = type;
     }
 
-    public String getLength() {
-        return length;
-    }
 
-    public void setLength(String length) {
-        this.length = length;
-    }
 
     public String getComment() {
         return comment;

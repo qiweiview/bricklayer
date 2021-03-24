@@ -8,6 +8,15 @@ public class DBTableModel {
 
     private List<DBColumnModel> dbColumnModelList =new ArrayList();
 
+
+    @Override
+    public String toString() {
+        return "DBTableModel{" +
+                "name='" + name + '\'' +
+                ", dbColumnModelList=" + dbColumnModelList +
+                '}';
+    }
+
     public String getName() {
         return name;
     }
