@@ -26,19 +26,21 @@ public class MysqlDataSourceInstance {
     }
 
     public static void main(String[] args) throws Exception {
-        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/anicert_university?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
-                "root", "wdwdwd");
+//        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/anicert_university?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+//                "root", "wdwdwd");
+        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/seata?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+                "root", "qwqwqwasasas");
         ProjectBuilder projectBuilder = new ProjectBuilder();
-        String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
-        //String basePath = "D:\\NewWorkSpace\\bricklayer\\src\\main\\java";
+        //String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
+        String basePath = "D:\\NewWorkSpace\\bricklayer\\src\\main\\java";
         projectBuilder.setDbFrameType(ProjectBuilder.JPA_FRAME);
         projectBuilder.setBefore("cn.anicert.university.training_manage");
         FreemarkerTemplateBuilder.suffixManager.setDaoSuffix("Repository");
         List<DBTableModel> dbTableModels = mysqlDataSourceInstance.getDBTableModels();
-        List<DBTableModel> collect = dbTableModels.stream().filter(x -> {
-            return x.getOriginalName().indexOf("training") != -1 || x.getOriginalName().indexOf("organisation") != -1;
-        }).collect(Collectors.toList());
-        projectBuilder.build(collect, basePath);
+//        List<DBTableModel> collect = dbTableModels.stream().filter(x -> {
+//            return x.getOriginalName().indexOf("training") != -1 || x.getOriginalName().indexOf("organisation") != -1;
+//        }).collect(Collectors.toList());
+        projectBuilder.build(dbTableModels, basePath);
 
     }
 

@@ -29,6 +29,7 @@ public class StructureConstant {
         templateScanPath.add("model" + File.separator + "transfer_object");
         templateScanPath.add("model" + File.separator + "view_object");
         templateScanPath.add("utils");
+        templateScanPath.add("mapper");
     }
 
 

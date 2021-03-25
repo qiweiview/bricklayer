@@ -10,13 +10,55 @@ public class DBTableModel {
 
     private List<DBColumnModel> dbColumnModelList =new ArrayList();
 
-    @Override
-    public String toString() {
-        return "DBTableModel{" +
-                "name='" + name + '\'' +
-                ", originalName='" + originalName + '\'' +
-                ", dbColumnModelList=" + dbColumnModelList +
-                '}';
+    private String doPath;
+
+    private String dtoPath;
+
+    private String voPath;
+
+    private String daoPath;
+
+    private String primaryKey="id";
+
+
+    public String getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(String primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
+    public String getDaoPath() {
+        return daoPath;
+    }
+
+    public void setDaoPath(String daoPath) {
+        this.daoPath = daoPath;
+    }
+
+    public String getDoPath() {
+        return doPath;
+    }
+
+    public void setDoPath(String doPath) {
+        this.doPath = doPath;
+    }
+
+    public String getDtoPath() {
+        return dtoPath;
+    }
+
+    public void setDtoPath(String dtoPath) {
+        this.dtoPath = dtoPath;
+    }
+
+    public String getVoPath() {
+        return voPath;
+    }
+
+    public void setVoPath(String voPath) {
+        this.voPath = voPath;
     }
 
     public String getName() {

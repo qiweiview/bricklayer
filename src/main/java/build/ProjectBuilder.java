@@ -30,6 +30,7 @@ public class ProjectBuilder {
     private String dtoPath;
     private String voPath;
     private String utilsPath;
+    private String mapperPath;
 
     //default value
     private String before = "com";
@@ -60,6 +61,23 @@ public class ProjectBuilder {
 
     }
 
+
+    private void createFileByTemplate2(String path, String absolutePath, String templateName,List<DBTableModel> list) throws Exception {
+        Template template = FreemarkerTemplateBuilder.getTemplate(templateName);
+        list.forEach(x -> {
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = FileUtils.openOutputStream(new File(absolutePath + File.separator + x.getName() + ".xml"));
+                template.process(x, new OutputStreamWriter(fileOutputStream));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+
+    }
+
+
     public void build(List<DBTableModel> dbTableModels, String basePath) throws Exception {
         this.dbTableModels = dbTableModels;
 
@@ -75,6 +93,15 @@ public class ProjectBuilder {
         dtoPath = before + File.separator + "model" + File.separator + "transfer_object";
         voPath = before + File.separator + "model" + File.separator + "view_object";
         utilsPath = before + File.separator + "utils";
+        mapperPath=before + File.separator + "mapper";
+
+        dbTableModels.forEach(x->{
+            x.setDoPath(("import " + doPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            x.setDtoPath(("import " + dtoPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            x.setVoPath(("import " + voPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            x.setDaoPath(("import " + daoPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+        });
+
 
         createFileByTemplate(controllerPath, basePath + controllerPath, dbFrameType+"controller.ftl", getControllerElement(controllerPath));
 
@@ -89,6 +116,8 @@ public class ProjectBuilder {
         createFileByTemplate(dtoPath, basePath + dtoPath, "data_transfer_object.ftl", getDTOElement(dtoPath));
 
         createFileByTemplate(voPath, basePath + voPath, "view_object.ftl", getVOElement(voPath));
+
+        createFileByTemplate2(mapperPath, basePath + mapperPath, "mapper.ftl", dbTableModels);
 
         List<BaseClassDescription> baseClassDescriptions = new ArrayList<>();
 
