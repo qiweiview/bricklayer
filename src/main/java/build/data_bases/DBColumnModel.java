@@ -3,6 +3,8 @@ package build.data_bases;
 public class DBColumnModel {
     private String name;
 
+    private String originalName;
+
     private String type;
 
     private String comment;
@@ -11,9 +13,18 @@ public class DBColumnModel {
     public String toString() {
         return "DBColumnModel{" +
                 "name='" + name + '\'' +
+                ", originalName='" + originalName + '\'' +
                 ", type='" + type + '\'' +
                 ", comment='" + comment + '\'' +
                 '}';
+    }
+
+    public String getOriginalName() {
+        return originalName;
+    }
+
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
     }
 
     public String getName() {

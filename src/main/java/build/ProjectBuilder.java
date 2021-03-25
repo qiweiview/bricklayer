@@ -3,6 +3,7 @@ package build;
 import build.adapter.TypeConverter;
 import build.data_bases.DBColumnModel;
 import build.data_bases.DBTableModel;
+import build.utils.StringUtils4V;
 import freemarker.template.Template;
 
 import org.apache.commons.io.FileUtils;
@@ -26,36 +27,8 @@ public class ProjectBuilder {
     private String dtoPath;
     private String voPath;
     private String utilsPath;
-    private String before ;
+    private String before="com" ;
 
-
-//    public static void main(String[] args) {
-//
-//
-//        List<DBTableModel> dbTableModels = new ArrayList<>();
-//        List<DBColumnModel> dbColumnModelList = new ArrayList();
-//        DBColumnModel dbColumnModel = new DBColumnModel();
-//        dbColumnModel.setName("id");
-//        dbColumnModel.setType("int");
-//        dbColumnModelList.add(dbColumnModel);
-//
-//        DBColumnModel dbColumnModel2 = new DBColumnModel();
-//        dbColumnModel2.setName("name");
-//        dbColumnModel2.setType("varchar");
-//        dbColumnModelList.add(dbColumnModel2);
-//
-//        DBTableModel dbTableModel = new DBTableModel();
-//        dbTableModel.setName("User");
-//        dbTableModel.setDbColumnModelList(dbColumnModelList);
-//        dbTableModels.add(dbTableModel);
-//        ProjectBuilder projectBuilder = new ProjectBuilder();
-//        String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
-//        try {
-//            projectBuilder.build(dbTableModels, basePath);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     /**
      *
@@ -91,7 +64,6 @@ public class ProjectBuilder {
             basePath += File.separator;
         }
 
-        before = "com";
         controllerPath = before + File.separator + "controller";
         serviceIPath = before + File.separator + "serviceI";
         serviceImplPath = before + File.separator + "serviceI" + File.separator + "impl";
@@ -134,6 +106,11 @@ public class ProjectBuilder {
     }
 
 
+    /**
+     * vo template create
+     * @param path
+     * @return
+     */
     private List<BaseClassDescription> getVOElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
         dbTableModels.forEach(x -> {
@@ -145,6 +122,7 @@ public class ProjectBuilder {
             objectClassDescription.setFullName(x.getName() + "VO");
             dbColumnModelList.forEach(y -> {
                 InnerAttributeDescription innerAttributeDescription = new InnerAttributeDescription();
+                innerAttributeDescription.setComment(y.getComment());
                 innerAttributeDescription.setName(y.getName());
                 innerAttributeDescription.setType(TypeConverter.covert(y.getType()));
                 objectClassDescription.addInnerAttributeDescription(innerAttributeDescription);
@@ -154,7 +132,11 @@ public class ProjectBuilder {
         return list;
     }
 
-
+    /**
+     * dto template create
+     * @param path
+     * @return
+     */
     private List<BaseClassDescription> getDTOElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
         dbTableModels.forEach(x -> {
@@ -168,6 +150,7 @@ public class ProjectBuilder {
             objectClassDescription.setFullName(x.getName() + "DTO");
             dbColumnModelList.forEach(y -> {
                 InnerAttributeDescription innerAttributeDescription = new InnerAttributeDescription();
+                innerAttributeDescription.setComment(y.getComment());
                 innerAttributeDescription.setName(y.getName());
                 innerAttributeDescription.setType(TypeConverter.covert(y.getType()));
                 objectClassDescription.addInnerAttributeDescription(innerAttributeDescription);
@@ -177,7 +160,11 @@ public class ProjectBuilder {
         return list;
     }
 
-
+    /**
+     * do template create
+     * @param path
+     * @return
+     */
     private List<BaseClassDescription> getDOElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
         dbTableModels.forEach(x -> {
@@ -190,6 +177,7 @@ public class ProjectBuilder {
             objectClassDescription.setFullName(x.getName() + "DO");
             dbColumnModelList.forEach(y -> {
                 InnerAttributeDescription innerAttributeDescription = new InnerAttributeDescription();
+                innerAttributeDescription.setComment(y.getComment());
                 innerAttributeDescription.setName(y.getName());
                 innerAttributeDescription.setType(TypeConverter.covert(y.getType()));
                 objectClassDescription.addInnerAttributeDescription(innerAttributeDescription);
@@ -199,7 +187,11 @@ public class ProjectBuilder {
         return list;
     }
 
-
+    /**
+     * controller template create
+     * @param path
+     * @return
+     */
     private List<BaseClassDescription> getControllerElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
         dbTableModels.forEach(x -> {
@@ -210,7 +202,7 @@ public class ProjectBuilder {
             controllerClassDescription.addDependent(("import "+dtoPath+File.separator+x.getName()+"DTO;").replaceAll(Pattern.quote(File.separator), "."));
             controllerClassDescription.addDependent(("import "+serviceIPath+File.separator+x.getName()+"ServiceI;").replaceAll(Pattern.quote(File.separator), "."));
             controllerClassDescription.setInnerService(x.getName() + "ServiceI");
-            controllerClassDescription.setBaseMapping("/" + x.getName().toLowerCase());
+            controllerClassDescription.setBaseMapping("/" + x.getName());
             controllerClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             //class Name
             String name = x.getName();
@@ -238,6 +230,11 @@ public class ProjectBuilder {
         return list;
     }
 
+    /**
+     * dao template create
+     * @param path
+     * @return
+     */
     private List<BaseClassDescription> getDaoElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
         dbTableModels.forEach(x -> {
@@ -255,7 +252,7 @@ public class ProjectBuilder {
                 String returnStr = "void ";
                 String inputStr = "";
                 if (y.hasInput()) {
-                    inputStr = name + "DO " + name.toLowerCase();
+                    inputStr = name + "DO " + StringUtils4V.lowercaseFirstLetter(name)+"DO";
                 }
                 if (y.hasReturn()) {
                     returnStr = name + "DO ";
@@ -270,6 +267,11 @@ public class ProjectBuilder {
         return list;
     }
 
+    /**
+     * service implement template create
+     * @param path
+     * @return
+     */
     private List<BaseClassDescription> getServiceImplElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
         dbTableModels.forEach(x -> {
@@ -291,7 +293,7 @@ public class ProjectBuilder {
                 String returnStr = "void ";
                 String inputStr = "";
                 if (y.hasInput()) {
-                    inputStr = name + "DTO " + name.substring(0,1).toLowerCase()+name.substring(1)+"DTO";
+                    inputStr = name + "DTO " + StringUtils4V.lowercaseFirstLetter(name)+"DTO";
                 }
                 if (y.hasReturn()) {
                     returnStr = name + "DTO ";
@@ -306,6 +308,11 @@ public class ProjectBuilder {
         return list;
     }
 
+    /**
+     * service interface template create
+     * @param path
+     * @return
+     */
     private List<BaseClassDescription> getServiceIElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
         dbTableModels.forEach(x -> {
@@ -322,7 +329,7 @@ public class ProjectBuilder {
                 String returnStr = "void ";
                 String inputStr = "";
                 if (y.hasInput()) {
-                    inputStr = name + "DTO " + name.toLowerCase()+"DTO";
+                    inputStr = name + "DTO " +  StringUtils4V.lowercaseFirstLetter(name)+"DTO";
                 }
                 if (y.hasReturn()) {
                     returnStr = name + "DTO ";
@@ -337,6 +344,7 @@ public class ProjectBuilder {
         return list;
     }
 
-
-
+    public void setBefore(String before) {
+        this.before = before;
+    }
 }

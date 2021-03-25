@@ -7,6 +7,10 @@ ${dependent}
 <#include "signature.ftl">
 public class ${fullName} {
 <#list attributes as attribute>
+
+    /**
+    * ${attribute.comment}
+    */
     private  ${attribute.type} ${attribute.name};
 </#list>
 
