@@ -5,7 +5,7 @@ ${dependent}
 </#list>
 
 <#include "signature.ftl">
-public class ${fullName} {
+public class ${fullName}  {
 <#list attributes as attribute>
 
     /**

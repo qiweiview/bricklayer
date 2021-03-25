@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BaseClassDescription {
+    public static String test111="dddddd";
+
     private String belongPackage;
     private String shortName;
     private String fullName;

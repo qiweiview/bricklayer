@@ -1,5 +1,6 @@
 package build.data_bases;
 
+import build.FreemarkerTemplateBuilder;
 import build.ProjectBuilder;
 import build.utils.JDBCResultUtils;
 import build.utils.StringUtils4V;
@@ -28,14 +29,16 @@ public class MysqlDataSourceInstance {
         MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/anicert_university?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 "root", "wdwdwd");
         ProjectBuilder projectBuilder = new ProjectBuilder();
-         String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
+        String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
         //String basePath = "D:\\NewWorkSpace\\bricklayer\\src\\main\\java";
-        projectBuilder.setBefore("test");
+        projectBuilder.setDbFrameType(ProjectBuilder.JPA_FRAME);
+        projectBuilder.setBefore("cn.anicert.university.training_manage");
+        FreemarkerTemplateBuilder.suffixManager.setDaoSuffix("Repository");
         List<DBTableModel> dbTableModels = mysqlDataSourceInstance.getDBTableModels();
-        dbTableModels.forEach(x->{
-            System.out.println(x.getOriginalName());
-        });
-       // projectBuilder.build(dbTableModels, basePath);
+        List<DBTableModel> collect = dbTableModels.stream().filter(x -> {
+            return x.getOriginalName().indexOf("training") != -1 || x.getOriginalName().indexOf("organisation") != -1;
+        }).collect(Collectors.toList());
+        projectBuilder.build(collect, basePath);
 
     }
 
@@ -49,7 +52,7 @@ public class MysqlDataSourceInstance {
 
             // 打开链接
             conn = DriverManager.getConnection(dbUrl, userName, passWord);
-            preparedStatement = conn.prepareStatement("SELECT table_name, column_name, is_nullable, data_type, column_comment , column_type FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ( SELECT DATABASE() )");
+            preparedStatement = conn.prepareStatement("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ( SELECT DATABASE() )");
             resultSet = preparedStatement.executeQuery();
             List<Map> maps = JDBCResultUtils.parseResult(resultSet);
             Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
@@ -61,14 +64,16 @@ public class MysqlDataSourceInstance {
                 DBTableModel dbTableModel = new DBTableModel();
                 List<DBColumnModel> dbColumnModelList = new ArrayList();
                 dbTableModel.setOriginalName(k.toString());
-                dbTableModel.setName(StringUtils4V.underLine2UnCapFirst(k.toString(),false));
+                dbTableModel.setName(StringUtils4V.underLine2UnCapFirst(k.toString(), false));
                 dbTableModel.setDbColumnModelList(dbColumnModelList);
                 v.forEach(z -> {
                     //todo 列
                     DBColumnModel dbColumnModel = new DBColumnModel();
+                    dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
+                    dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
                     dbColumnModel.setOriginalName(z.getOrDefault("COLUMN_NAME", "").toString());
                     dbColumnModel.setType(z.getOrDefault("DATA_TYPE", "").toString());
-                    dbColumnModel.setName(StringUtils4V.underLine2UnCapFirst(z.getOrDefault("COLUMN_NAME", "").toString(),true));
+                    dbColumnModel.setName(StringUtils4V.underLine2UnCapFirst(z.getOrDefault("COLUMN_NAME", "").toString(), true));
                     dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
                     dbColumnModelList.add(dbColumnModel);
 
@@ -96,8 +101,6 @@ public class MysqlDataSourceInstance {
         }
 
     }
-
-
 
 
 }

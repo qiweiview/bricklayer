@@ -6,15 +6,16 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
+import freemarker.template.TemplateModelException;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FreemarkerTemplateBuilder {
+    public static SuffixManager suffixManager =new SuffixManager();
     private static String path;
     private static Configuration cfg;
     private static Map<String, Template> templateMap = new ConcurrentHashMap<>();
@@ -45,6 +46,11 @@ public class FreemarkerTemplateBuilder {
         cfg.setLogTemplateExceptions(false);
         cfg.setWrapUncheckedExceptions(true);
         cfg.setFallbackOnNullLoopVariable(false);
+        try {
+            cfg.setSharedVariable("suffixManager", suffixManager);
+        } catch (TemplateModelException e) {
+            throw new RuntimeException("set Shared Variable fail");
+        }
     }
 
 

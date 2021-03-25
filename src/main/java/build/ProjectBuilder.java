@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class ProjectBuilder {
+    public static final String MYBATIS_FRAME="mybatis_";
+    public static final String JPA_FRAME="jpa_";
+
     private List<DirectDescription> baseDirect = new ArrayList<>();
     private List<DBTableModel> dbTableModels;
     private String controllerPath;
@@ -27,11 +30,13 @@ public class ProjectBuilder {
     private String dtoPath;
     private String voPath;
     private String utilsPath;
-    private String before="com" ;
+
+    //default value
+    private String before = "com";
+    private String dbFrameType="";
 
 
     /**
-     *
      * @param path
      * @param absolutePath
      * @param templateName
@@ -50,9 +55,7 @@ public class ProjectBuilder {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         });
-
 
 
     }
@@ -73,21 +76,22 @@ public class ProjectBuilder {
         voPath = before + File.separator + "model" + File.separator + "view_object";
         utilsPath = before + File.separator + "utils";
 
-        createFileByTemplate(controllerPath, basePath + controllerPath, "controller.ftl", getControllerElement(controllerPath));
+        createFileByTemplate(controllerPath, basePath + controllerPath, dbFrameType+"controller.ftl", getControllerElement(controllerPath));
 
-        createFileByTemplate(serviceIPath, basePath + serviceIPath, "serviceI.ftl", getServiceIElement(serviceIPath));
+        createFileByTemplate(serviceIPath, basePath + serviceIPath, dbFrameType+"serviceI.ftl", getServiceIElement(serviceIPath));
 
-        createFileByTemplate(serviceImplPath, basePath + serviceImplPath, "serviceImpl.ftl", getServiceImplElement(serviceImplPath));
+        createFileByTemplate(serviceImplPath, basePath + serviceImplPath, dbFrameType+"serviceImpl.ftl", getServiceImplElement(serviceImplPath));
 
-        createFileByTemplate(daoPath, basePath + daoPath, "dao.ftl", getDaoElement(daoPath));
+        createFileByTemplate(daoPath, basePath + daoPath, dbFrameType+"dao.ftl", getDaoElement(daoPath));
 
-        createFileByTemplate(doPath, basePath + doPath, "domain_object.ftl", getDOElement(doPath));
+        createFileByTemplate(doPath, basePath + doPath, dbFrameType+"domain_object.ftl", getDOElement(doPath));
 
         createFileByTemplate(dtoPath, basePath + dtoPath, "data_transfer_object.ftl", getDTOElement(dtoPath));
 
         createFileByTemplate(voPath, basePath + voPath, "view_object.ftl", getVOElement(voPath));
 
-        List<BaseClassDescription> baseClassDescriptions=new ArrayList<>();
+        List<BaseClassDescription> baseClassDescriptions = new ArrayList<>();
+
         BaseClassDescription baseClassDescription = new BaseClassDescription();
         baseClassDescription.setBelongPackage("package " + utilsPath.replaceAll(Pattern.quote(File.separator), ".") + ";");
         baseClassDescription.setShortName("GeneralResponseObject");
@@ -95,19 +99,27 @@ public class ProjectBuilder {
         baseClassDescriptions.add(baseClassDescription);
         createFileByTemplate(utilsPath, basePath + utilsPath, "general_esponse_object.ftl", baseClassDescriptions);
 
+        List<BaseClassDescription> baseClassDescriptions2 = new ArrayList<>();
+        BaseClassDescription baseClassDescription2 = new BaseClassDescription();
+        baseClassDescription2.setBelongPackage("package " + utilsPath.replaceAll(Pattern.quote(File.separator), ".") + ";");
+        baseClassDescription2.setShortName("BaseObject");
+        baseClassDescription2.setFullName("BaseObject");
+        baseClassDescriptions2.add(baseClassDescription2);
+        createFileByTemplate(utilsPath, basePath + utilsPath, "base_object.ftl", baseClassDescriptions2);
+
 
     }
 
 
     private List<BaseClassDescription> getUtilsElement(String path) {
         List<BaseClassDescription> list = new ArrayList<>();
-
         return list;
     }
 
 
     /**
      * vo template create
+     *
      * @param path
      * @return
      */
@@ -119,9 +131,11 @@ public class ProjectBuilder {
             ObjectClassDescription objectClassDescription = new ObjectClassDescription();
             objectClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             objectClassDescription.setShortName(x.getName());
-            objectClassDescription.setFullName(x.getName() + "VO");
+            objectClassDescription.setFullName(x.getName() + FreemarkerTemplateBuilder.suffixManager.getvOSuffix());
             dbColumnModelList.forEach(y -> {
                 InnerAttributeDescription innerAttributeDescription = new InnerAttributeDescription();
+                innerAttributeDescription.setExtra(y.getExtra());
+                innerAttributeDescription.setColumnKey(y.getColumnKey());
                 innerAttributeDescription.setComment(y.getComment());
                 innerAttributeDescription.setName(y.getName());
                 innerAttributeDescription.setType(TypeConverter.covert(y.getType()));
@@ -134,6 +148,7 @@ public class ProjectBuilder {
 
     /**
      * dto template create
+     *
      * @param path
      * @return
      */
@@ -143,13 +158,15 @@ public class ProjectBuilder {
             //todo 单个对象
             List<DBColumnModel> dbColumnModelList = x.getDbColumnModelList();
             ObjectClassDescription objectClassDescription = new ObjectClassDescription();
-            objectClassDescription.addDependent(("import "+doPath+File.separator+x.getName()+"DO;").replaceAll(Pattern.quote(File.separator), "."));
-            objectClassDescription.addDependent(("import "+voPath+File.separator+x.getName()+"VO;").replaceAll(Pattern.quote(File.separator), "."));
+            objectClassDescription.addDependent(("import " + doPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            objectClassDescription.addDependent(("import " + voPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getvOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
             objectClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             objectClassDescription.setShortName(x.getName());
-            objectClassDescription.setFullName(x.getName() + "DTO");
+            objectClassDescription.setFullName(x.getName() + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix());
             dbColumnModelList.forEach(y -> {
                 InnerAttributeDescription innerAttributeDescription = new InnerAttributeDescription();
+                innerAttributeDescription.setExtra(y.getExtra());
+                innerAttributeDescription.setColumnKey(y.getColumnKey());
                 innerAttributeDescription.setComment(y.getComment());
                 innerAttributeDescription.setName(y.getName());
                 innerAttributeDescription.setType(TypeConverter.covert(y.getType()));
@@ -162,6 +179,7 @@ public class ProjectBuilder {
 
     /**
      * do template create
+     *
      * @param path
      * @return
      */
@@ -171,12 +189,14 @@ public class ProjectBuilder {
             //todo 单个对象
             List<DBColumnModel> dbColumnModelList = x.getDbColumnModelList();
             ObjectClassDescription objectClassDescription = new ObjectClassDescription();
-            objectClassDescription.addDependent(("import "+dtoPath+File.separator+x.getName()+"DTO;").replaceAll(Pattern.quote(File.separator), "."));
+            objectClassDescription.addDependent(("import " + dtoPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
             objectClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             objectClassDescription.setShortName(x.getName());
-            objectClassDescription.setFullName(x.getName() + "DO");
+            objectClassDescription.setFullName(x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix());
             dbColumnModelList.forEach(y -> {
                 InnerAttributeDescription innerAttributeDescription = new InnerAttributeDescription();
+                innerAttributeDescription.setExtra(y.getExtra());
+                innerAttributeDescription.setColumnKey(y.getColumnKey());
                 innerAttributeDescription.setComment(y.getComment());
                 innerAttributeDescription.setName(y.getName());
                 innerAttributeDescription.setType(TypeConverter.covert(y.getType()));
@@ -189,6 +209,7 @@ public class ProjectBuilder {
 
     /**
      * controller template create
+     *
      * @param path
      * @return
      */
@@ -197,17 +218,17 @@ public class ProjectBuilder {
         dbTableModels.forEach(x -> {
             //todo 单个对象
             ControllerClassDescription controllerClassDescription = new ControllerClassDescription();
-            controllerClassDescription.addDependent(("import "+utilsPath+File.separator+"GeneralResponseObject;").replaceAll(Pattern.quote(File.separator), "."));
-            controllerClassDescription.addDependent(("import "+voPath+File.separator+x.getName()+"VO;").replaceAll(Pattern.quote(File.separator), "."));
-            controllerClassDescription.addDependent(("import "+dtoPath+File.separator+x.getName()+"DTO;").replaceAll(Pattern.quote(File.separator), "."));
-            controllerClassDescription.addDependent(("import "+serviceIPath+File.separator+x.getName()+"ServiceI;").replaceAll(Pattern.quote(File.separator), "."));
-            controllerClassDescription.setInnerService(x.getName() + "ServiceI");
-            controllerClassDescription.setBaseMapping("/" + x.getName());
+            controllerClassDescription.addDependent(("import " + utilsPath + File.separator + "GeneralResponseObject;").replaceAll(Pattern.quote(File.separator), "."));
+            controllerClassDescription.addDependent(("import " + voPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getvOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            controllerClassDescription.addDependent(("import " + dtoPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            controllerClassDescription.addDependent(("import " + serviceIPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getServiceISuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            controllerClassDescription.setInnerService(x.getName() + FreemarkerTemplateBuilder.suffixManager.getServiceISuffix());
+            controllerClassDescription.setBaseMapping("/" + StringUtils4V.lowercaseFirstLetter(x.getName()));
             controllerClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             //class Name
             String name = x.getName();
-            controllerClassDescription.setShortName(name );
-            controllerClassDescription.setFullName(name + "Controller");
+            controllerClassDescription.setShortName(name);
+            controllerClassDescription.setFullName(name + FreemarkerTemplateBuilder.suffixManager.getControllerSuffix());
 
             StructureConstant.methodTemplate.forEach(y -> {
                 InnerMethodDescription innerMethodDescription = new InnerMethodDescription();
@@ -232,6 +253,7 @@ public class ProjectBuilder {
 
     /**
      * dao template create
+     *
      * @param path
      * @return
      */
@@ -240,22 +262,22 @@ public class ProjectBuilder {
         dbTableModels.forEach(x -> {
             //todo 单个对象
             DaoClassDescription daoClassDescription = new DaoClassDescription();
-            daoClassDescription.addDependent(("import "+doPath+File.separator+x.getName()+"DO;").replaceAll(Pattern.quote(File.separator), "."));
+            daoClassDescription.addDependent(("import " + doPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
             daoClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             //class Name
             String name = x.getName();
-            daoClassDescription.setShortName(name );
-            daoClassDescription.setFullName(name + "Dao");
+            daoClassDescription.setShortName(name);
+            daoClassDescription.setFullName(name + FreemarkerTemplateBuilder.suffixManager.getDaoSuffix());
 
             StructureConstant.methodTemplate.forEach(y -> {
                 InnerMethodDescription innerMethodDescription = new InnerMethodDescription();
                 String returnStr = "void ";
                 String inputStr = "";
                 if (y.hasInput()) {
-                    inputStr = name + "DO " + StringUtils4V.lowercaseFirstLetter(name)+"DO";
+                    inputStr = name + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + " " + StringUtils4V.lowercaseFirstLetter(name) + FreemarkerTemplateBuilder.suffixManager.getdOSuffix();
                 }
                 if (y.hasReturn()) {
-                    returnStr = name + "DO ";
+                    returnStr = name + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + " ";
                 }
                 innerMethodDescription.setDescription("public " + returnStr + y.getName() + name + "(" + inputStr + ")");
                 innerMethodDescription.setName(y.getName());
@@ -269,6 +291,7 @@ public class ProjectBuilder {
 
     /**
      * service implement template create
+     *
      * @param path
      * @return
      */
@@ -277,26 +300,26 @@ public class ProjectBuilder {
         dbTableModels.forEach(x -> {
             //todo 单个对象
             ServiceImplClassDescription serviceImplClassDescription = new ServiceImplClassDescription();
-            serviceImplClassDescription.addDependent(("import "+doPath+File.separator+x.getName()+"DO;").replaceAll(Pattern.quote(File.separator), "."));
-            serviceImplClassDescription.addDependent(("import "+daoPath+File.separator+x.getName()+"Dao;").replaceAll(Pattern.quote(File.separator), "."));
-            serviceImplClassDescription.addDependent(("import "+dtoPath+File.separator+x.getName()+"DTO;").replaceAll(Pattern.quote(File.separator), "."));
-            serviceImplClassDescription.addDependent(("import "+serviceIPath+File.separator+x.getName()+"ServiceI;").replaceAll(Pattern.quote(File.separator), "."));
-            serviceImplClassDescription.setInnerDao(x.getName() + "Dao");
-            serviceImplClassDescription.setInterfaceName(x.getName() + "ServiceI");
+            serviceImplClassDescription.addDependent(("import " + doPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            serviceImplClassDescription.addDependent(("import " + daoPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getDaoSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            serviceImplClassDescription.addDependent(("import " + dtoPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            serviceImplClassDescription.addDependent(("import " + serviceIPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getServiceISuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
+            serviceImplClassDescription.setInnerDao(x.getName() + FreemarkerTemplateBuilder.suffixManager.getDaoSuffix());
+            serviceImplClassDescription.setInterfaceName(x.getName() + FreemarkerTemplateBuilder.suffixManager.getServiceISuffix());
             serviceImplClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             //class Name
             String name = x.getName();
-            serviceImplClassDescription.setShortName(name );
-            serviceImplClassDescription.setFullName(name + "ServiceImpl");
+            serviceImplClassDescription.setShortName(name);
+            serviceImplClassDescription.setFullName(name + FreemarkerTemplateBuilder.suffixManager.getServiceImplSuffix());
             StructureConstant.methodTemplate.forEach(y -> {
                 InnerMethodDescription innerMethodDescription = new InnerMethodDescription();
                 String returnStr = "void ";
                 String inputStr = "";
                 if (y.hasInput()) {
-                    inputStr = name + "DTO " + StringUtils4V.lowercaseFirstLetter(name)+"DTO";
+                    inputStr = name + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + " " + StringUtils4V.lowercaseFirstLetter(name) + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix();
                 }
                 if (y.hasReturn()) {
-                    returnStr = name + "DTO ";
+                    returnStr = name + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + " ";
                 }
                 innerMethodDescription.setDescription("public " + returnStr + y.getName() + name + "(" + inputStr + ")");
                 innerMethodDescription.setName(y.getName());
@@ -310,6 +333,7 @@ public class ProjectBuilder {
 
     /**
      * service interface template create
+     *
      * @param path
      * @return
      */
@@ -318,21 +342,21 @@ public class ProjectBuilder {
         dbTableModels.forEach(x -> {
             //todo 单个对象
             ServiceIClassDescription serviceIClassDescription = new ServiceIClassDescription();
-            serviceIClassDescription.addDependent(("import "+dtoPath+File.separator+x.getName()+"DTO;").replaceAll(Pattern.quote(File.separator), "."));
+            serviceIClassDescription.addDependent(("import " + dtoPath + File.separator + x.getName() + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + ";").replaceAll(Pattern.quote(File.separator), "."));
             serviceIClassDescription.setBelongPackage("package " + path.replaceAll(Pattern.quote(File.separator), ".") + ";");
             //class Name
             String name = x.getName();
-            serviceIClassDescription.setShortName(name );
-            serviceIClassDescription.setFullName(name + "ServiceI");
+            serviceIClassDescription.setShortName(name);
+            serviceIClassDescription.setFullName(name + FreemarkerTemplateBuilder.suffixManager.getServiceISuffix());
             StructureConstant.methodTemplate.forEach(y -> {
                 InnerMethodDescription innerMethodDescription = new InnerMethodDescription();
                 String returnStr = "void ";
                 String inputStr = "";
                 if (y.hasInput()) {
-                    inputStr = name + "DTO " +  StringUtils4V.lowercaseFirstLetter(name)+"DTO";
+                    inputStr = name + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + " " + StringUtils4V.lowercaseFirstLetter(name) + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix();
                 }
                 if (y.hasReturn()) {
-                    returnStr = name + "DTO ";
+                    returnStr = name + FreemarkerTemplateBuilder.suffixManager.getdTOSuffix() + " ";
                 }
                 innerMethodDescription.setDescription("public " + returnStr + y.getName() + name + "(" + inputStr + ")");
                 innerMethodDescription.setName(y.getName());
@@ -346,5 +370,9 @@ public class ProjectBuilder {
 
     public void setBefore(String before) {
         this.before = before;
+    }
+
+    public void setDbFrameType(String dbFrameType) {
+        this.dbFrameType = dbFrameType;
     }
 }

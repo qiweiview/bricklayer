@@ -9,6 +9,11 @@ public class DBColumnModel {
 
     private String comment;
 
+    private String columnKey;
+
+    private String extra;
+
+
     @Override
     public String toString() {
         return "DBColumnModel{" +
@@ -16,7 +21,25 @@ public class DBColumnModel {
                 ", originalName='" + originalName + '\'' +
                 ", type='" + type + '\'' +
                 ", comment='" + comment + '\'' +
+                ", columnKey='" + columnKey + '\'' +
+                ", extra='" + extra + '\'' +
                 '}';
+    }
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
+    public String getColumnKey() {
+        return columnKey;
+    }
+
+    public void setColumnKey(String columnKey) {
+        this.columnKey = columnKey;
     }
 
     public String getOriginalName() {

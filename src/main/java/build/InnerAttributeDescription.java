@@ -2,12 +2,31 @@ package build;
 
 public class InnerAttributeDescription {
 
+    private String columnKey;
+
     private String type;
 
     private String name;
 
     private String comment;
 
+    private String extra;
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
+    public String getColumnKey() {
+        return columnKey;
+    }
+
+    public void setColumnKey(String columnKey) {
+        this.columnKey = columnKey;
+    }
 
     public String getComment() {
         return comment;

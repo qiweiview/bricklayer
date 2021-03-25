@@ -3,15 +3,28 @@ ${belongPackage}
 <#list dependents as dependent>
 ${dependent}
 </#list>
+import javax.persistence.*;
 
 <#include "signature.ftl">
+@Entity
+@Table(name="${shortName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}")
 public class ${fullName} {
 <#list attributes as attribute>
 
     /**
     * ${attribute.comment}
     */
+    <#if attribute.columnKey=="PRI">
+    @Id
+        <#if attribute.extra=="auto_increment">
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+        </#if>
+    <#else>
+    // @Column(name="${attribute.name?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}", updatable = false)
+    </#if>
     private  ${attribute.type} ${attribute.name};
+
+
 </#list>
 
 

@@ -11,17 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class ${fullName} implements ${interfaceName}{
 
+    private final ${innerDao} ${innerDao?uncap_first};
+
     @Autowired
-    private ${innerDao} ${innerDao?uncap_first};
+    public ${fullName}(${innerDao} ${innerDao?uncap_first}) {
+    this.${innerDao?uncap_first} = ${innerDao?uncap_first};
+    }
+
 
 <#list methods as method>
 
     @Override
     ${method.description}{
-     ${shortName}DO ${shortName?uncap_first}=${shortName?uncap_first}DTO.to${shortName}DO();
+     ${shortName}${suffixManager.dOSuffix} ${shortName?uncap_first}=${shortName?uncap_first}${suffixManager.dTOSuffix}.to${shortName}${suffixManager.dOSuffix}();
      <#if method.hasReturn>
-     ${shortName}DO ${shortName?uncap_first}DOResult=${innerDao?uncap_first}.${method.name}${shortName}(${shortName?uncap_first});
-     ${shortName}DTO ${shortName?uncap_first}DTOResult=${shortName?uncap_first}DOResult.to${shortName}DTO();
+     ${shortName}${suffixManager.dOSuffix} ${shortName?uncap_first}DOResult=${innerDao?uncap_first}.${method.name}${shortName}(${shortName?uncap_first});
+     ${shortName}${suffixManager.dTOSuffix} ${shortName?uncap_first}DTOResult=${shortName?uncap_first}DOResult.to${shortName}${suffixManager.dTOSuffix}();
      return ${shortName?uncap_first}DTOResult;
         <#else >
      ${innerDao?uncap_first}.${method.name}${shortName}(${shortName?uncap_first});
