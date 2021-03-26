@@ -1,5 +1,6 @@
 package build;
 
+import build.utils.FreemarkerTemplateBuilder;
 import freemarker.template.Template;
 
 import java.io.OutputStreamWriter;

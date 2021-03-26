@@ -1,4 +1,4 @@
-package build.adapter;
+package build.db_adapter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,5 +40,15 @@ public class MysqlTypeConvert implements TypeConvertI {
             throw new RuntimeException("can not found the java type for the "+dbType);
         }
         return s;
+    }
+
+    @Override
+    public boolean checkPrimary(String extra) {
+        return "PRI".equals(extra);
+    }
+
+    @Override
+    public boolean checkAutoIncrease(String columnKey) {
+        return "auto_increment".equals(columnKey);
     }
 }

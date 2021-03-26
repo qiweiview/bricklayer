@@ -1,19 +1,15 @@
-package build.data_bases;
+package build.db_model;
 
-import build.FreemarkerTemplateBuilder;
-import build.ProjectBuilder;
+import build.db_adapter.DataSourceInstance;
 import build.utils.JDBCResultUtils;
-import build.utils.StringUtils4V;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class MysqlDataSourceInstance {
+public class MysqlDataSourceInstance  implements DataSourceInstance {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private String dbUrl;
     private String userName;
@@ -25,25 +21,8 @@ public class MysqlDataSourceInstance {
         this.passWord = passWord;
     }
 
-    public static void main(String[] args) throws Exception {
-        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/anicert_university?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
-                "root", "wdwdwd");
-//        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/seata?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
-//                "root", "123");
-        ProjectBuilder projectBuilder = new ProjectBuilder();
-        String basePath = "D:\\JAVA_WORK_SPACE\\bricklayer\\src\\main\\java\\";
-        //String basePath = "D:\\NewWorkSpace\\bricklayer\\src\\main\\java";
-        projectBuilder.setDbFrameType(ProjectBuilder.JPA_FRAME);
-        projectBuilder.setBefore("cn.anicert.university.training_manage");
-        FreemarkerTemplateBuilder.suffixManager.setDaoSuffix("Repository");
-        List<DBTableModel> dbTableModels = mysqlDataSourceInstance.getDBTableModels();
-//        List<DBTableModel> collect = dbTableModels.stream().filter(x -> {
-//            return x.getOriginalName().indexOf("training") != -1 || x.getOriginalName().indexOf("organisation") != -1;
-//        }).collect(Collectors.toList());
-        projectBuilder.build(dbTableModels, basePath);
 
-    }
-
+    @Override
     public List<DBTableModel> getDBTableModels() {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -65,17 +44,15 @@ public class MysqlDataSourceInstance {
                 //todo 表分组
                 DBTableModel dbTableModel = new DBTableModel();
                 List<DBColumnModel> dbColumnModelList = new ArrayList();
-                dbTableModel.setOriginalName(k.toString());
-                dbTableModel.setName(StringUtils4V.underLine2UnCapFirst(k.toString(), false));
+                dbTableModel.setOriginalTableName(k.toString());
                 dbTableModel.setDbColumnModelList(dbColumnModelList);
                 v.forEach(z -> {
                     //todo 列
                     DBColumnModel dbColumnModel = new DBColumnModel();
                     dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
                     dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
-                    dbColumnModel.setOriginalName(z.getOrDefault("COLUMN_NAME", "").toString());
+                    dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
                     dbColumnModel.setType(z.getOrDefault("DATA_TYPE", "").toString());
-                    dbColumnModel.setName(StringUtils4V.underLine2UnCapFirst(z.getOrDefault("COLUMN_NAME", "").toString(), true));
                     dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
                     dbColumnModelList.add(dbColumnModel);
 
