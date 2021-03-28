@@ -1,60 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${contextModel.daoPath}" >
 
-<mapper namespace="${daoPath}">
-
-    <resultMap type="${doPath}" id="${name}Map">
-        <#list dbColumnModelList as attribute>
-            <#if attribute.columnKey=="PRI">
-                <id property="${attribute.name}" column="${attribute.originalName}"/>
-            <#else>
-                <result property="${attribute.name}" column="${attribute.originalName}"/>
-            </#if>
-        </#list>
+    <resultMap type="${contextModel.doPath}" id="${className}Map" >
+<#list fieldList as field>
+    <#if field.primaryKey>
+                <id property="${field.beanName}" column="${field.originalColumnName}" />
+    <#else>
+                <result property="${field.beanName}" column="${field.originalColumnName}" />
+    </#if>
+</#list>
     </resultMap>
 
 
-    <select id="listAll${name}" parameterType="${doPath}" resultMap="${name}Map">
+    <select id="list${className}Page" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
         select
-        <#list dbColumnModelList as attribute>
-            ${attribute.originalName},
+        <#list fieldList as field>
+            ${field.originalColumnName},
         </#list>
-        1
+        '1'as blank_
         from ${originalName}
         where 1=1
     </select>
 
-    <select id="get${name}ByPrimaryKey" parameterType="${doPath}" resultMap="${name}Map">
+    <select id="get${className}ById" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
         select
-        <#list dbColumnModelList as attribute>
-            ${attribute.originalName},
-        </#list>
-        1
+<#list fieldList as field>
+    ${field.originalColumnName},
+</#list>
+        '1'as blank_
         from ${originalName}
         where 1=1
-        and ${primaryKey}  = <#noparse>#{</#noparse>${primaryKey}<#noparse>}</#noparse>
+        and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
     </select>
 
 
-    <delete id="remove${name}ByPrimaryKey" parameterType="${doPath}" >
+    <delete id="delete${className}" parameterType="${contextModel.doPath}" >
         delete
         from ${originalName}
         where 1=1
-        and ${primaryKey}  = <#noparse>#{</#noparse>${primaryKey}<#noparse>}</#noparse>
+        and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
     </delete>
 
-    <update id="update${name}ByPrimaryKey" parameterType="${doPath}" >
+    <update id="update${className}" parameterType="${contextModel.doPath}" >
         update ${originalName}
-        set ${primaryKey}=${primaryKey}
-        <#list dbColumnModelList as attribute>
-            <#if attribute.columnKey!="PRI">
-        <if test="${attribute.originalName}!=null and ${attribute.originalName}!=''">
-            ${attribute.originalName}  = <#noparse>#{</#noparse>${attribute.name}<#noparse>}</#noparse>,
+        set ${primaryName}=${primaryName}
+<#list fieldList as field>
+    <#if !field.primaryKey>
+        <if test="${field.beanName}!=null and ${field.beanName}!=''" >
+        ${field.originalColumnName} = <#noparse>#{</#noparse> ${field.beanName}<#noparse>}</#noparse>,
         </if>
-            </#if>
-        </#list>
+    </#if>
+</#list>
         where 1=1
-        and ${primaryKey}  = <#noparse>#{</#noparse>${primaryKey}<#noparse>}</#noparse>
+        and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
     </update>
 
 

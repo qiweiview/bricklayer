@@ -1,16 +1,18 @@
-${belongPackage}
+${contextModel.daoPackage}
 
-<#list dependents as dependent>
-${dependent}
-</#list>
-import org.springframework.stereotype.Repository;
+import ${contextModel.daoPath};
+import ${contextModel.doPath};
 
 <#include "signature.ftl">
-@Repository
-public interface ${fullName} {
-<#list methods as method>
+public interface ${contextModel.daoName} {
 
-    ${method.description};
-</#list>
+    public  ${contextModel.doName}   save${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
 
+    public  ${contextModel.doName}   update${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
+
+    public  ${contextModel.doName}   delete${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
+
+    public  Object   list${className}Page(${contextModel.doName} ${contextModel.doName?uncap_first});
+
+    public  ${contextModel.doName}   get${className}ById(${contextModel.doName} ${contextModel.doName?uncap_first});
 }

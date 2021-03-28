@@ -11,10 +11,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-public class DOBuildTask implements JavaBuildTask {
+public class VOBuildTask implements JavaBuildTask {
 
 
-    private final String templateName ="domain_object.ftl";
+    private final String templateName ="view_object.ftl";
 
     @Override
     public void build(List<JavaBeanModel> javaBeanModels,String outPutPath) {
@@ -22,7 +22,7 @@ public class DOBuildTask implements JavaBuildTask {
         javaBeanModels.forEach(x->{
             FileOutputStream fileOutputStream = null;
             try {
-                String path=StringUtils4V.javaPackagePath2SystemPath(outPutPath + File.separator + x.getContextModel().getDoPath())+".java";
+                String path=StringUtils4V.javaPackagePath2SystemPath(outPutPath + File.separator + x.getContextModel().getVoPath())+".java";
                 fileOutputStream = FileUtils.openOutputStream(new File(path));
                 template.process(x, new OutputStreamWriter(fileOutputStream));
             } catch (Exception e) {

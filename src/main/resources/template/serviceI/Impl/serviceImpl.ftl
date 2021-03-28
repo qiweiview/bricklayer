@@ -1,37 +1,50 @@
-${belongPackage}
+${contextModel.serviceImplPackage}
 
-<#list dependents as dependent>
-${dependent}
-</#list>
+import ${contextModel.doPath};
+import ${contextModel.daoPath};
+import ${contextModel.dtoPath};
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import ${contextModel.serviceIPath};
 <#include "signature.ftl">
 
 @Service
-public class ${fullName} implements ${interfaceName}{
+public class ${contextModel.serviceImplName} implements ${contextModel.serviceIName}{
 
-    private final ${innerDao} ${innerDao?uncap_first};
+    private final ${contextModel.daoName} ${contextModel.daoName?uncap_first};
 
     @Autowired
-    public ${fullName}(${innerDao} ${innerDao?uncap_first}) {
-    this.${innerDao?uncap_first} = ${innerDao?uncap_first};
-    }
+    public ${contextModel.serviceImplName}(${contextModel.daoName} ${contextModel.daoName?uncap_first}){
+        this.${contextModel.daoName?uncap_first} =${contextModel.daoName?uncap_first};
+        }
 
+    public  ${contextModel.dtoName}   save${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
+        ${contextModel.daoName?uncap_first}.save${className}(${contextModel.doName?uncap_first});
+        return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
+        }
 
-<#list methods as method>
+    public  ${contextModel.dtoName}   update${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
+        ${contextModel.daoName?uncap_first}.update${className}(${contextModel.doName?uncap_first});
+        return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
+        }
 
-    @Override
-    ${method.description}{
-     ${shortName}${suffixManager.dOSuffix} ${shortName?uncap_first}=${shortName?uncap_first}${suffixManager.dTOSuffix}.to${shortName}${suffixManager.dOSuffix}();
-     <#if method.hasReturn>
-     ${shortName}${suffixManager.dOSuffix} ${shortName?uncap_first}DOResult=${innerDao?uncap_first}.${method.name}${shortName}(${shortName?uncap_first});
-     ${shortName}${suffixManager.dTOSuffix} ${shortName?uncap_first}DTOResult=${shortName?uncap_first}DOResult.to${shortName}${suffixManager.dTOSuffix}();
-     return ${shortName?uncap_first}DTOResult;
-        <#else >
-     ${innerDao?uncap_first}.${method.name}${shortName}(${shortName?uncap_first});
-    </#if>
-    }
+    public  ${contextModel.dtoName}   delete${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
+        ${contextModel.daoName?uncap_first}.delete${className}(${contextModel.doName?uncap_first});
+        return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
+        }
 
-</#list>
+    public  Object list${className}Page(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        //todo fix point
+        return null;
+        }
+
+    public  ${contextModel.dtoName}   get${className}ById(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
+        ${contextModel.doName?uncap_first}=${contextModel.daoName?uncap_first}.get${className}ById(${contextModel.doName?uncap_first});
+        return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
+        }
+
 }

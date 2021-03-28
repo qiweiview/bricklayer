@@ -11,11 +11,11 @@ import lombok.Data;
 public class ContextModel {
 
     //名称
-    private String dOName;
+    private String doName;
 
-    private String dTOName;
+    private String dtoName;
 
-    private String vOName;
+    private String voName;
 
 
     private String controllerName;
@@ -30,12 +30,31 @@ public class ContextModel {
 
     private String utilsName;
 
-    //全路径
-    private String dOPath;
+    //路径
+    private String doPackage;
 
-    private String vOPath;
+    private String voPackage;
 
-    private String dTOPath;
+    private String dtoPackage;
+
+    private String controllerPackage;
+
+    private String serviceIPackage;
+
+    private String serviceImplPackage;
+
+    private String daoPackage;
+
+    private String mapperPackage;
+
+    private String utilsPackage;
+
+    //全路径名称
+    private String doPath;
+
+    private String voPath;
+
+    private String dtoPath;
 
     private String controllerPath;
 
@@ -53,9 +72,9 @@ public class ContextModel {
     public void load(String className, String basePath) {
 
         //name
-        setDOName(className+ SuffixManager.dOSuffix);
-        setDTOName(className+ SuffixManager.dTOSuffix);
-        setVOName(className+ SuffixManager.vOSuffix);
+        setDoName(className+ SuffixManager.dOSuffix);
+        setDtoName(className+ SuffixManager.dTOSuffix);
+        setVoName(className+ SuffixManager.vOSuffix);
 
         setControllerName(className+ SuffixManager.controllerSuffix);
         setServiceIName(className+ SuffixManager.serviceISuffix);
@@ -68,9 +87,13 @@ public class ContextModel {
         //path
         basePath= StringUtils4V.systemPath2JavaPackagePath(basePath);
 
-        setDOPath(basePath+"model.do."+className+ SuffixManager.dOSuffix);
-        setDTOPath(basePath+"model.dto."+className+ SuffixManager.dTOSuffix);
-        setVOPath(basePath+"model.vo."+className+ SuffixManager.vOSuffix);
+        if (basePath.startsWith(".")){
+            basePath= basePath.substring(1);
+        }
+
+        setDoPath(basePath+"model.d_o."+className+ SuffixManager.dOSuffix);
+        setDtoPath(basePath+"model.dto."+className+ SuffixManager.dTOSuffix);
+        setVoPath(basePath+"model.vo."+className+ SuffixManager.vOSuffix);
 
         setControllerPath(basePath+"controller."+className+ SuffixManager.controllerSuffix);
         setServiceIPath(basePath+"serviceI."+className+ SuffixManager.serviceISuffix);
@@ -78,6 +101,18 @@ public class ContextModel {
         setDaoPath(basePath+"dao."+className+ SuffixManager.daoSuffix);
         setMapperPath(basePath+"mapper."+className+ SuffixManager.mapperSuffix);
         setUtilsPath(basePath+"utils."+className+ SuffixManager.utilSuffix);
+
+
+        setDoPackage("package "+basePath+"model.d_o;");
+        setDtoPackage("package "+basePath+"model.dto;");
+        setVoPackage("package "+basePath+"model.vo;");
+
+        setControllerPackage("package "+basePath+"controller;");
+        setServiceIPackage("package "+basePath+"serviceI;");
+        setServiceImplPackage("package "+basePath+"serviceI.serviceImpl;");
+        setDaoPackage("package "+basePath+"dao;");
+        setMapperPackage("package "+basePath+"mapper;");
+        setUtilsPackage("package "+basePath+"utils;");
 
     }
 }

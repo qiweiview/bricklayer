@@ -27,10 +27,10 @@ public class JavaFiledModel {
         JavaFiledModel javaFiledModel = new JavaFiledModel();
         javaFiledModel.setColumnComment(x.getComment());//备注
         javaFiledModel.setJavaType(TypeConverter.covert(x.getType()));//java类型
-        javaFiledModel.setAutoIncrease(TypeConverter.checkPrimary(x.getExtra()));//自增标识
+        javaFiledModel.setAutoIncrease(TypeConverter.checkAutoIncrease(x.getExtra()));//自增标识
         javaFiledModel.setOriginalColumnName(x.getOriginalColumnName());//自增
         javaFiledModel.setBeanName(StringUtils4V.underLine2UnCapFirst(x.getOriginalColumnName(), true));//对象属性
-        javaFiledModel.setPrimaryKey(TypeConverter.checkAutoIncrease(x.getColumnKey()));//主键
+        javaFiledModel.setPrimaryKey(TypeConverter.checkPrimary(x.getColumnKey()));//主键
         return javaFiledModel;
 
     }

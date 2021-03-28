@@ -1,30 +1,26 @@
-${belongPackage}
+${contextModel.voPackage}
 
-<#list dependents as dependent>
-${dependent}
-</#list>
+
 
 <#include "signature.ftl">
-public class ${fullName}  {
-<#list attributes as attribute>
+public class ${contextModel.voName} {
+<#list fieldList as field>
 
-    /**
-    * ${attribute.comment}
-    */
-    private  ${attribute.type} ${attribute.name};
+    private  ${field.javaType} ${field.beanName};
 </#list>
 
 
+/*  ------------ data conversion ------------  */
 
 
 /*  ------------ getter setter ------------  */
-<#list attributes as attribute>
-    public ${attribute.type} get${attribute.name?cap_first}(){
-    return ${attribute.name};
-    }
+<#list fieldList as field>
+    public ${field.javaType} get${field.beanName?cap_first}(){
+        return ${field.beanName};
+        }
 
-    public void set${attribute.name?cap_first}(${attribute.type} ${attribute.name?uncap_first}){
-    this.${attribute.name}=${attribute.name?uncap_first};
+    public void set${field.beanName?cap_first}(${field.javaType} ${field.beanName?uncap_first}){
+    this.${field.beanName}=${field.beanName?uncap_first};
     }
 </#list>
 }

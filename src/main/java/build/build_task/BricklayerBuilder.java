@@ -9,7 +9,14 @@ public class BricklayerBuilder {
     private   static List<JavaBuildTask> list=new ArrayList<>();
 
     static {
+        list.add(new VOBuildTask());
+        list.add(new DTOBuildTask());
         list.add(new DOBuildTask());
+        list.add(new ControllerBuildTask());
+        list.add(new ServiceIBuildTask());
+        list.add(new ServiceImplBuildTask());
+        list.add(new DaoBuildTask());
+        list.add(new MapperBuildTask());
     }
 
     public static void  build(List<JavaBeanModel> javaBeanModels,String outPutPath){

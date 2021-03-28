@@ -1,7 +1,6 @@
 package build.java_bean;
 
 
-
 import build.db_model.DBColumnModel;
 import build.db_model.DBTableModel;
 import build.utils.StringUtils4V;
@@ -21,29 +20,42 @@ public class JavaBeanModel {
 
     private String originalName;//原表名
 
+    private String primaryName;
+
     private ContextModel contextModel;
 
-    private List<JavaFiledModel> fieldList =new ArrayList();
+    private List<JavaFiledModel> fieldList = new ArrayList();
 
 
-    public static JavaBeanModel of(DBTableModel x,String basePath) {
-        JavaBeanModel javaBeanModel=new JavaBeanModel();
+    public static JavaBeanModel of(DBTableModel x, String basePath) {
+        JavaBeanModel javaBeanModel = new JavaBeanModel();
         String originalTableName = x.getOriginalTableName();
         javaBeanModel.setClassName(StringUtils4V.underLine2UnCapFirst(originalTableName, false));
         javaBeanModel.setOriginalName(x.getOriginalTableName());
-        javaBeanModel.setContextModel(createContextModel(javaBeanModel.getClassName(),basePath));//上下文
-        javaBeanModel.setFieldList(createDbColumnModelList(x.getDbColumnModelList(),basePath));//属性列表
+        javaBeanModel.setContextModel(createContextModel(javaBeanModel.getClassName(), basePath));//上下文
+        List<JavaFiledModel> dbColumnModelList = createDbColumnModelList(x.getDbColumnModelList(), basePath);
+        javaBeanModel.setFieldList(dbColumnModelList);//属性列表
+        for (JavaFiledModel javaFiledModel : dbColumnModelList) {
+            if (javaFiledModel.isPrimaryKey()) {
+                //todo 取第一个主键
+                javaBeanModel.setPrimaryName(javaFiledModel.getOriginalColumnName());
+                continue;
+            }
+        }
+        if (null==javaBeanModel.getPrimaryName()){
+            throw new RuntimeException("需要至少一个主键");
+        }
         return javaBeanModel;
     }
 
     private static List<JavaFiledModel> createDbColumnModelList(List<DBColumnModel> dbColumnModelList, String basePath) {
-        return  dbColumnModelList.stream().map(x-> JavaFiledModel.of(x)).collect(Collectors.toList());
+        return dbColumnModelList.stream().map(x -> JavaFiledModel.of(x)).collect(Collectors.toList());
 
     }
 
     private static ContextModel createContextModel(String className, String basePath) {
         ContextModel contextModel = new ContextModel();
-        contextModel.load(className,basePath);
+        contextModel.load(className, basePath);
         return contextModel;
 
     }

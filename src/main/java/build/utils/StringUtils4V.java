@@ -2,6 +2,7 @@ package build.utils;
 
 
 import java.io.File;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils4V {
@@ -44,24 +45,12 @@ public class StringUtils4V {
 
     public static String systemPath2JavaPackagePath(String systemPath){
         String s = systemPath.replaceAll(Pattern.quote(File.separator), ".");
-        if (!s.endsWith(".")){
-            s+=".";
-        }
-        if (s.startsWith(".")){
-            return s.substring(1);
-        }
         return s;
 
     }
 
     public static String javaPackagePath2SystemPath(String javaPackage){
-        String s = javaPackage.replaceAll( ".",Pattern.quote(File.separator));
-        if (!s.endsWith(File.separator)){
-            s+=File.separator;
-        }
-        if (s.startsWith(File.separator)){
-            return s.substring(1);
-        }
+        String s = javaPackage.replaceAll( "\\.", Matcher.quoteReplacement(File.separator));
         return s;
 
     }

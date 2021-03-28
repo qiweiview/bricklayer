@@ -1,44 +1,66 @@
-${belongPackage}
+${contextModel.controllerPackage}
 
-<#list dependents as dependent>
-${dependent}
-</#list>
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import ${contextModel.dtoPath};
+import ${contextModel.voPath};
+import ${contextModel.serviceIPath};
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 
 <#include "signature.ftl">
 @RestController
-@RequestMapping("${baseMapping}")
-public class ${fullName} {
+@RequestMapping("/${contextModel.controllerName?uncap_first}")
+public class ${contextModel.controllerName} {
 
-    private final ${innerService} ${innerService?uncap_first};
+    private final ${contextModel.serviceIName} ${contextModel.serviceIName?uncap_first};
 
     @Autowired
-    public ${fullName}(${innerService} ${innerService?uncap_first}) {
-    this.${innerService?uncap_first} = ${innerService?uncap_first};
+    public ${contextModel.controllerName}(${contextModel.serviceIName} ${contextModel.serviceIName?uncap_first}) {
+    this.${contextModel.serviceIName?uncap_first} = ${contextModel.serviceIName?uncap_first};
     }
 
-<#list methods as method>
 
-    @RequestMapping("${method.path}")
-    public ResponseEntity<Object> ${method.name}(@RequestBody(required = false) ${shortName}${suffixManager.dTOSuffix} ${shortName?uncap_first}) {
-        ResponseEntity responseEntity;
-    <#if method.hasReturn>
-        ${shortName}${suffixManager.dTOSuffix} ${shortName?uncap_first}${suffixManager.dTOSuffix}=${innerService?uncap_first}.${method.name}(${shortName?uncap_first});
-        ${shortName}${suffixManager.vOSuffix} ${shortName?uncap_first}${suffixManager.vOSuffix}=${shortName?uncap_first}${suffixManager.dTOSuffix}.to${shortName}${suffixManager.vOSuffix}();
-        responseEntity=new ResponseEntity(${shortName?uncap_first}${suffixManager.vOSuffix}, HttpStatus.OK);
-    <#else>
-        ${innerService?uncap_first}.${method.name}(${shortName?uncap_first});
-        responseEntity=new ResponseEntity(HttpStatus.OK);
-    </#if>
+
+    @RequestMapping("/save${className}")
+    public Object save${className}(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
+        
+        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.save${className}(${contextModel.dtoName?uncap_first});
+        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
         return responseEntity;
     }
 
-</#list>
+    @RequestMapping("/update${className}")
+    public Object update${className}(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
+        
+        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.update${className}(${contextModel.dtoName?uncap_first});
+        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
+        return responseEntity;
+    }
+
+    @RequestMapping("/delete${className}")
+    public Object delete${className}(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
+        
+        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.delete${className}(${contextModel.dtoName?uncap_first});
+        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
+        return responseEntity;
+    }
+
+    @RequestMapping("/list${className}Page")
+    public Object list${className}Page(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
+        
+        ${contextModel.serviceIName?uncap_first}.list${className}Page(${contextModel.dtoName?uncap_first});
+        return responseEntity;
+    }
+
+
+    @RequestMapping("/get${className}ById")
+    public Object get${className}ById(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
+        
+        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.get${className}ById(${contextModel.dtoName?uncap_first});
+        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
+        return responseEntity;
+        }
+
 
 
 }
