@@ -2,8 +2,10 @@ ${contextModel.daoPackage}
 
 import ${contextModel.daoPath};
 import ${contextModel.doPath};
+import org.apache.ibatis.annotations.Mapper;
 
 <#include "signature.ftl">
+@Mapper
 public interface ${contextModel.daoName} {
 
     public  ${contextModel.doName}   save${className}(${contextModel.doName} ${contextModel.doName?uncap_first});

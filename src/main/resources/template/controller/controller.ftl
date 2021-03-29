@@ -26,7 +26,7 @@ public class ${contextModel.controllerName} {
         
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.save${className}(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        return responseEntity;
+        return new ResponseEntity<Object>( HttpStatus.OK);
     }
 
     @RequestMapping("/update${className}")
@@ -34,7 +34,7 @@ public class ${contextModel.controllerName} {
         
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.update${className}(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        return responseEntity;
+        return new ResponseEntity<Object>( HttpStatus.OK);
     }
 
     @RequestMapping("/delete${className}")
@@ -42,14 +42,14 @@ public class ${contextModel.controllerName} {
         
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.delete${className}(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        return responseEntity;
+        return new ResponseEntity<Object>( HttpStatus.OK);
     }
 
     @RequestMapping("/list${className}Page")
     public Object list${className}Page(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
         
         ${contextModel.serviceIName?uncap_first}.list${className}Page(${contextModel.dtoName?uncap_first});
-        return responseEntity;
+        return new ResponseEntity<Object>( HttpStatus.OK);
     }
 
 
@@ -58,7 +58,7 @@ public class ${contextModel.controllerName} {
         
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.get${className}ById(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        return responseEntity;
+        return new ResponseEntity<Object>( HttpStatus.OK);
         }
 
 

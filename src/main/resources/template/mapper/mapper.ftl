@@ -8,7 +8,10 @@
 <#list fieldList as field>
     <#if field.primaryKey>
                 <id property="${field.beanName}" column="${field.originalColumnName}" />
-    <#else>
+    </#if>
+</#list>
+<#list fieldList as field>
+    <#if !field.primaryKey>
                 <result property="${field.beanName}" column="${field.originalColumnName}" />
     </#if>
 </#list>
