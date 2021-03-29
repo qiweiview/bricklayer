@@ -1,6 +1,8 @@
 ${contextModel.doPackage}
 
 import ${contextModel.dtoPath};
+import java.util.List;
+import java.util.stream.Collectors;
 
 <#include "signature.ftl">
 public class ${contextModel.doName} {
@@ -18,7 +20,13 @@ ${contextModel.dtoName} ${contextModel.dtoName?uncap_first} =new ${contextModel.
 </#list>
         return ${contextModel.dtoName?uncap_first};
 
-        }
+}
+
+
+public static   List<${contextModel.dtoName}>  to${contextModel.dtoName}List(List<${contextModel.doName}> ${contextModel.doName?uncap_first}List){
+        List<${contextModel.dtoName}> collect = ${contextModel.doName?uncap_first}List.stream().map(x -> x.to${contextModel.dtoName}()).collect(Collectors.toList());
+        return collect;
+}
 
 /*  ------------ getter setter ------------  */
 <#list fieldList as field>
