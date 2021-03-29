@@ -3,13 +3,28 @@ ${contextModel.doPackage}
 import ${contextModel.dtoPath};
 import java.util.List;
 import java.util.stream.Collectors;
+import com.baomidou.mybatisplus.annotation.*;
 
 <#include "signature.ftl">
+@TableName("${originalName}")
 public class ${contextModel.doName} {
 <#list fieldList as field>
 
+    /**
+     * ${field.columnComment}
+     */
+<#if field.primaryKey>
+    @TableId(value = "${field.originalColumnName}",type = IdType.AUTO)
+    <#else>
+    @TableField(value = "${field.originalColumnName}")
+</#if>
     private  ${field.javaType} ${field.beanName};
 </#list>
+
+/*  ------------ init value ------------  */
+public void doInit(){
+
+}
 
 
 /*  ------------ data conversion ------------  */

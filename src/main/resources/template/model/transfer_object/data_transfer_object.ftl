@@ -5,6 +5,9 @@ import ${contextModel.voPath};
 
 <#include "signature.ftl">
 public class ${contextModel.dtoName} {
+    private int current;
+
+    private int size;
 <#list fieldList as field>
 
     private  ${field.javaType} ${field.beanName};
@@ -31,6 +34,22 @@ ${contextModel.voName} ${contextModel.voName?uncap_first} =new ${contextModel.vo
         }
 
 /*  ------------ getter setter ------------  */
+    public int getCurrent() {
+        return current;
+        }
+
+    public void setCurrent(int current) {
+        this.current = current;
+        }
+
+    public int getSize() {
+        return size;
+        }
+
+    public void setSize(int size) {
+        this.size = size;
+        }
+
 <#list fieldList as field>
     public ${field.javaType} get${field.beanName?cap_first}(){
         return ${field.beanName};

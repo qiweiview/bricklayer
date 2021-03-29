@@ -25,7 +25,7 @@ public class ${contextModel.serviceImplName} implements ${contextModel.serviceIN
     @Override
     public  ${contextModel.dtoName}   save${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
         ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
-        ${contextModel.daoName?uncap_first}.save${className}(${contextModel.doName?uncap_first});
+        ${contextModel.daoName?uncap_first}.insert(${contextModel.doName?uncap_first});
         return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
         }
 
@@ -46,7 +46,7 @@ public class ${contextModel.serviceImplName} implements ${contextModel.serviceIN
     @Override
     public  IPage<${contextModel.dtoName}> list${className}Page(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
         ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
-        Page page = new Page(1, 2);
+        Page page = new Page(${contextModel.dtoName?uncap_first}.getCurrent(), ${contextModel.dtoName?uncap_first}.getSize());
         IPage<${contextModel.doName}> pageResult = ${contextModel.daoName?uncap_first}.list${className}Page(page, ${contextModel.doName?uncap_first});
         List<${contextModel.doName}> records = pageResult.getRecords();
         List<${contextModel.dtoName}> list = ${contextModel.doName}.to${contextModel.dtoName}List(records);

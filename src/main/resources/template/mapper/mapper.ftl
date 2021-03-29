@@ -18,6 +18,7 @@
     </resultMap>
 
 
+
     <select id="list${className}Page" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
         select
         <#list fieldList as field>
