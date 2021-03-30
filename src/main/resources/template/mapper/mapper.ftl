@@ -50,14 +50,15 @@
 
     <update id="update${className}" parameterType="${contextModel.doPath}" >
         update ${originalName}
-        set ${primaryName}=${primaryName}
+        set
 <#list fieldList as field>
     <#if !field.primaryKey>
-        <if test="${field.beanName}!=null and ${field.beanName}!=''" >
+        <if test="${field.beanName}!=null <#if field.javaType?contains("String")> and ${field.beanName}!=''</#if>" >
         ${field.originalColumnName} = <#noparse>#{</#noparse> ${field.beanName}<#noparse>}</#noparse>,
         </if>
     </#if>
 </#list>
+        ${primaryName}=${primaryName}
         where 1=1
         and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
     </update>

@@ -4,6 +4,8 @@ import ${contextModel.dtoPath};
 import java.util.List;
 import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.annotation.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 <#include "signature.ftl">
 @TableName("${originalName}")
@@ -22,12 +24,22 @@ public class ${contextModel.doName} {
 </#list>
 
 /*  ------------ init value ------------  */
-public void doInit(){
+    public void doInit() {
+        setDelFlag(false);
+        setCreateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+        }
 
-}
+    public void doUpdate() {
+        setUpdateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+        }
+
+    public void doDelete() {
+        setDelFlag(true);
+        doUpdate();
+        }
 
 
-/*  ------------ data conversion ------------  */
+/*  ------------ data conversion by model ------------  */
 public  ${contextModel.dtoName} to${contextModel.dtoName}(){
 ${contextModel.dtoName} ${contextModel.dtoName?uncap_first} =new ${contextModel.dtoName}();
 <#list fieldList as field>

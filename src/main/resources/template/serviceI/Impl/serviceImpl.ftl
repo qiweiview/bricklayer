@@ -9,6 +9,7 @@ import ${contextModel.serviceIPath};
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import cn.anicert.university.common.exception.EntityNotFoundException;
 
 <#include "signature.ftl">
 
@@ -31,6 +32,7 @@ public class ${contextModel.serviceImplName} implements ${contextModel.serviceIN
 
     @Override
     public  ${contextModel.dtoName}   update${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        ${contextModel.dtoName?uncap_first}=get${className}ById(${contextModel.dtoName?uncap_first});
         ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
         ${contextModel.daoName?uncap_first}.update${className}(${contextModel.doName?uncap_first});
         return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
@@ -38,8 +40,10 @@ public class ${contextModel.serviceImplName} implements ${contextModel.serviceIN
 
     @Override
     public  ${contextModel.dtoName}   delete${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        ${contextModel.dtoName?uncap_first}=get${className}ById(${contextModel.dtoName?uncap_first});
         ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
-        ${contextModel.daoName?uncap_first}.delete${className}(${contextModel.doName?uncap_first});
+
+        //${contextModel.daoName?uncap_first}.delete${className}(${contextModel.doName?uncap_first});
         return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
         }
 
@@ -59,6 +63,9 @@ public class ${contextModel.serviceImplName} implements ${contextModel.serviceIN
     public  ${contextModel.dtoName}   get${className}ById(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
         ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
         ${contextModel.doName?uncap_first}=${contextModel.daoName?uncap_first}.get${className}ById(${contextModel.doName?uncap_first});
+        if(${contextModel.doName?uncap_first}==null){
+            throw new EntityNotFoundException(${contextModel.dtoName?uncap_first}.getClass(),"primary key","");
+        }
         return ${contextModel.doName?uncap_first}.to${contextModel.dtoName}();
         }
 

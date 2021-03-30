@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import cn.anicert.university.common.entity.dto.ResponseVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import cn.anicert.university.constant.ErrorEnum;
 
 <#include "signature.ftl">
 @RestController
@@ -29,6 +30,8 @@ public class ${contextModel.controllerName} {
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.save${className}(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
         responseVo.setData(${contextModel.voName?uncap_first});
+        responseVo.setCode(ErrorEnum.OK.getCode());
+        responseVo.setMsg(ErrorEnum.OK.getMsg());
         return responseVo;
     }
 
@@ -38,6 +41,8 @@ public class ${contextModel.controllerName} {
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.update${className}(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
         responseVo.setData(${contextModel.voName?uncap_first});
+        responseVo.setCode(ErrorEnum.OK.getCode());
+        responseVo.setMsg(ErrorEnum.OK.getMsg());
         return responseVo;
     }
 
@@ -47,6 +52,8 @@ public class ${contextModel.controllerName} {
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.delete${className}(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
         responseVo.setData(${contextModel.voName?uncap_first});
+        responseVo.setCode(ErrorEnum.OK.getCode());
+        responseVo.setMsg(ErrorEnum.OK.getMsg());
         return responseVo;
     }
 
@@ -54,7 +61,11 @@ public class ${contextModel.controllerName} {
     public Object list${className}Page(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
         ResponseVo responseVo=new ResponseVo();
         IPage<${contextModel.dtoName}> ${contextModel.dtoName?uncap_first}IPage = ${contextModel.serviceIName?uncap_first}.list${className}Page(${contextModel.dtoName?uncap_first});
-        responseVo.setData(${contextModel.dtoName?uncap_first}IPage);
+        IPage<${contextModel.voName}> rs = new Page(${contextModel.dtoName?uncap_first}IPage.getCurrent(), ${contextModel.dtoName?uncap_first}IPage.getSize(), ${contextModel.dtoName?uncap_first}IPage.getTotal());
+        rs.setRecords(${contextModel.dtoName}.to${contextModel.voName}List(${contextModel.dtoName?uncap_first}IPage.getRecords()));
+        responseVo.setData(rs);
+        responseVo.setCode(ErrorEnum.OK.getCode());
+        responseVo.setMsg(ErrorEnum.OK.getMsg());
         return responseVo;
     }
 
@@ -65,6 +76,8 @@ public class ${contextModel.controllerName} {
         ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.get${className}ById(${contextModel.dtoName?uncap_first});
         ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
         responseVo.setData(${contextModel.voName?uncap_first});
+        responseVo.setCode(ErrorEnum.OK.getCode());
+        responseVo.setMsg(ErrorEnum.OK.getMsg());
         return responseVo;
         }
 

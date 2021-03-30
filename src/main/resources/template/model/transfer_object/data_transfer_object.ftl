@@ -2,12 +2,17 @@ ${contextModel.dtoPackage}
 
 import ${contextModel.doPath};
 import ${contextModel.voPath};
+import java.util.List;
+import java.util.stream.Collectors;
 
 <#include "signature.ftl">
 public class ${contextModel.dtoName} {
+
+    // page field
     private int current;
 
     private int size;
+
 <#list fieldList as field>
 
     private  ${field.javaType} ${field.beanName};
@@ -31,6 +36,18 @@ ${contextModel.voName} ${contextModel.voName?uncap_first} =new ${contextModel.vo
 </#list>
         return ${contextModel.voName?uncap_first};
 
+}
+
+
+
+public static   List<${contextModel.voName}>  to${contextModel.voName}List(List<${contextModel.dtoName}> ${contextModel.dtoName?uncap_first}List){
+        List<${contextModel.voName}> collect = ${contextModel.dtoName?uncap_first}List.stream().map(x -> x.to${contextModel.voName}()).collect(Collectors.toList());
+        return collect;
+}
+
+public static   List<${contextModel.doName}>  to${contextModel.doName}List(List<${contextModel.dtoName}> ${contextModel.dtoName?uncap_first}List){
+        List<${contextModel.doName}> collect = ${contextModel.dtoName?uncap_first}List.stream().map(x -> x.to${contextModel.doName}()).collect(Collectors.toList());
+        return collect;
         }
 
 /*  ------------ getter setter ------------  */
