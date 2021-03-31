@@ -21,15 +21,15 @@ public class StructureConstant {
         methodTemplate.add(new InnerMethodDescription("listAll",true,true));
         methodTemplate.add(new InnerMethodDescription("listPage",true,true));
 
-        templateScanPath.add("controller");
-        templateScanPath.add("serviceI");
-        templateScanPath.add("serviceI" + File.separator + "impl");
-        templateScanPath.add("dao");
-        templateScanPath.add("model" + File.separator + "domain_object");
-        templateScanPath.add("model" + File.separator + "transfer_object");
-        templateScanPath.add("model" + File.separator + "view_object");
-        templateScanPath.add("utils");
-        templateScanPath.add("mapper");
+        templateScanPath.add("back_end"+File.separator+"controller");
+        templateScanPath.add("back_end"+File.separator+"serviceI");
+        templateScanPath.add("back_end"+File.separator+"serviceI" + File.separator + "impl");
+        templateScanPath.add("back_end"+File.separator+"dao");
+        templateScanPath.add("back_end"+File.separator+"model" + File.separator + "domain_object");
+        templateScanPath.add("back_end"+File.separator+"model" + File.separator + "transfer_object");
+        templateScanPath.add("back_end"+File.separator+"model" + File.separator + "view_object");
+        templateScanPath.add("back_end"+File.separator+"utils");
+        templateScanPath.add("back_end"+File.separator+"mapper");
     }
 
 

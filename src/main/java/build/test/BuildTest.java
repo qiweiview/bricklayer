@@ -4,7 +4,7 @@ package build.test;
 //import build.ProjectBuilder;
 import build.build_task.BricklayerBuilder;
 import build.db_model.DBTableModel;
-import build.db_model.MysqlDataSourceInstance;
+import build.db_adapter.MysqlAbstractDataSourceInstance;
 import build.java_bean.JavaBeanModel;
 
 import java.util.List;
@@ -14,11 +14,12 @@ public class BuildTest {
 
 
     public static void main(String[] args) throws Exception {
-        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/anicert_university?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+        MysqlAbstractDataSourceInstance mysqlDataSourceInstance = new MysqlAbstractDataSourceInstance("jdbc:mysql://localhost:3306/anicert_university?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
                 "root", "wdwdwd");
 //        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/seata?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
 //                "root", "123");
         mysqlDataSourceInstance.addTargetTableName("training_plan");
+        mysqlDataSourceInstance.addTargetColumn("id");
 
         String basePath="cn\\anicert\\university\\training\\";
         String outPutPath="D:\\JAVA_WORK_SPACE\\lite_spring_template\\src\\main\\java\\";

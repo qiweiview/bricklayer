@@ -1,5 +1,6 @@
 package build.build_task;
 
+import build.build_task.output_task.OutPutTask;
 import build.java_bean.JavaBeanModel;
 
 import java.util.ArrayList;
@@ -9,5 +10,5 @@ public interface JavaBuildTask {
 
 
 
-    public  void build(List<JavaBeanModel> javaBeanModels,String outPutPath);
+    public  List<OutPutTask> build(List<JavaBeanModel> javaBeanModels, String outPutPath);
 }
