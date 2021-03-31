@@ -4,16 +4,15 @@ import build.db_adapter.DataSourceInstance;
 import build.utils.JDBCResultUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class MysqlDataSourceInstance  implements DataSourceInstance {
+public class MysqlDataSourceInstance implements DataSourceInstance {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private String dbUrl;
     private String userName;
     private String passWord;
+    private Set<String> targetTable = new HashSet<>();
 
     public MysqlDataSourceInstance(String dbUrl, String userName, String passWord) {
         this.dbUrl = dbUrl;
@@ -21,6 +20,9 @@ public class MysqlDataSourceInstance  implements DataSourceInstance {
         this.passWord = passWord;
     }
 
+    public void addTargetTableName(String tableName) {
+        targetTable.add(tableName);
+    }
 
     @Override
     public List<DBTableModel> getDBTableModels() {
@@ -57,7 +59,12 @@ public class MysqlDataSourceInstance  implements DataSourceInstance {
                     dbColumnModelList.add(dbColumnModel);
 
                 });
-                dbTableModels.add(dbTableModel);
+
+
+                if (targetTable.contains(dbTableModel.getOriginalTableName()) || (targetTable.size() == 1 && targetTable.contains("*"))) {
+                    dbTableModels.add(dbTableModel);
+                }
+
             });
             return dbTableModels;
         } catch (Exception se) {

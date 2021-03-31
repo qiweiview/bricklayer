@@ -25,23 +25,23 @@ public class ${contextModel.doName} {
 
 /*  ------------ init value ------------  */
     public void doInit() {
-        setDelFlag(false);
-        setCreateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+        //setDelFlag(false);
+        //setCreateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
         }
 
     public void doUpdate() {
-        setUpdateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+        //setUpdateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
         }
 
     public void doDelete() {
-        setDelFlag(true);
-        doUpdate();
+        //setDelFlag(true);
+        //doUpdate();
         }
 
 
 /*  ------------ data conversion by model ------------  */
-public  ${contextModel.dtoName} to${contextModel.dtoName}(){
-${contextModel.dtoName} ${contextModel.dtoName?uncap_first} =new ${contextModel.dtoName}();
+    public  ${contextModel.dtoName} to${contextModel.dtoName}(){
+    ${contextModel.dtoName} ${contextModel.dtoName?uncap_first} =new ${contextModel.dtoName}();
 <#list fieldList as field>
     ${contextModel.dtoName?uncap_first}.set${field.beanName?cap_first}(get${field.beanName?cap_first}());
 </#list>
@@ -50,13 +50,14 @@ ${contextModel.dtoName} ${contextModel.dtoName?uncap_first} =new ${contextModel.
 }
 
 
-public static   List<${contextModel.dtoName}>  to${contextModel.dtoName}List(List<${contextModel.doName}> ${contextModel.doName?uncap_first}List){
+    public static   List<${contextModel.dtoName}>  to${contextModel.dtoName}List(List<${contextModel.doName}> ${contextModel.doName?uncap_first}List){
         List<${contextModel.dtoName}> collect = ${contextModel.doName?uncap_first}List.stream().map(x -> x.to${contextModel.dtoName}()).collect(Collectors.toList());
         return collect;
 }
 
 /*  ------------ getter setter ------------  */
 <#list fieldList as field>
+
     public ${field.javaType} get${field.beanName?cap_first}(){
     return ${field.beanName};
     }

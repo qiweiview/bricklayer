@@ -17,6 +17,8 @@ public class BricklayerBuilder {
         list.add(new ServiceImplBuildTask());
         list.add(new DaoBuildTask());
         list.add(new MapperBuildTask());
+        list.add(new UtilsBuildTask());
+
     }
 
     public static void  build(List<JavaBeanModel> javaBeanModels,String outPutPath){

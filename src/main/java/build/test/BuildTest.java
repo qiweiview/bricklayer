@@ -18,7 +18,9 @@ public class BuildTest {
                 "root", "wdwdwd");
 //        MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance("jdbc:mysql://localhost:3306/seata?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
 //                "root", "123");
-        String basePath="\\com\\";
+        mysqlDataSourceInstance.addTargetTableName("training_plan");
+
+        String basePath="cn\\anicert\\university\\training\\";
         String outPutPath="D:\\JAVA_WORK_SPACE\\lite_spring_template\\src\\main\\java\\";
         List<DBTableModel> dbTableModels = mysqlDataSourceInstance.getDBTableModels();
         List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x,basePath)).collect(Collectors.toList());

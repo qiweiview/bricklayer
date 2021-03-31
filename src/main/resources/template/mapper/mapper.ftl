@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0"encoding="UTF-8"?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC"-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="${contextModel.daoPath}" >
 
     <resultMap type="${contextModel.doPath}" id="${className}Map" >
@@ -22,7 +22,7 @@
     <select id="list${className}Page" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
         select
         <#list fieldList as field>
-            ${field.originalColumnName},
+        ${field.originalColumnName},
         </#list>
         '1'as blank_
         from ${originalName}
@@ -32,7 +32,7 @@
     <select id="get${className}ById" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
         select
 <#list fieldList as field>
-    ${field.originalColumnName},
+        ${field.originalColumnName},
 </#list>
         '1'as blank_
         from ${originalName}

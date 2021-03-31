@@ -30,7 +30,7 @@ public class ContextModel {
 
     private String utilsName;
 
-    //路径
+    //路径（带package）
     private String doPackage;
 
     private String voPackage;
@@ -48,6 +48,26 @@ public class ContextModel {
     private String mapperPackage;
 
     private String utilsPackage;
+
+    //路径
+    private String doBase;
+
+    private String voBase;
+
+    private String dtoBase;
+
+    private String controllerBase;
+
+    private String serviceIBase;
+
+    private String serviceImplBase;
+
+    private String daoBase;
+
+    private String mapperBase;
+
+    private String utilsBase;
+
 
     //全路径名称
     private String doPath;
@@ -113,6 +133,18 @@ public class ContextModel {
         setDaoPackage("package "+basePath+"dao;");
         setMapperPackage("package "+basePath+"mapper;");
         setUtilsPackage("package "+basePath+"utils;");
+
+
+        setDoBase(basePath+"model.d_o");
+        setDtoBase(basePath+"model.dto");
+        setVoBase(basePath+"model.vo");
+
+        setControllerBase(basePath+"controller");
+        setServiceIBase(basePath+"serviceI");
+        setServiceImplBase(basePath+"serviceI.serviceImpl");
+        setDaoBase(basePath+"dao");
+        setMapperBase(basePath+"mapper");
+        setUtilsBase(basePath+"utils");
 
     }
 }

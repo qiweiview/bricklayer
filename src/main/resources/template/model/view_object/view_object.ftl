@@ -15,6 +15,7 @@ public class ${contextModel.voName} {
 
 /*  ------------ getter setter ------------  */
 <#list fieldList as field>
+
     public ${field.javaType} get${field.beanName?cap_first}(){
         return ${field.beanName};
         }
