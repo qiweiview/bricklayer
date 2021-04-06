@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
-
+import java.util.List;
 
 <#include "signature.ftl">
 @Mapper
@@ -18,6 +18,8 @@ public interface ${contextModel.daoName} extends BaseMapper<${contextModel.doNam
     public  ${contextModel.doName}   delete${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
 
     public  IPage<${contextModel.doName}>   list${className}Page(Page page,@Param("do")  ${contextModel.doName} ${contextModel.doName?uncap_first});
+
+    public  List<${contextModel.doName}>   list${className}(@Param("do")  ${contextModel.doName} ${contextModel.doName?uncap_first});
 
     public  ${contextModel.doName}   get${className}ById(${contextModel.doName} ${contextModel.doName?uncap_first});
 }

@@ -51,6 +51,14 @@ public class ${contextModel.serviceImplName} implements ${contextModel.serviceIN
         }
 
     @Override
+    public  List<${contextModel.dtoName}> list${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
+        ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
+        List<${contextModel.doName}> records = ${contextModel.daoName?uncap_first}.list${className}( ${contextModel.doName?uncap_first});
+        List<${contextModel.dtoName}> list = ${contextModel.doName}.to${contextModel.dtoName}List(records);
+        return list;
+        }
+
+    @Override
     public  IPage<${contextModel.dtoName}> list${className}Page(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
         ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
         Page page = new Page(${contextModel.dtoName?uncap_first}.getCurrent(), ${contextModel.dtoName?uncap_first}.getSize());

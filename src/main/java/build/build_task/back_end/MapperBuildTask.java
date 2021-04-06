@@ -25,7 +25,7 @@ public class MapperBuildTask implements JavaBuildTask {
         Template template = FreemarkerTemplateBuilder.getTemplate(templateName);
         javaBeanModels.forEach(x -> {
             try {
-                String relatively = StringUtils4V.javaPackagePath2SystemPath(  x.getContextModel().getMapperPath()) + ".java";
+                String relatively = StringUtils4V.javaPackagePath2SystemPath(  x.getContextModel().getMapperPath()) + ".xml";
                 String absolutePath = outPutPath+File.separator+relatively;
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 template.process(x, new OutputStreamWriter(byteArrayOutputStream));
