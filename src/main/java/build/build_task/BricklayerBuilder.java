@@ -34,7 +34,9 @@ public class BricklayerBuilder {
             build.addAll(x.build(javaBeanModels, outPutPath));
 
         });
-
+        build.forEach(x->{
+            x.writeToDisk();
+        });
         byte[] bytes = zipFiles(build);
 
         try {
