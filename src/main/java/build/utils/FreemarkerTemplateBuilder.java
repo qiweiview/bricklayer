@@ -30,6 +30,8 @@ public class FreemarkerTemplateBuilder {
 
 
         cfg = new Configuration(Configuration.VERSION_2_3_29);
+
+        //循环加载模板
         TemplateLoader[] templateLoaders = StructureConstant.templateScanPath.stream().map(x -> {
             try {
                 FileTemplateLoader ftl1 = new FileTemplateLoader(new File(path + File.separator + x));

@@ -1,6 +1,7 @@
 package build.build_task;
 
 import build.build_task.back_end.*;
+import build.build_task.front_end.ListPageBuildTask;
 import build.build_task.output_task.OutPutTask;
 import build.java_bean.JavaBeanModel;
 import org.apache.commons.io.FileUtils;
@@ -16,15 +17,17 @@ public class BricklayerBuilder {
     private static List<JavaBuildTask> list = new ArrayList<>();
 
     static {
-        list.add(new VOBuildTask());
-        list.add(new DTOBuildTask());
-        list.add(new DOBuildTask());
-        list.add(new ControllerBuildTask());
-        list.add(new ServiceIBuildTask());
-        list.add(new ServiceImplBuildTask());
-        list.add(new DaoBuildTask());
-        list.add(new MapperBuildTask());
-        list.add(new UtilsBuildTask());
+//        list.add(new VOBuildTask());
+//        list.add(new DTOBuildTask());
+//        list.add(new DOBuildTask());
+//        list.add(new ControllerBuildTask());
+//        list.add(new ServiceIBuildTask());
+//        list.add(new ServiceImplBuildTask());
+//        list.add(new DaoBuildTask());
+//        list.add(new MapperBuildTask());
+//        list.add(new UtilsBuildTask());
+
+        list.add(new ListPageBuildTask());
 
     }
 
@@ -40,7 +43,7 @@ public class BricklayerBuilder {
         byte[] bytes = zipFiles(build);
 
         try {
-            FileUtils.writeByteArrayToFile(new File("C:\\Users\\liuqiwei\\Desktop\\output.zip"),bytes);
+            FileUtils.writeByteArrayToFile(new File("C:\\Users\\刘启威\\Desktop\\output.zip"),bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }

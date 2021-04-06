@@ -4,11 +4,15 @@ import build.utils.SuffixManager;
 import build.utils.StringUtils4V;
 import lombok.Data;
 
+import java.io.File;
+
 /**
  * 一个表上下文对应一个表模型
  */
 @Data
 public class ContextModel {
+
+
 
     //名称
     private String doName;
@@ -91,7 +95,10 @@ public class ContextModel {
 
     public void load(String className, String basePath) {
 
+
+
         //name
+        //例如  CarInfoDO
         setDoName(className+ SuffixManager.dOSuffix);
         setDtoName(className+ SuffixManager.dTOSuffix);
         setVoName(className+ SuffixManager.vOSuffix);
@@ -104,13 +111,22 @@ public class ContextModel {
         setUtilsName(className+ SuffixManager.utilSuffix);
 
 
-        //path
-        basePath= StringUtils4V.systemPath2JavaPackagePath(basePath);
 
+        //去除头部
         if (basePath.startsWith(".")){
             basePath= basePath.substring(1);
         }
 
+        //尾部补齐
+        if (!(basePath.endsWith("/")||basePath.endsWith("\\"))){
+            basePath+=File.separator;
+        }
+
+        //分隔符转换
+        basePath= StringUtils4V.systemPath2JavaPackagePath(basePath);
+
+        //Path
+        //例如  view.model.d_o.CarInfoDO
         setDoPath(basePath+"model.d_o."+className+ SuffixManager.dOSuffix);
         setDtoPath(basePath+"model.dto."+className+ SuffixManager.dTOSuffix);
         setVoPath(basePath+"model.vo."+className+ SuffixManager.vOSuffix);
@@ -122,7 +138,8 @@ public class ContextModel {
         setMapperPath(basePath+"mapper."+className+ SuffixManager.mapperSuffix);
         setUtilsPath(basePath+"utils."+className+ SuffixManager.utilSuffix);
 
-
+        //Package
+        //例如 package view.model.d_o;
         setDoPackage("package "+basePath+"model.d_o;");
         setDtoPackage("package "+basePath+"model.dto;");
         setVoPackage("package "+basePath+"model.vo;");
@@ -134,7 +151,8 @@ public class ContextModel {
         setMapperPackage("package "+basePath+"mapper;");
         setUtilsPackage("package "+basePath+"utils;");
 
-
+        //Base
+        //例如 view.model.d_o
         setDoBase(basePath+"model.d_o");
         setDtoBase(basePath+"model.dto");
         setVoBase(basePath+"model.vo");

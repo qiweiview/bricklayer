@@ -30,6 +30,8 @@ public class StructureConstant {
         templateScanPath.add("back_end"+File.separator+"model" + File.separator + "view_object");
         templateScanPath.add("back_end"+File.separator+"utils");
         templateScanPath.add("back_end"+File.separator+"mapper");
+
+        templateScanPath.add("front_end");
     }
 
 
