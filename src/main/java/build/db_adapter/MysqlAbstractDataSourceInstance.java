@@ -30,9 +30,18 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     }
 
     @Override
-    public List<String> getTables() {
+    public List<String> getDatabases() {
         List<Map> maps = doQuery("show databases;");
         List<String> collect = maps.stream().map(x -> x.get("Database").toString()).collect(Collectors.toList());
+        return collect;
+    }
+
+    @Override
+    public List<String> getTables(String dbName) {
+        List<Map> maps = doQuery("SELECT TABLE_NAME  \n" +
+                "FROM INFORMATION_SCHEMA.TABLES \n" +
+                "WHERE TABLE_SCHEMA = '"+dbName+"' order by TABLE_NAME");
+        List<String> collect = maps.stream().map(x -> x.get("TABLE_NAME").toString()).collect(Collectors.toList());
         return collect;
     }
 
@@ -42,7 +51,7 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
         try {
             conn = DriverManager.getConnection(dbUrl, userName, passWord);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+           throw new RuntimeException("连接数据库失败");
         }
         return conn;
     }
@@ -79,8 +88,8 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     }
 
     @Override
-    public List<DBTableModel> getDBTableModels() {
-        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ( SELECT DATABASE() )");
+    public List<DBTableModel> getDBTableModels(String dbName) {
+        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '"+dbName+"'");
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
             return x.get("TABLE_NAME");
         }));

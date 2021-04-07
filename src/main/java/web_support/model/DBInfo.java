@@ -2,6 +2,8 @@ package web_support.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class DBInfo {
 
@@ -18,8 +20,11 @@ public class DBInfo {
 
     private String dbPassWord;
 
+    private List<String> selectedTables;
+
 
     public String getConnectionPath(){
-        return "jdbc:mysql://localhost/"+dbName+"?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
+        setDbName("".equals(getDbName()) ? "mysql" : getDbName());
+        return "jdbc:mysql://"+getDbHost()+":"+getDbPort()+"/"+getDbName()+"?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
     }
 }

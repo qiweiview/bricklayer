@@ -17,9 +17,11 @@ public abstract class AbstractDataSourceInstance {
 
     public AbstractDataSourceInstance() {
         jdbcDriver = getDriverClassName();
+        targetTable.add("*");
+        targetColumn.add("*");
     }
 
-    public abstract List<DBTableModel> getDBTableModels();
+
 
 
     public abstract String getDriverClassName();
@@ -32,8 +34,11 @@ public abstract class AbstractDataSourceInstance {
         targetColumn.add(tableColumn);
     }
 
+    public abstract List<String> getDatabases();
 
-    public abstract List<String> getTables();
+    public abstract List<DBTableModel> getDBTableModels(String dbName);
+
+    public abstract List<String> getTables(String dbName);
 
     public abstract Connection getConnection();
 }

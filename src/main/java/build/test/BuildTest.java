@@ -23,10 +23,8 @@ public class BuildTest {
 
         String basePath="cn\\anicert\\university\\training\\";
         String outPutPath="D:\\JAVA_WORK_SPACE\\lite_spring_template\\src\\main\\java\\";
-        List<DBTableModel> dbTableModels = mysqlDataSourceInstance.getDBTableModels();
-        List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x,basePath)).collect(Collectors.toList());
+        List<DBTableModel> dbTableModels = mysqlDataSourceInstance.getDBTableModels("");
 
-        BricklayerBuilder.build(collect,outPutPath);
 
 //        ProjectBuilder projectBuilder = new ProjectBuilder();
 //        String basePath = "D:\\JAVA_WORK_SPACE\\lite_spring_template\\src\\main\\java\\com";

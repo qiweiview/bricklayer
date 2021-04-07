@@ -31,7 +31,7 @@ public class BricklayerBuilder {
 
     }
 
-    public static void build(List<JavaBeanModel> javaBeanModels, String outPutPath) {
+    public static  byte[] build(List<JavaBeanModel> javaBeanModels, String outPutPath) {
         List<OutPutTask> build = new ArrayList<>();
         list.forEach(x -> {
             build.addAll(x.build(javaBeanModels, outPutPath));
@@ -42,11 +42,7 @@ public class BricklayerBuilder {
         });
         byte[] bytes = zipFiles(build);
 
-        try {
-            FileUtils.writeByteArrayToFile(new File("C:\\Users\\刘启威\\Desktop\\output.zip"),bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+       return bytes;
     }
 
     public static byte[] zipFiles(List<OutPutTask> collect) {
