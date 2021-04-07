@@ -10,24 +10,26 @@ import freemarker.template.Template;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListPageBuildTask implements JavaBuildTask {
 
-    private List<OutPutTask> outPutTasks = new ArrayList<>();
     private final String templateName = "list_page.ftl";
 
     @Override
-    public List<OutPutTask> build(List<JavaBeanModel> javaBeanModels, String outPutPath) {
+    public List<OutPutTask> build(List<JavaBeanModel> javaBeanModels) {
+        List<OutPutTask> outPutTasks = new ArrayList<>();
         Template template = FreemarkerTemplateBuilder.getTemplate(templateName);
         javaBeanModels.forEach(x -> {
             try {
                 String relatively = StringUtils4V.javaPackagePath2SystemPath(x.getClassName()) + "List.vue";
-                String absolutePath = outPutPath + File.separator + relatively;
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                template.process(x, new OutputStreamWriter(byteArrayOutputStream));
-                OutPutTask outPutTask = new OutPutTask(byteArrayOutputStream, relatively, absolutePath);
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+                template.process(x, outputStreamWriter);
+                OutPutTask outPutTask = new OutPutTask(byteArrayOutputStream, relatively);
+                outPutTask.setBelongPart(OutPutTask.FRONT_END);
                 outPutTasks.add(outPutTask);
             } catch (Exception e) {
                 e.printStackTrace();

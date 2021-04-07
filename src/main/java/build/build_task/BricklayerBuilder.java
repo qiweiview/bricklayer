@@ -17,29 +17,28 @@ public class BricklayerBuilder {
     private static List<JavaBuildTask> list = new ArrayList<>();
 
     static {
-//        list.add(new VOBuildTask());
-//        list.add(new DTOBuildTask());
-//        list.add(new DOBuildTask());
-//        list.add(new ControllerBuildTask());
-//        list.add(new ServiceIBuildTask());
-//        list.add(new ServiceImplBuildTask());
-//        list.add(new DaoBuildTask());
-//        list.add(new MapperBuildTask());
-//        list.add(new UtilsBuildTask());
+        //back end
+        list.add(new VOBuildTask());
+        list.add(new DTOBuildTask());
+        list.add(new DOBuildTask());
+        list.add(new ControllerBuildTask());
+        list.add(new ServiceIBuildTask());
+        list.add(new ServiceImplBuildTask());
+        list.add(new DaoBuildTask());
+        list.add(new MapperBuildTask());
+        list.add(new UtilsBuildTask());
 
+        //front end
         list.add(new ListPageBuildTask());
 
     }
 
-    public static  byte[] build(List<JavaBeanModel> javaBeanModels, String outPutPath) {
+    public static  byte[] build(List<JavaBeanModel> javaBeanModels) {
         List<OutPutTask> build = new ArrayList<>();
         list.forEach(x -> {
-            build.addAll(x.build(javaBeanModels, outPutPath));
+            build.addAll(x.build(javaBeanModels));
+        });
 
-        });
-        build.forEach(x->{
-            x.writeToDisk();
-        });
         byte[] bytes = zipFiles(build);
 
        return bytes;
@@ -51,7 +50,7 @@ public class BricklayerBuilder {
             //ZipOutputStream类：完成文件或文件夹的压缩
             ZipOutputStream out = new ZipOutputStream(byteArrayOutputStream);
             for (OutPutTask file : collect) {
-                String s = "back_end" + File.separator + file.getRelativelyPath();
+                String s = file.getBelongPart() + File.separator + file.getRelativelyPath();
                 out.putNextEntry(new ZipEntry(s));
                 out.write(file.toByte());
                 out.closeEntry();

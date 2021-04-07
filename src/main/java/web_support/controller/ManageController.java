@@ -39,15 +39,17 @@ public class ManageController {
     @RequestMapping("/generateCode")
     public void generateCode(@RequestBody DBInfo dbInfo, HttpServletResponse httpServletResponse) {
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
+        dbInfo.getSelectedTables().forEach(x->{
+            mysqlAbstractDataSourceInstance.addTargetTableName(x);
+        });
         List<DBTableModel> dbTableModels = mysqlAbstractDataSourceInstance.getDBTableModels(dbInfo.getDbName());
         String basePath="cn\\anicert\\university\\training\\";
         List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x,basePath)).collect(Collectors.toList());
-        String outPutPath="D:\\JAVA_WORK_SPACE\\lite_spring_template\\src\\main\\java\\";
-        byte[] build = BricklayerBuilder.build(collect, outPutPath);
-        httpServletResponse.reset();
-        httpServletResponse.setHeader("Content-Disposition", "attachment;filename=\"" + "generate.zip" + "\"");
-        httpServletResponse.setHeader("Set-Cookie", "fileDownload=true; path=/");
-        httpServletResponse.setContentType("application/vnd.ms-excel;charset=utf-8");
+        byte[] build = BricklayerBuilder.build(collect);
+//        httpServletResponse.reset();
+//        httpServletResponse.setHeader("Content-Disposition", "attachment;filename=\"" + "generate.zip" + "\"");
+//        httpServletResponse.setHeader("Set-Cookie", "fileDownload=true; path=/");
+        httpServletResponse.setContentType("charset=utf-8");
 
         try {
             ServletOutputStream out = httpServletResponse.getOutputStream();
@@ -60,7 +62,9 @@ public class ManageController {
 
 
     @ExceptionHandler
-    public UnifiedResponse exp(Exception ex) {
+    public UnifiedResponse exp(Exception ex,HttpServletResponse httpServletResponse) {
+        ex.printStackTrace();
+        httpServletResponse.setStatus(500);
         return UnifiedResponse.error(ex.getMessage());
     }
 }

@@ -10,5 +10,5 @@ public interface JavaBuildTask {
 
 
 
-    public  List<OutPutTask> build(List<JavaBeanModel> javaBeanModels, String outPutPath);
+    public  List<OutPutTask> build(List<JavaBeanModel> javaBeanModels);
 }

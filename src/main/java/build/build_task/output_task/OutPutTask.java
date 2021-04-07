@@ -9,9 +9,12 @@ import java.io.IOException;
 
 @Data
 public class OutPutTask {
+    public static final String BACK_END="back_end";
+    public static final String FRONT_END="front_end";
+
+    private String belongPart=BACK_END;
     private ByteArrayOutputStream data;
     private String relativelyPath;
-    private String absolutePath;
 
     public byte[] toByte(){
         return data.toByteArray();
@@ -21,26 +24,12 @@ public class OutPutTask {
         return new File(relativelyPath);
     }
 
-    public void writeToDisk(){
-        try {
-            FileUtils.writeByteArrayToFile(new File(absolutePath),data.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (data!=null){
-                try {
-                    data.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
-    public OutPutTask(ByteArrayOutputStream data, String relativelyPath, String absolutePath) {
+
+    public OutPutTask(ByteArrayOutputStream data, String relativelyPath) {
         this.data = data;
         this.relativelyPath = relativelyPath;
-        this.absolutePath = absolutePath;
+
     }
 
 }

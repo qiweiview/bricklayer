@@ -12,13 +12,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class UtilsBuildTask implements JavaBuildTask {
-    private List<OutPutTask> outPutTasks = new ArrayList<>();
+
     private Map<String, String> map = new HashMap<>();
 
 
@@ -28,17 +29,18 @@ public class UtilsBuildTask implements JavaBuildTask {
     }
 
     @Override
-    public List<OutPutTask> build(List<JavaBeanModel> javaBeanModels, String outPutPath) {
+    public List<OutPutTask> build(List<JavaBeanModel> javaBeanModels ) {
+        List<OutPutTask> outPutTasks = new ArrayList<>();
         JavaBeanModel x = javaBeanModels.get(0);
         map.forEach((beanName, templateName) -> {
             Template template = FreemarkerTemplateBuilder.getTemplate(templateName);
             try {
 
                 String relatively = StringUtils4V.javaPackagePath2SystemPath(  x.getContextModel().getUtilsBase())+File.separator+beanName;
-                String absolutePath = outPutPath+File.separator+relatively;
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                template.process(x, new OutputStreamWriter(byteArrayOutputStream));
-                OutPutTask outPutTask = new OutPutTask(byteArrayOutputStream, relatively,absolutePath);
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+                template.process(x, outputStreamWriter);
+                OutPutTask outPutTask = new OutPutTask(byteArrayOutputStream, relatively);
                 outPutTasks.add(outPutTask);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -7,6 +7,11 @@ public class MysqlTypeConvert implements TypeConvertI {
     private static final Map<String, String> map = new HashMap<>();
 
     static {
+        map.put("SET", "java.lang.String");
+        map.put("ENUM", "java.lang.String");
+        map.put("MEDIUMTEXT", "java.lang.String");
+        map.put("MEDIUMBLOB", "java.lang.byte[]");
+
         map.put("VARCHAR", "java.lang.String");
         map.put("CHAR", "java.lang.String");
         map.put("LONGBLOB", "java.lang.byte[]");

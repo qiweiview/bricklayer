@@ -42,9 +42,9 @@ public class JavaBeanModel {
                 continue;
             }
         }
-        if (null==javaBeanModel.getPrimaryName()){
-            throw new RuntimeException("需要至少一个主键");
-        }
+//        if (null==javaBeanModel.getPrimaryName()){
+//            throw new RuntimeException("需要至少一个主键");
+//        }
         return javaBeanModel;
     }
 

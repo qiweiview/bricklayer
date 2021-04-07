@@ -4,15 +4,15 @@ import build.StructureConstant;
 import build.utils.SuffixManager;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.StringTemplateLoader;
 import freemarker.cache.TemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
-import freemarker.template.TemplateModelException;
+import freemarker.template.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,7 +43,10 @@ public class FreemarkerTemplateBuilder {
         }).toArray(TemplateLoader[]::new);
 
         MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoaders);
-        cfg.setTemplateLoader(mtl);
+
+        StringTemplateLoader stringTemplateLoader=new StringTemplateLoader();
+        stringTemplateLoader.putTemplate("tt","hi ${name}");
+        cfg.setTemplateLoader(stringTemplateLoader);
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);
@@ -68,5 +71,13 @@ public class FreemarkerTemplateBuilder {
         } catch (IOException e) {
             throw new RuntimeException("get template fail cause: " + e);
         }
+    }
+
+    public static void main(String[] args) throws IOException, TemplateException {
+
+        Template template = getTemplate("tt");
+        Map<String,String> map=new HashMap<>();
+        map.put("name","view");
+        template.process(map,new OutputStreamWriter(System.out));
     }
 }
