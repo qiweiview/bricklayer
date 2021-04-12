@@ -5,7 +5,7 @@ import ${contextModel.voPath};
 import ${contextModel.serviceIPath};
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import cn.anicert.university.training.utils.ResponseVo;
+import ${contextModel.utilsBase}.ResponseVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import javax.servlet.ServletOutputStream;
@@ -126,6 +126,7 @@ public class ${contextModel.controllerName} {
         responseVo.setData(${contextModel.voName?uncap_first});
         return responseVo;
         }
+
 
 
 

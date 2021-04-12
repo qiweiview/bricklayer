@@ -1,7 +1,7 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC"-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${contextModel.daoPath}" >
 
     <resultMap type="${contextModel.doPath}" id="${className}Map" >
@@ -27,7 +27,7 @@
         '1'as blank_
         from ${originalName}
         where 1=1
-        and false
+        and del_flag=false
     </select>
 
  <select id="list${className}" parameterType="${contextModel.doPath}" resultMap="${className}Map" >

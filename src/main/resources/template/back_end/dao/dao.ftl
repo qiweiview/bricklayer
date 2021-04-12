@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface ${contextModel.daoName} extends BaseMapper<${contextModel.doName}>{
 
-    public  ${contextModel.doName}   update${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
+    public  void   update${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
 
-    public  ${contextModel.doName}   delete${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
+    public  void   delete${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
 
     public  IPage<${contextModel.doName}>   list${className}Page(Page page,@Param("do")  ${contextModel.doName} ${contextModel.doName?uncap_first});
 

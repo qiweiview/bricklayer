@@ -2,16 +2,23 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
+       http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
        ">
 
-    <context:property-placeholder location="classpath:conf/database.properties" />
+    <context:property-placeholder location="classpath:config.properties" />
+
+
+    <!-- mapper 扫描 -->
+    <mybatis:scan base-package="com.**.dao" />
+
 
     <!-- 数据库连接池 -->
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+    <bean id="dataSource"  class="com.alibaba.druid.pool.DruidDataSource"
           destroy-method="close">
         <property name="url" value="${jdbc.url}" />
         <property name="username" value="${jdbc.username}" />
@@ -19,8 +26,21 @@
         <property name="driverClassName" value="${jdbc.driverClassName}" />
     </bean>
 
+    <!-- sql session -->
+    <bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+        <property name="mapperLocations" value="classpath*:/com/**/*Mapper.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configuration" ref="configuration"/> <!--  非必须  -->
+    </bean>
+
+    <!-- 对应mybatis配置文件 -->
+    <bean id="configuration" class="com.baomidou.mybatisplus.core.MybatisConfiguration">
+        <property name="logImpl" value="org.apache.ibatis.logging.stdout.StdOutImpl"/>
+    </bean>
+
+
     <!--启动注解扫描-->
-    <context:component-scan base-package="web_support">
+    <context:component-scan base-package="com">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/><!--排除Controller-->
     </context:component-scan>
 

@@ -30,6 +30,14 @@
             <version>5.2.6.RELEASE</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.2.6.RELEASE</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -101,15 +109,9 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>template/**/*.ftl</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
                     <include>*.xml</include>
+                    <include>template/**/*.ftl</include>
+                    <include>*.properties</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
