@@ -24,4 +24,6 @@ public interface BricklayerDbDao extends BaseMapper<BricklayerDbDO>{
     public  List<BricklayerDbDO>   listBricklayerDb(@Param("do")  BricklayerDbDO bricklayerDbDO);
 
     public  BricklayerDbDO   getBricklayerDbById(BricklayerDbDO bricklayerDbDO);
+
+    List<BricklayerDbDO> listBricklayerDbAll();
 }

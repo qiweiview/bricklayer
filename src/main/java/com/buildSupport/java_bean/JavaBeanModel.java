@@ -27,12 +27,15 @@ public class JavaBeanModel {
     private List<JavaFiledModel> fieldList = new ArrayList();
 
 
-    public static JavaBeanModel of(DBTableModel x, String basePath) {
+    public static JavaBeanModel of(DBTableModel x, String basePath, String contextPath) {
         JavaBeanModel javaBeanModel = new JavaBeanModel();
         String originalTableName = x.getOriginalTableName();
         javaBeanModel.setClassName(StringUtils4V.underLine2UnCapFirst(originalTableName, false));
         javaBeanModel.setOriginalName(x.getOriginalTableName());
-        javaBeanModel.setContextModel(createContextModel(javaBeanModel.getClassName(), basePath));//上下文
+
+        ContextModel contextModel = createContextModel(javaBeanModel.getClassName(), basePath);
+        contextModel.setContextPath(contextPath);//设置请求地址前缀
+        javaBeanModel.setContextModel(contextModel);//上下文
         List<JavaFiledModel> dbColumnModelList = createDbColumnModelList(x.getDbColumnModelList(), basePath);
         javaBeanModel.setFieldList(dbColumnModelList);//属性列表
         for (JavaFiledModel javaFiledModel : dbColumnModelList) {
@@ -42,9 +45,8 @@ public class JavaBeanModel {
                 continue;
             }
         }
-//        if (null==javaBeanModel.getPrimaryName()){
-//            throw new RuntimeException("需要至少一个主键");
-//        }
+
+
         return javaBeanModel;
     }
 

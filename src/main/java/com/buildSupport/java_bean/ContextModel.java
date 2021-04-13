@@ -12,7 +12,9 @@ import java.io.File;
 @Data
 public class ContextModel {
 
+    private String basePath;
 
+    private String contextPath;
 
     //名称
     private String doName;
@@ -96,6 +98,8 @@ public class ContextModel {
 
     public void load(String className, String basePath) {
 
+        //base path
+        setBasePath(basePath);
 
 
         //name

@@ -47,9 +47,7 @@ public class ${contextModel.controllerName} {
     @RequestMapping("/update")
     public ResponseVo<${contextModel.voName}> update${className}(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
         ResponseVo responseVo=new ResponseVo();
-        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.update${className}(${contextModel.dtoName?uncap_first});
-        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        responseVo.setData(${contextModel.voName?uncap_first});
+        ${contextModel.serviceIName?uncap_first}.update${className}(${contextModel.dtoName?uncap_first});
         return responseVo;
     }
 

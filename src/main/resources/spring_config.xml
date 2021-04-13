@@ -10,28 +10,49 @@
        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
        ">
 
-    <context:property-placeholder location="classpath:config.properties" />
+    <context:property-placeholder location="classpath:config.properties"/>
 
 
     <!-- mapper 扫描 -->
-    <mybatis:scan base-package="com.**.dao" />
+    <mybatis:scan base-package="com.**.dao"/>
 
 
     <!-- 数据库连接池 -->
-    <bean id="dataSource"  class="com.alibaba.druid.pool.DruidDataSource"
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
           destroy-method="close">
-        <property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
-        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
     </bean>
+
+    <bean id="mysql" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="com.baomidou.mybatisplus.annotation.DbType.MYSQL"/>
+    </bean>
+
 
     <!-- sql session -->
     <bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
         <property name="mapperLocations" value="classpath*:/com/**/*Mapper.xml"/>
         <property name="dataSource" ref="dataSource"/>
-        <property name="configuration" ref="configuration"/> <!--  非必须  -->
+        <property name="configuration" ref="configuration"/>
+        <!--配置插件-->
+        <property name="plugins">
+            <array>
+                <!--分页插件-->
+                <bean class="com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor">
+                    <property name="interceptors">
+                        <array>
+                            <bean class="com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor">
+                                <property name="dbType" ref="mysql"/>
+                            </bean>
+                        </array>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
+
 
     <!-- 对应mybatis配置文件 -->
     <bean id="configuration" class="com.baomidou.mybatisplus.core.MybatisConfiguration">
@@ -41,7 +62,8 @@
 
     <!--启动注解扫描-->
     <context:component-scan base-package="com">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/><!--排除Controller-->
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/><!--排除Controller-->
     </context:component-scan>
 
 </beans>

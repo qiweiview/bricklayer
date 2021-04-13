@@ -34,7 +34,7 @@ public class ${contextModel.serviceImplName} implements ${contextModel.serviceIN
 
     @Override
     public  ${contextModel.dtoName}   update${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
-        ${contextModel.dtoName?uncap_first}=get${className}ById(${contextModel.dtoName?uncap_first});
+        get${className}ById(${contextModel.dtoName?uncap_first});
         ${contextModel.doName} ${contextModel.doName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.doName}();
         ${contextModel.doName?uncap_first}.doUpdate();
         ${contextModel.daoName?uncap_first}.updateById(${contextModel.doName?uncap_first});

@@ -144,4 +144,8 @@ public  BricklayerDbVO toBricklayerDbVO(){
     public void setId(Integer id){
         this.id=id;
     }
+
+    public String getUniqueKey() {
+        return getDbDriverClass()+getDbIp()+":"+getDbPort();
+    }
 }

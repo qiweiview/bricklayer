@@ -21,4 +21,9 @@ public interface BricklayerDbServiceI {
     public  List<BricklayerDbDTO>   listBricklayerDb(BricklayerDbDTO bricklayerDbDTO);
 
     public  BricklayerDbDTO   getBricklayerDbById(BricklayerDbDTO bricklayerDbDTO);
+
+    List<BricklayerDbDTO> listBricklayerDbAll();
+
+    List<String> getDataSourceList(BricklayerDbDTO bricklayerDbDTO);
+
 }

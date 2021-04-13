@@ -1,8 +1,10 @@
 package com.management.controller;
 
+import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
 import com.management.model.dto.BricklayerDbDTO;
 import com.management.model.vo.BricklayerDbVO;
 import com.management.serviceI.BricklayerDbServiceI;
+import com.webSupport.model.DBInfo;
 import com.webSupport.utils.UnifiedResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 /**
-*
-* create by view
-*/
+ * create by view
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/bricklayerDb")
@@ -26,7 +28,7 @@ public class BricklayerDbController {
 
     @Autowired
     public BricklayerDbController(BricklayerDbServiceI bricklayerDbServiceI) {
-    this.bricklayerDbServiceI = bricklayerDbServiceI;
+        this.bricklayerDbServiceI = bricklayerDbServiceI;
     }
 
     /**
@@ -35,9 +37,9 @@ public class BricklayerDbController {
     //@ApiOperation(value = "创建BricklayerDb", httpMethod = "POST")
     @RequestMapping("/save")
     public ResponseVo<BricklayerDbVO> saveBricklayerDb(@RequestBody(required = false) BricklayerDbDTO bricklayerDbDTO) {
-        ResponseVo responseVo=new ResponseVo();
-        bricklayerDbDTO=bricklayerDbServiceI.saveBricklayerDb(bricklayerDbDTO);
-        BricklayerDbVO bricklayerDbVO=bricklayerDbDTO.toBricklayerDbVO();
+        ResponseVo responseVo = new ResponseVo();
+        bricklayerDbDTO = bricklayerDbServiceI.saveBricklayerDb(bricklayerDbDTO);
+        BricklayerDbVO bricklayerDbVO = bricklayerDbDTO.toBricklayerDbVO();
         responseVo.setData(bricklayerDbVO);
         return responseVo;
     }
@@ -48,10 +50,8 @@ public class BricklayerDbController {
     //@ApiOperation(value = "更新BricklayerDb", httpMethod = "POST")
     @RequestMapping("/update")
     public ResponseVo<BricklayerDbVO> updateBricklayerDb(@RequestBody(required = false) BricklayerDbDTO bricklayerDbDTO) {
-        ResponseVo responseVo=new ResponseVo();
-        bricklayerDbDTO=bricklayerDbServiceI.updateBricklayerDb(bricklayerDbDTO);
-        BricklayerDbVO bricklayerDbVO=bricklayerDbDTO.toBricklayerDbVO();
-        responseVo.setData(bricklayerDbVO);
+        ResponseVo responseVo = new ResponseVo();
+        bricklayerDbServiceI.updateBricklayerDb(bricklayerDbDTO);
         return responseVo;
     }
 
@@ -61,9 +61,9 @@ public class BricklayerDbController {
     //@ApiOperation(value = "删除BricklayerDb", httpMethod = "POST")
     @RequestMapping("/delete")
     public ResponseVo<BricklayerDbVO> deleteBricklayerDb(@RequestBody(required = false) BricklayerDbDTO bricklayerDbDTO) {
-        ResponseVo responseVo=new ResponseVo();
-        bricklayerDbDTO=bricklayerDbServiceI.deleteBricklayerDb(bricklayerDbDTO);
-        BricklayerDbVO bricklayerDbVO=bricklayerDbDTO.toBricklayerDbVO();
+        ResponseVo responseVo = new ResponseVo();
+        bricklayerDbDTO = bricklayerDbServiceI.deleteBricklayerDb(bricklayerDbDTO);
+        BricklayerDbVO bricklayerDbVO = bricklayerDbDTO.toBricklayerDbVO();
         responseVo.setData(bricklayerDbVO);
         return responseVo;
     }
@@ -74,7 +74,7 @@ public class BricklayerDbController {
     //@ApiOperation(value = "分页查询BricklayerDb", httpMethod = "POST")
     @RequestMapping("/listPage")
     public ResponseVo<BricklayerDbVO> listBricklayerDbPage(@RequestBody(required = false) BricklayerDbDTO bricklayerDbDTO) {
-        ResponseVo responseVo=new ResponseVo();
+        ResponseVo responseVo = new ResponseVo();
         IPage<BricklayerDbDTO> bricklayerDbDTOIPage = bricklayerDbServiceI.listBricklayerDbPage(bricklayerDbDTO);
         IPage<BricklayerDbVO> rs = new Page(bricklayerDbDTOIPage.getCurrent(), bricklayerDbDTOIPage.getSize(), bricklayerDbDTOIPage.getTotal());
         rs.setRecords(BricklayerDbDTO.toBricklayerDbVOList(bricklayerDbDTOIPage.getRecords()));
@@ -83,37 +83,18 @@ public class BricklayerDbController {
     }
 
 
-
     /**
-     * 导出BricklayerDb
+     * 查询所有
      */
-    //@ApiOperation(value = "导出BricklayerDb", httpMethod = "POST")
-    /* @RequestMapping("/export")
-    public ResponseVo<BricklayerDbVO> listBricklayerDbPage(@RequestBody(required = false) BricklayerDbDTO bricklayerDbDTO, HttpServletResponse httpServletResponse) {
-        ResponseVo responseVo=new ResponseVo();
-        List<BricklayerDbDTO> bricklayerDbDTOList = bricklayerDbServiceI.listBricklayerDb(bricklayerDbDTO);
-        List<BricklayerDbVO> bricklayerDbVO = BricklayerDbDTO.toBricklayerDbVOList(bricklayerDbDTOList);
-
-        ExcelExporter excelExporter = new ExcelExporter();
-        excelExporter.addSheet(trainingDetailVOS, BricklayerDbVO.class);
-        byte[] bytes = excelExporter.list2Excel();
-
-
-        httpServletResponse.reset();
-        httpServletResponse.setHeader("Content-Disposition", "attachment;filename=\"" + "export.xlsx" + "\"");
-        httpServletResponse.setHeader("Set-Cookie", "fileDownload=true; path=/");
-        httpServletResponse.setContentType("application/vnd.ms-excel;charset=utf-8");
-
-        try {
-        ServletOutputStream out = httpServletResponse.getOutputStream();
-        out.write(bytes);
-        out.close();
-        } catch (IOException e) {
-        e.printStackTrace();
-        }
-
+    //@ApiOperation(value = "查询所有", httpMethod = "POST")
+    @RequestMapping("/listAll")
+    public ResponseVo<BricklayerDbVO> listBricklayerDbAll() {
+        ResponseVo responseVo = new ResponseVo();
+        List<BricklayerDbDTO> bricklayerDbDTOIPage = bricklayerDbServiceI.listBricklayerDbAll();
+        List<BricklayerDbVO> bricklayerDbVOS = BricklayerDbDTO.toBricklayerDbVOList(bricklayerDbDTOIPage);
+        responseVo.setData(bricklayerDbVOS);
         return responseVo;
-        }*/
+    }
 
 
     /**
@@ -122,18 +103,29 @@ public class BricklayerDbController {
     //@ApiOperation(value = "根据主键获取BricklayerDb", httpMethod = "POST")
     @RequestMapping("/getById")
     public ResponseVo<BricklayerDbVO> getBricklayerDbById(@RequestBody(required = false) BricklayerDbDTO bricklayerDbDTO) {
-        ResponseVo responseVo=new ResponseVo();
-        bricklayerDbDTO=bricklayerDbServiceI.getBricklayerDbById(bricklayerDbDTO);
-        BricklayerDbVO bricklayerDbVO=bricklayerDbDTO.toBricklayerDbVO();
+        ResponseVo responseVo = new ResponseVo();
+        bricklayerDbDTO = bricklayerDbServiceI.getBricklayerDbById(bricklayerDbDTO);
+        BricklayerDbVO bricklayerDbVO = bricklayerDbDTO.toBricklayerDbVO();
         responseVo.setData(bricklayerDbVO);
         return responseVo;
-        }
+    }
 
     @ExceptionHandler
     public ResponseVo exp(Exception ex, HttpServletResponse httpServletResponse) {
         ex.printStackTrace();
         httpServletResponse.setStatus(500);
         return ResponseVo.error(ex.getMessage());
+    }
+
+    /* -----------分割线-------------- */
+
+    @RequestMapping("/getDataSourceList")
+    public ResponseVo getDataSourceList(@RequestBody BricklayerDbDTO bricklayerDbDTO) {
+        ResponseVo responseVo = new ResponseVo();
+        List<String> dataSources = bricklayerDbServiceI.getDataSourceList(bricklayerDbDTO);
+        responseVo.setData(dataSources);
+        return responseVo;
+
     }
 
 }

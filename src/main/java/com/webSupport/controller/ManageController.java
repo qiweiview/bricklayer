@@ -44,11 +44,9 @@ public class ManageController {
         });
         List<DBTableModel> dbTableModels = mysqlAbstractDataSourceInstance.getDBTableModels(dbInfo.getDbName());
         String basePath= "com/management";
-        List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x,basePath)).collect(Collectors.toList());
+        String contextPath="bricklayer";
+        List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x,basePath,contextPath)).collect(Collectors.toList());
         byte[] build = BricklayerBuilder.build(collect);
-//        httpServletResponse.reset();
-//        httpServletResponse.setHeader("Content-Disposition", "attachment;filename=\"" + "generate.zip" + "\"");
-//        httpServletResponse.setHeader("Set-Cookie", "fileDownload=true; path=/");
         httpServletResponse.setContentType("charset=utf-8");
 
         try {
