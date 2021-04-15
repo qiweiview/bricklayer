@@ -11,6 +11,8 @@ public class DBColumnModel {
 
     private String type;//字段类型
 
+    private String columnType;//字段类型(含长度)
+
     private String comment;//备注
 
     private String columnKey;//主键标识

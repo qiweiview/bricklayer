@@ -1,7 +1,10 @@
 package com.management.serviceI;
 
+import com.buildSupport.db_model.DBTableModel;
 import com.management.model.dto.BricklayerDbDTO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.management.model.dto.TableDetailDTO;
+
 import java.util.List;
 
 /**
@@ -25,5 +28,7 @@ public interface BricklayerDbServiceI {
     List<BricklayerDbDTO> listBricklayerDbAll();
 
     List<String> getDataSourceList(BricklayerDbDTO bricklayerDbDTO);
+
+    DBTableModel getTableDetail(TableDetailDTO tableDetailDTO);
 
 }

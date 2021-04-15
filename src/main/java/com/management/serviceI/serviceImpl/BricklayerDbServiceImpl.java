@@ -1,11 +1,12 @@
 package com.management.serviceI.serviceImpl;
 
 import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
+import com.buildSupport.db_model.DBTableModel;
 import com.management.model.d_o.BricklayerDbDO;
 import com.management.dao.BricklayerDbDao;
 import com.management.model.dto.BricklayerDbDTO;
+import com.management.model.dto.TableDetailDTO;
 import com.management.utils.DBHolder;
-import com.management.utils.RoutingDataSourceContext;
 import com.webSupport.model.DBInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -102,7 +103,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
         BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
         if (bricklayerDbById==null){
-            throw new RuntimeException("can not found data");
+            throw new RuntimeException("can not found the datasource");
         }
         DBInfo dbInfo = new DBInfo();
         dbInfo.setDbHost(bricklayerDbById.getDbIp());
@@ -112,6 +113,28 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
         List<String> databases = mysqlAbstractDataSourceInstance.getDatabases();
         return databases;
+    }
+
+
+    @Override
+    public DBTableModel getTableDetail(TableDetailDTO tableDetailDTO) {
+
+        BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
+        bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
+        BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbById==null){
+            throw new RuntimeException("can not found the datasource");
+        }
+
+        DBInfo dbInfo = new DBInfo();
+        dbInfo.setDbHost(bricklayerDbById.getDbIp());
+        dbInfo.setDbPort(bricklayerDbById.getDbPort()+"");
+        dbInfo.setDbUser(bricklayerDbById.getDbUser());
+        dbInfo.setDbPassWord(bricklayerDbById.getDbPassword());
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
+        DBTableModel dbTableModel = mysqlAbstractDataSourceInstance.getDBTableModelByName(tableDetailDTO.getTableName());
+
+        return dbTableModel;
     }
 
 }

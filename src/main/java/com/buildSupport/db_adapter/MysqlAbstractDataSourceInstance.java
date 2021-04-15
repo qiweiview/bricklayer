@@ -40,7 +40,7 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     public List<String> getTables(String dbName) {
         List<Map> maps = doQuery("SELECT TABLE_NAME  \n" +
                 "FROM INFORMATION_SCHEMA.TABLES \n" +
-                "WHERE TABLE_SCHEMA = '"+dbName+"' order by TABLE_NAME");
+                "WHERE TABLE_SCHEMA = ? order by TABLE_NAME", dbName);
         List<String> collect = maps.stream().map(x -> x.get("TABLE_NAME").toString()).collect(Collectors.toList());
         return collect;
     }
@@ -51,24 +51,34 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
         try {
             conn = DriverManager.getConnection(dbUrl, userName, passWord);
         } catch (SQLException throwables) {
-           throw new RuntimeException("连接数据库失败");
+            throw new RuntimeException("connect to datasource fail");
         }
         return conn;
     }
 
-    public List<Map> doQuery(String sql) {
+    /**
+     * 注入风险需要修复
+     *
+     * @param sql
+     * @return
+     */
+    public List<Map> doQuery(String sql, Object... objects) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Connection conn = null;
         try {
             conn = getConnection();
             preparedStatement = conn.prepareStatement(sql);
+            //数据拼接
+            for (int i = 0; i < objects.length; i++) {
+                preparedStatement.setObject(i+1, objects[i]);
+            }
             resultSet = preparedStatement.executeQuery();
             List<Map> maps = JDBCResultUtils.parseResult(resultSet);
 
             return maps;
         } catch (Exception se) {
-            throw new RuntimeException("get meta data fail,cause " + se);
+            throw new RuntimeException(se);
         } finally {
             try {
                 if (resultSet != null) {
@@ -88,8 +98,8 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     }
 
     @Override
-    public List<DBTableModel> getDBTableModels(String dbName) {
-        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '"+dbName+"'");
+    public List<DBTableModel> getDBTableModelsByDataSource(String dbName) {
+        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ?", dbName);
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
             return x.get("TABLE_NAME");
         }));
@@ -120,6 +130,31 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
         });
         return dbTableModels;
 
+
+    }
+
+    @Override
+    public DBTableModel getDBTableModelByName(String taleName) {
+        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE table_name = ?", taleName);
+        //todo 表分组
+        DBTableModel dbTableModel = new DBTableModel();
+        List<DBColumnModel> dbColumnModelList = new ArrayList();
+        dbTableModel.setOriginalTableName(taleName);
+        dbTableModel.setDbColumnModelList(dbColumnModelList);
+        maps.forEach(z -> {
+
+            //todo 列
+            DBColumnModel dbColumnModel = new DBColumnModel();
+            dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
+            dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
+            dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
+            dbColumnModel.setType(z.getOrDefault("DATA_TYPE", "").toString());
+            dbColumnModel.setColumnType(z.getOrDefault("COLUMN_TYPE", "").toString());
+            dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
+            dbColumnModelList.add(dbColumnModel);
+
+        });
+        return dbTableModel;
 
     }
 

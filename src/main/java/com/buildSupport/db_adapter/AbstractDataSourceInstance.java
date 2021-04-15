@@ -36,7 +36,9 @@ public abstract class AbstractDataSourceInstance {
 
     public abstract List<String> getDatabases();
 
-    public abstract List<DBTableModel> getDBTableModels(String dbName);
+    public abstract List<DBTableModel> getDBTableModelsByDataSource(String dbName);
+
+    public abstract DBTableModel getDBTableModelByName(String taleName);
 
     public abstract List<String> getTables(String dbName);
 

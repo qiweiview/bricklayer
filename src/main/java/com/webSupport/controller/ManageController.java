@@ -42,7 +42,7 @@ public class ManageController {
         dbInfo.getSelectedTables().forEach(x->{
             mysqlAbstractDataSourceInstance.addTargetTableName(x);
         });
-        List<DBTableModel> dbTableModels = mysqlAbstractDataSourceInstance.getDBTableModels(dbInfo.getDbName());
+        List<DBTableModel> dbTableModels = mysqlAbstractDataSourceInstance.getDBTableModelsByDataSource(dbInfo.getDbName());
         String basePath= "com/management";
         String contextPath="bricklayer";
         List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x,basePath,contextPath)).collect(Collectors.toList());

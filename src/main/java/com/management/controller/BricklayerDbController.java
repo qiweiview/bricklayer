@@ -1,7 +1,9 @@
 package com.management.controller;
 
 import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
+import com.buildSupport.db_model.DBTableModel;
 import com.management.model.dto.BricklayerDbDTO;
+import com.management.model.dto.TableDetailDTO;
 import com.management.model.vo.BricklayerDbVO;
 import com.management.serviceI.BricklayerDbServiceI;
 import com.webSupport.model.DBInfo;
@@ -119,13 +121,45 @@ public class BricklayerDbController {
 
     /* -----------分割线-------------- */
 
+    /**
+     * 获取数据库列表
+     * @param bricklayerDbDTO
+     * @return
+     */
     @RequestMapping("/getDataSourceList")
     public ResponseVo getDataSourceList(@RequestBody BricklayerDbDTO bricklayerDbDTO) {
         ResponseVo responseVo = new ResponseVo();
         List<String> dataSources = bricklayerDbServiceI.getDataSourceList(bricklayerDbDTO);
         responseVo.setData(dataSources);
         return responseVo;
-
     }
+
+    /**
+     * 获取表结构
+     * @param tableDetailDTO
+     * @return
+     */
+    @RequestMapping("/getTableDetail")
+    public ResponseVo getTableDetail(@RequestBody TableDetailDTO tableDetailDTO) {
+        ResponseVo responseVo = new ResponseVo();
+        DBTableModel tableDetail = bricklayerDbServiceI.getTableDetail(tableDetailDTO);
+        responseVo.setData(tableDetail.getDbColumnModelList());
+        return responseVo;
+    }
+
+    /**
+     * 创建单个模型
+     * @param dbTableModel
+     * @return
+     */
+    @RequestMapping("/createSingleModel")
+    public ResponseVo createSingleModel(@RequestBody DBTableModel dbTableModel) {
+        ResponseVo responseVo = new ResponseVo();
+        System.out.println(dbTableModel.getDbColumnModelList());
+        return responseVo;
+    }
+
+
+
 
 }
