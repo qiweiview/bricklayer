@@ -1,13 +1,15 @@
 package com.management.controller;
 
-import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
+import com.buildSupport.db_model.DBColumnModel;
 import com.buildSupport.db_model.DBTableModel;
 import com.management.model.dto.BricklayerDbDTO;
 import com.management.model.dto.TableDetailDTO;
 import com.management.model.vo.BricklayerDbVO;
+import com.management.serviceI.BricklayerColumnServiceI;
 import com.management.serviceI.BricklayerDbServiceI;
-import com.webSupport.model.DBInfo;
-import com.webSupport.utils.UnifiedResponse;
+
+import com.management.serviceI.BricklayerTableServiceI;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.management.utils.ResponseVo;
@@ -24,14 +26,15 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/bricklayerDb")
+@RequiredArgsConstructor
 public class BricklayerDbController {
 
     private final BricklayerDbServiceI bricklayerDbServiceI;
 
-    @Autowired
-    public BricklayerDbController(BricklayerDbServiceI bricklayerDbServiceI) {
-        this.bricklayerDbServiceI = bricklayerDbServiceI;
-    }
+
+
+
+
 
     /**
      * 创建BricklayerDb
@@ -152,10 +155,10 @@ public class BricklayerDbController {
      * @param dbTableModel
      * @return
      */
-    @RequestMapping("/createSingleModel")
-    public ResponseVo createSingleModel(@RequestBody DBTableModel dbTableModel) {
+    @RequestMapping("/saveSingleModel")
+    public ResponseVo saveSingleModel(@RequestBody DBTableModel dbTableModel) {
         ResponseVo responseVo = new ResponseVo();
-        System.out.println(dbTableModel.getDbColumnModelList());
+        bricklayerDbServiceI.saveSingleModel(dbTableModel);
         return responseVo;
     }
 

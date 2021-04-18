@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.BricklayerTableDao" >
+
+    <resultMap type="com.management.model.d_o.BricklayerTableDO" id="BricklayerTableMap" >
+                <id property="id" column="id" />
+                <result property="originalTableName" column="original_table_name" />
+    </resultMap>
+
+
+
+    <select id="listBricklayerTablePage" parameterType="com.management.model.d_o.BricklayerTableDO" resultMap="BricklayerTableMap" >
+        select
+        id,
+        original_table_name,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        and del_flag=false
+    </select>
+
+ <select id="listBricklayerTable" parameterType="com.management.model.d_o.BricklayerTableDO" resultMap="BricklayerTableMap" >
+        select
+            id,
+            original_table_name,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        and del_flag=false
+    </select>
+
+    <select id="getBricklayerTableById" parameterType="com.management.model.d_o.BricklayerTableDO" resultMap="BricklayerTableMap" >
+        select
+        id,
+        original_table_name,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        and id  = #{id}
+        and del_flag=false
+    </select>
+
+
+    <delete id="deleteBricklayerTable" parameterType="com.management.model.d_o.BricklayerTableDO" >
+        delete
+        from bricklayer_table
+        where 1=1
+        and id  = #{id}
+        and del_flag=false
+    </delete>
+
+    <update id="updateBricklayerTable" parameterType="com.management.model.d_o.BricklayerTableDO" >
+        update bricklayer_table
+        set
+        <if test="originalTableName!=null  and originalTableName!=''" >
+        original_table_name = #{ originalTableName},
+        </if>
+        id=id
+        where 1=1
+        and id  = #{id}
+        and del_flag=false
+    </update>
+
+
+</mapper>

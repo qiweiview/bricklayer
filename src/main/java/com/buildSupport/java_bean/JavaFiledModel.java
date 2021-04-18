@@ -26,7 +26,7 @@ public class JavaFiledModel {
     public static JavaFiledModel of(DBColumnModel x) {
         JavaFiledModel javaFiledModel = new JavaFiledModel();
         javaFiledModel.setColumnComment(x.getComment());//备注
-        javaFiledModel.setJavaType(TypeConverter.covert(x.getType()));//java类型
+        javaFiledModel.setJavaType(TypeConverter.covert(x.getSimpleColumnType()));//java类型
         javaFiledModel.setAutoIncrease(TypeConverter.checkAutoIncrease(x.getExtra()));//自增标识
         javaFiledModel.setOriginalColumnName(x.getOriginalColumnName());//自增
         javaFiledModel.setBeanName(StringUtils4V.underLine2UnCapFirst(x.getOriginalColumnName(), true));//对象属性

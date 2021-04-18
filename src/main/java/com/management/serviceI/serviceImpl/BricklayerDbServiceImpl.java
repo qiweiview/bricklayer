@@ -1,16 +1,20 @@
 package com.management.serviceI.serviceImpl;
 
 import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
+import com.buildSupport.db_model.DBColumnModel;
 import com.buildSupport.db_model.DBTableModel;
+import com.management.dao.BricklayerColumnDao;
+import com.management.dao.BricklayerTableDao;
+import com.management.model.d_o.BricklayerColumnDO;
 import com.management.model.d_o.BricklayerDbDO;
 import com.management.dao.BricklayerDbDao;
+import com.management.model.d_o.BricklayerTableDO;
 import com.management.model.dto.BricklayerDbDTO;
 import com.management.model.dto.TableDetailDTO;
-import com.management.utils.DBHolder;
+import com.management.serviceI.BricklayerTableServiceI;
 import com.webSupport.model.DBInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.management.serviceI.BricklayerDbServiceI;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,7 +22,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 
 import com.management.utils.DataNotFoundException;
-//import cn.anicert.university.common.exception.EntityNotFoundException;
 
 /**
  * create by view
@@ -28,11 +31,11 @@ import com.management.utils.DataNotFoundException;
 @RequiredArgsConstructor
 public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
-    @Autowired
-    private DBHolder dbHolder;
+   private final  BricklayerColumnDao bricklayerColumnDao;
+
+    private final BricklayerTableDao bricklayerTableDao;
 
     private final BricklayerDbDao bricklayerDbDao;
-
 
 
     @Override
@@ -102,12 +105,12 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
     public List<String> getDataSourceList(BricklayerDbDTO bricklayerDbDTO) {
         BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
         BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
-        if (bricklayerDbById==null){
+        if (bricklayerDbById == null) {
             throw new RuntimeException("can not found the datasource");
         }
         DBInfo dbInfo = new DBInfo();
         dbInfo.setDbHost(bricklayerDbById.getDbIp());
-        dbInfo.setDbPort(bricklayerDbById.getDbPort()+"");
+        dbInfo.setDbPort(bricklayerDbById.getDbPort() + "");
         dbInfo.setDbUser(bricklayerDbById.getDbUser());
         dbInfo.setDbPassWord(bricklayerDbById.getDbPassword());
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
@@ -122,19 +125,42 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
         bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
         BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
-        if (bricklayerDbById==null){
+        if (bricklayerDbById == null) {
             throw new RuntimeException("can not found the datasource");
         }
 
         DBInfo dbInfo = new DBInfo();
         dbInfo.setDbHost(bricklayerDbById.getDbIp());
-        dbInfo.setDbPort(bricklayerDbById.getDbPort()+"");
+        dbInfo.setDbPort(bricklayerDbById.getDbPort() + "");
         dbInfo.setDbUser(bricklayerDbById.getDbUser());
         dbInfo.setDbPassWord(bricklayerDbById.getDbPassword());
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
         DBTableModel dbTableModel = mysqlAbstractDataSourceInstance.getDBTableModelByName(tableDetailDTO.getTableName());
 
         return dbTableModel;
+    }
+
+    @Override
+    public void saveSingleModel(DBTableModel dbTableModel) {
+        String originalTableName = dbTableModel.getOriginalTableName();
+        BricklayerTableDO bricklayerTableDO = new BricklayerTableDO();
+        bricklayerTableDO.setOriginalTableName(originalTableName);
+
+        int insert = bricklayerTableDao.insert(bricklayerTableDO);
+
+
+        List<DBColumnModel> dbColumnModelList = dbTableModel.getDbColumnModelList();
+        dbColumnModelList.forEach(x->{
+            BricklayerColumnDO bricklayerColumnDO = new BricklayerColumnDO();
+            bricklayerColumnDO.setTableId(bricklayerTableDO.getId());
+            bricklayerColumnDO.setColumnKey(x.getColumnKey());
+            bricklayerColumnDO.setColumnType(x.getColumnType());
+            bricklayerColumnDO.setComment(x.getComment());
+            bricklayerColumnDO.setExtra(x.getExtra());
+            bricklayerColumnDO.setOriginalColumnName(x.getOriginalColumnName());
+            bricklayerColumnDO.setSimpleColumnType(x.getSimpleColumnType());
+            bricklayerColumnDao.insert(bricklayerColumnDO);
+        });
     }
 
 }

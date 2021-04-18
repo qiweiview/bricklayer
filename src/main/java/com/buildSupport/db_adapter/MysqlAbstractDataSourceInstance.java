@@ -117,7 +117,7 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
                 dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
                 dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
                 dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
-                dbColumnModel.setType(z.getOrDefault("DATA_TYPE", "").toString());
+                dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
                 dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
 
                 if (targetColumn.contains(dbColumnModel.getOriginalColumnName()) || (targetColumn.size() == 1 && targetColumn.contains("*"))) {
@@ -148,7 +148,7 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
             dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
             dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
             dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
-            dbColumnModel.setType(z.getOrDefault("DATA_TYPE", "").toString());
+            dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
             dbColumnModel.setColumnType(z.getOrDefault("COLUMN_TYPE", "").toString());
             dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
             dbColumnModelList.add(dbColumnModel);

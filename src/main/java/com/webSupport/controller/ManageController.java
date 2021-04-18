@@ -43,7 +43,7 @@ public class ManageController {
             mysqlAbstractDataSourceInstance.addTargetTableName(x);
         });
         List<DBTableModel> dbTableModels = mysqlAbstractDataSourceInstance.getDBTableModelsByDataSource(dbInfo.getDbName());
-        String basePath= "com/management";
+        String basePath= "com.management";
         String contextPath="bricklayer";
         List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x,basePath,contextPath)).collect(Collectors.toList());
         byte[] build = BricklayerBuilder.build(collect);

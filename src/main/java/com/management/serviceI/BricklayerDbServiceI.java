@@ -31,4 +31,6 @@ public interface BricklayerDbServiceI {
 
     DBTableModel getTableDetail(TableDetailDTO tableDetailDTO);
 
+    void saveSingleModel(DBTableModel dbTableModel);
+
 }
