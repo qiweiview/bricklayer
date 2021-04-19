@@ -10,7 +10,6 @@ import com.management.model.d_o.BricklayerDbDO;
 import com.management.dao.BricklayerDbDao;
 import com.management.model.d_o.BricklayerTableDO;
 import com.management.model.dto.*;
-import com.webSupport.model.DBInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.management.serviceI.BricklayerDbServiceI;
@@ -107,12 +106,8 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         if (bricklayerDbById == null) {
             throw new RuntimeException("can not found the datasource");
         }
-        DBInfo dbInfo = new DBInfo();
-        dbInfo.setDbHost(bricklayerDbById.getDbIp());
-        dbInfo.setDbPort(bricklayerDbById.getDbPort() + "");
-        dbInfo.setDbUser(bricklayerDbById.getDbUser());
-        dbInfo.setDbPassWord(bricklayerDbById.getDbPassword());
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
+
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
         List<String> databases = mysqlAbstractDataSourceInstance.getDatabases();
         return databases;
     }
@@ -137,15 +132,9 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
     public MysqlAbstractDataSourceInstance getMysqlAbstractDataSourceInstanceByBricklayerDbDO(BricklayerDbDO bricklayerDbDO) {
 
 
-String dbName="".equals(bricklayerDbDO.get()) ? "mysql" : getDbName();
-        String connectionPath="jdbc:mysql://"+getDbHost()+":"+getDbPort()+"/"+getDbName()+"?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
-
-        DBInfo dbInfo = new DBInfo();
-        dbInfo.setDbHost(bricklayerDbDO.getDbIp());
-        dbInfo.setDbPort(bricklayerDbDO.getDbPort() + "");
-        dbInfo.setDbUser(bricklayerDbDO.getDbUser());
-        dbInfo.setDbPassWord(bricklayerDbDO.getDbPassword());
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
+        String dbName = "mysql";
+        String connectionPath = "jdbc:mysql://" + bricklayerDbDO.getDbIp() + ":" + bricklayerDbDO.getDbPort() + "/" + dbName + "?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(),bricklayerDbDO.getDbPassword());
 
         return mysqlAbstractDataSourceInstance;
     }
