@@ -1,7 +1,10 @@
 package com.management.model.dto;
 
+
 import com.management.model.d_o.BricklayerTableDO;
 import com.management.model.vo.BricklayerTableVO;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +24,27 @@ public class BricklayerTableDTO {
 
     private  String originalTableName;
 
+    private  String remark;
+
+
+    private  String sourceDataBase;
+
+    private  String sourceDevice;
+
+    private Integer deviceId;
+
+    private List<BricklayerColumnDTO> bricklayerColumnDTOList =new ArrayList();
+
+    private List<String> selectedTables =new ArrayList();
 
 /*  ------------ data conversion ------------  */
 public  BricklayerTableDO toBricklayerTableDO(){
         BricklayerTableDO bricklayerTableDO =new BricklayerTableDO();
         bricklayerTableDO.setId(getId());
         bricklayerTableDO.setOriginalTableName(getOriginalTableName());
+        bricklayerTableDO.setRemark(getRemark());
+        bricklayerTableDO.setSourceDataBase(getSourceDataBase());
+        bricklayerTableDO.setSourceDevice(getSourceDevice());
         return bricklayerTableDO;
 
         }
@@ -35,6 +53,9 @@ public  BricklayerTableVO toBricklayerTableVO(){
         BricklayerTableVO bricklayerTableVO =new BricklayerTableVO();
         bricklayerTableVO.setId(getId());
         bricklayerTableVO.setOriginalTableName(getOriginalTableName());
+        bricklayerTableVO.setRemark(getRemark());
+        bricklayerTableVO.setSourceDataBase(getSourceDataBase());
+        bricklayerTableVO.setSourceDevice(getSourceDevice());
         return bricklayerTableVO;
 
         }
@@ -52,6 +73,31 @@ public  BricklayerTableVO toBricklayerTableVO(){
     }
 
 /*  ------------ getter setter ------------  */
+
+    public Integer getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(Integer deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public List<String> getSelectedTables() {
+        return selectedTables;
+    }
+
+    public void setSelectedTables(List<String> selectedTables) {
+        this.selectedTables = selectedTables;
+    }
+
+    public List<BricklayerColumnDTO> getBricklayerColumnDTOList() {
+        return bricklayerColumnDTOList;
+    }
+
+    public void setBricklayerColumnDTOList(List<BricklayerColumnDTO> bricklayerColumnDTOList) {
+        this.bricklayerColumnDTOList = bricklayerColumnDTOList;
+    }
+
     public int getCurrent(){
         return current;
     }
@@ -83,5 +129,29 @@ public  BricklayerTableVO toBricklayerTableVO(){
 
     public void setOriginalTableName(String originalTableName){
         this.originalTableName=originalTableName;
+    }
+
+    public String getRemark(){
+        return remark;
+    }
+
+    public void setRemark(String remark){
+        this.remark=remark;
+    }
+
+    public String getSourceDataBase(){
+        return sourceDataBase;
+    }
+
+    public void setSourceDataBase(String sourceDataBase){
+        this.sourceDataBase=sourceDataBase;
+    }
+
+    public String getSourceDevice(){
+        return sourceDevice;
+    }
+
+    public void setSourceDevice(String sourceDevice){
+        this.sourceDevice = sourceDevice;
     }
 }

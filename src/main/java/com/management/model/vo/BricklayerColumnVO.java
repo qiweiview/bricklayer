@@ -22,7 +22,7 @@ public class BricklayerColumnVO {
 
     private  String comment;
 
-    private  Integer tableId;
+    private  Integer belongTableId;
 
 
 /*  ------------ data conversion ------------  */
@@ -86,11 +86,11 @@ public class BricklayerColumnVO {
     this.comment=comment;
     }
 
-    public Integer getTableId(){
-        return tableId;
+    public Integer getBelongTableId(){
+        return belongTableId;
         }
 
-    public void setTableId(Integer tableId){
-    this.tableId=tableId;
+    public void setBelongTableId(Integer belongTableId){
+    this.belongTableId = belongTableId;
     }
 }

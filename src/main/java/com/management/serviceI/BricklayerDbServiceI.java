@@ -1,8 +1,10 @@
 package com.management.serviceI;
 
-import com.buildSupport.db_model.DBTableModel;
+
 import com.management.model.dto.BricklayerDbDTO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.management.model.dto.BricklayerTableDTO;
+import com.management.model.dto.GenerateCodeDTO;
 import com.management.model.dto.TableDetailDTO;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 * create by view
 */
 public interface BricklayerDbServiceI {
+
 
     public  BricklayerDbDTO   saveBricklayerDb(BricklayerDbDTO bricklayerDbDTO);
 
@@ -29,8 +32,13 @@ public interface BricklayerDbServiceI {
 
     List<String> getDataSourceList(BricklayerDbDTO bricklayerDbDTO);
 
-    DBTableModel getTableDetail(TableDetailDTO tableDetailDTO);
+    BricklayerTableDTO getTableDetail(TableDetailDTO tableDetailDTO);
 
-    void saveSingleModel(DBTableModel dbTableModel);
+    void saveSingleModel( BricklayerTableDTO bricklayerTableDTO);
 
+    void saveBatchModels(BricklayerTableDTO bricklayerTableDTO);
+
+    List<String> getTables(TableDetailDTO tableDetailDTO);
+
+    List<BricklayerTableDTO> getBricklayerTablesByIds(GenerateCodeDTO generateCodeDTO);
 }

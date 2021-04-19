@@ -4,8 +4,6 @@ import com.management.model.dto.BricklayerTableDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.annotation.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
 *
@@ -21,10 +19,28 @@ public class BricklayerTableDO {
     private  Integer id;
 
     /**
-     * 
+     * 来源表名
      */
     @TableField(value = "original_table_name")
     private  String originalTableName;
+
+    /**
+     * 备注
+     */
+    @TableField(value = "remark")
+    private  String remark;
+
+    /**
+     * 来源数据库名
+     */
+    @TableField(value = "source_data_base")
+    private  String sourceDataBase;
+
+    /**
+     * 来源设备
+     */
+    @TableField(value = "source_device")
+    private  String sourceDevice;
 
 /*  ------------ init value ------------  */
     public void doInit() {
@@ -47,6 +63,9 @@ public class BricklayerTableDO {
     BricklayerTableDTO bricklayerTableDTO =new BricklayerTableDTO();
     bricklayerTableDTO.setId(getId());
     bricklayerTableDTO.setOriginalTableName(getOriginalTableName());
+    bricklayerTableDTO.setRemark(getRemark());
+    bricklayerTableDTO.setSourceDataBase(getSourceDataBase());
+    bricklayerTableDTO.setSourceDevice(getSourceDevice());
         return bricklayerTableDTO;
 
 }
@@ -73,5 +92,29 @@ public class BricklayerTableDO {
 
     public void setOriginalTableName(String originalTableName){
     this.originalTableName=originalTableName;
+    }
+
+    public String getRemark(){
+    return remark;
+    }
+
+    public void setRemark(String remark){
+    this.remark=remark;
+    }
+
+    public String getSourceDataBase(){
+    return sourceDataBase;
+    }
+
+    public void setSourceDataBase(String sourceDataBase){
+    this.sourceDataBase=sourceDataBase;
+    }
+
+    public String getSourceDevice(){
+    return sourceDevice;
+    }
+
+    public void setSourceDevice(String sourceDevice){
+    this.sourceDevice = sourceDevice;
     }
 }

@@ -4,8 +4,6 @@ import com.management.model.dto.BricklayerColumnDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.annotation.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
 *
@@ -59,8 +57,8 @@ public class BricklayerColumnDO {
     /**
      * 所属吧表格
      */
-    @TableField(value = "table_id")
-    private  Integer tableId;
+    @TableField(value = "belong_table_id")
+    private  Integer belongTableId;
 
 /*  ------------ init value ------------  */
     public void doInit() {
@@ -88,7 +86,7 @@ public class BricklayerColumnDO {
     bricklayerColumnDTO.setColumnKey(getColumnKey());
     bricklayerColumnDTO.setExtra(getExtra());
     bricklayerColumnDTO.setComment(getComment());
-    bricklayerColumnDTO.setTableId(getTableId());
+    bricklayerColumnDTO.setBelongTableId(getBelongTableId());
         return bricklayerColumnDTO;
 
 }
@@ -100,6 +98,7 @@ public class BricklayerColumnDO {
 }
 
 /*  ------------ getter setter ------------  */
+
 
     public Integer getId(){
     return id;
@@ -157,11 +156,11 @@ public class BricklayerColumnDO {
     this.comment=comment;
     }
 
-    public Integer getTableId(){
-    return tableId;
+    public Integer getBelongTableId(){
+    return belongTableId;
     }
 
-    public void setTableId(Integer tableId){
-    this.tableId=tableId;
+    public void setBelongTableId(Integer belongTableId){
+    this.belongTableId = belongTableId;
     }
 }

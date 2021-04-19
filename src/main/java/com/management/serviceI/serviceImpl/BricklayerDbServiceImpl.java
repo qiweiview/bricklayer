@@ -1,17 +1,15 @@
 package com.management.serviceI.serviceImpl;
 
 import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
-import com.buildSupport.db_model.DBColumnModel;
-import com.buildSupport.db_model.DBTableModel;
+
+
 import com.management.dao.BricklayerColumnDao;
 import com.management.dao.BricklayerTableDao;
 import com.management.model.d_o.BricklayerColumnDO;
 import com.management.model.d_o.BricklayerDbDO;
 import com.management.dao.BricklayerDbDao;
 import com.management.model.d_o.BricklayerTableDO;
-import com.management.model.dto.BricklayerDbDTO;
-import com.management.model.dto.TableDetailDTO;
-import com.management.serviceI.BricklayerTableServiceI;
+import com.management.model.dto.*;
 import com.webSupport.model.DBInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 
 import com.management.utils.DataNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * create by view
@@ -31,7 +30,7 @@ import com.management.utils.DataNotFoundException;
 @RequiredArgsConstructor
 public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
-   private final  BricklayerColumnDao bricklayerColumnDao;
+    private final BricklayerColumnDao bricklayerColumnDao;
 
     private final BricklayerTableDao bricklayerTableDao;
 
@@ -120,7 +119,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
 
     @Override
-    public DBTableModel getTableDetail(TableDetailDTO tableDetailDTO) {
+    public BricklayerTableDTO getTableDetail(TableDetailDTO tableDetailDTO) {
 
         BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
         bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
@@ -129,38 +128,107 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             throw new RuntimeException("can not found the datasource");
         }
 
-        DBInfo dbInfo = new DBInfo();
-        dbInfo.setDbHost(bricklayerDbById.getDbIp());
-        dbInfo.setDbPort(bricklayerDbById.getDbPort() + "");
-        dbInfo.setDbUser(bricklayerDbById.getDbUser());
-        dbInfo.setDbPassWord(bricklayerDbById.getDbPassword());
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
-        DBTableModel dbTableModel = mysqlAbstractDataSourceInstance.getDBTableModelByName(tableDetailDTO.getTableName());
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        BricklayerTableDTO dbTableModel = mysqlAbstractDataSourceInstance.getDBTableModelByName(tableDetailDTO.getTableName());
 
         return dbTableModel;
     }
 
+    public MysqlAbstractDataSourceInstance getMysqlAbstractDataSourceInstanceByBricklayerDbDO(BricklayerDbDO bricklayerDbDO) {
+
+
+String dbName="".equals(bricklayerDbDO.get()) ? "mysql" : getDbName();
+        String connectionPath="jdbc:mysql://"+getDbHost()+":"+getDbPort()+"/"+getDbName()+"?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
+
+        DBInfo dbInfo = new DBInfo();
+        dbInfo.setDbHost(bricklayerDbDO.getDbIp());
+        dbInfo.setDbPort(bricklayerDbDO.getDbPort() + "");
+        dbInfo.setDbUser(bricklayerDbDO.getDbUser());
+        dbInfo.setDbPassWord(bricklayerDbDO.getDbPassword());
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(dbInfo.getConnectionPath(), dbInfo.getDbUser(), dbInfo.getDbPassWord());
+
+        return mysqlAbstractDataSourceInstance;
+    }
+
+    @Transactional
     @Override
-    public void saveSingleModel(DBTableModel dbTableModel) {
-        String originalTableName = dbTableModel.getOriginalTableName();
-        BricklayerTableDO bricklayerTableDO = new BricklayerTableDO();
-        bricklayerTableDO.setOriginalTableName(originalTableName);
-
-        int insert = bricklayerTableDao.insert(bricklayerTableDO);
+    public void saveSingleModel(BricklayerTableDTO bricklayerTableDTO) {
+        //插入表
+        BricklayerTableDO bricklayerTableDO = bricklayerTableDTO.toBricklayerTableDO();
+        bricklayerTableDao.insert(bricklayerTableDO);
 
 
-        List<DBColumnModel> dbColumnModelList = dbTableModel.getDbColumnModelList();
-        dbColumnModelList.forEach(x->{
-            BricklayerColumnDO bricklayerColumnDO = new BricklayerColumnDO();
-            bricklayerColumnDO.setTableId(bricklayerTableDO.getId());
-            bricklayerColumnDO.setColumnKey(x.getColumnKey());
-            bricklayerColumnDO.setColumnType(x.getColumnType());
-            bricklayerColumnDO.setComment(x.getComment());
-            bricklayerColumnDO.setExtra(x.getExtra());
-            bricklayerColumnDO.setOriginalColumnName(x.getOriginalColumnName());
-            bricklayerColumnDO.setSimpleColumnType(x.getSimpleColumnType());
+        //插入列
+        List<BricklayerColumnDTO> bricklayerColumnDTOList = bricklayerTableDTO.getBricklayerColumnDTOList();
+        bricklayerColumnDTOList.forEach(x -> {
+            BricklayerColumnDO bricklayerColumnDO = x.toBricklayerColumnDO();
+            bricklayerColumnDO.setBelongTableId(bricklayerTableDO.getId());
             bricklayerColumnDao.insert(bricklayerColumnDO);
         });
+
+    }
+
+    @Override
+    public void saveBatchModels(BricklayerTableDTO bricklayerTableDTO) {
+
+        BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
+        bricklayerDbDO.setId(bricklayerTableDTO.getDeviceId());
+        BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbById == null) {
+            throw new RuntimeException("can not found the datasource");
+        }
+
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        bricklayerTableDTO.getSelectedTables().forEach(x -> {
+            mysqlAbstractDataSourceInstance.addTargetTableName(x);
+        });
+
+        List<BricklayerTableDTO> dbTableModels = mysqlAbstractDataSourceInstance.getDBTableModelsByDataSource(bricklayerTableDTO.getSourceDataBase());
+
+        dbTableModels.stream().forEach(x -> {
+            BricklayerTableDO bricklayerTableDO = new BricklayerTableDO();
+            bricklayerTableDO.setOriginalTableName(x.getOriginalTableName());
+            bricklayerTableDO.setSourceDevice(bricklayerTableDTO.getSourceDevice());
+            bricklayerTableDO.setSourceDataBase(bricklayerTableDTO.getSourceDataBase());
+            bricklayerTableDO.setRemark(bricklayerTableDTO.getRemark());
+            bricklayerTableDao.insert(bricklayerTableDO);
+
+
+            List<BricklayerColumnDTO> dbColumnModelList = x.getBricklayerColumnDTOList();
+            dbColumnModelList.forEach(y -> {
+                BricklayerColumnDO bricklayerColumnDO = new BricklayerColumnDO();
+                bricklayerColumnDO.setColumnKey(y.getColumnKey());
+                bricklayerColumnDO.setColumnType(y.getColumnType());
+                bricklayerColumnDO.setComment(y.getComment());
+                bricklayerColumnDO.setExtra(y.getExtra());
+                bricklayerColumnDO.setOriginalColumnName(y.getOriginalColumnName());
+                bricklayerColumnDO.setSimpleColumnType(y.getSimpleColumnType());
+                bricklayerColumnDO.setBelongTableId(bricklayerTableDO.getId());
+                bricklayerColumnDao.insert(bricklayerColumnDO);
+            });
+
+
+        });
+
+    }
+
+    @Override
+    public List<String> getTables(TableDetailDTO tableDetailDTO) {
+        BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
+        bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
+        BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbById == null) {
+            throw new RuntimeException("can not found the datasource");
+        }
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        List<String> tables = mysqlAbstractDataSourceInstance.getTables(tableDetailDTO.getDataSourceName());
+        return tables;
+    }
+
+    @Override
+    public List<BricklayerTableDTO> getBricklayerTablesByIds(GenerateCodeDTO generateCodeDTO) {
+
+        return null;
     }
 
 }

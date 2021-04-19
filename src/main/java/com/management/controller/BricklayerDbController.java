@@ -1,14 +1,19 @@
 package com.management.controller;
 
-import com.buildSupport.db_model.DBColumnModel;
-import com.buildSupport.db_model.DBTableModel;
+
+import com.buildSupport.build_task.BricklayerBuilder;
+import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
+import com.buildSupport.java_bean.JavaBeanModel;
 import com.management.model.dto.BricklayerDbDTO;
+import com.management.model.dto.BricklayerTableDTO;
+import com.management.model.dto.GenerateCodeDTO;
 import com.management.model.dto.TableDetailDTO;
 import com.management.model.vo.BricklayerDbVO;
 import com.management.serviceI.BricklayerColumnServiceI;
 import com.management.serviceI.BricklayerDbServiceI;
 
 import com.management.serviceI.BricklayerTableServiceI;
+import com.webSupport.model.DBInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +21,22 @@ import com.management.utils.ResponseVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
  * create by view
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/bricklayerDb")
 @RequiredArgsConstructor
 public class BricklayerDbController {
 
     private final BricklayerDbServiceI bricklayerDbServiceI;
-
-
-
-
 
 
     /**
@@ -119,13 +122,14 @@ public class BricklayerDbController {
     public ResponseVo exp(Exception ex, HttpServletResponse httpServletResponse) {
         ex.printStackTrace();
         httpServletResponse.setStatus(500);
-        return ResponseVo.error(ex.getMessage());
+        return ResponseVo.error("服务器异常");
     }
 
-    /* -----------分割线-------------- */
+    /* ----------- 分割线 -------------- */
 
     /**
      * 获取数据库列表
+     *
      * @param bricklayerDbDTO
      * @return
      */
@@ -139,30 +143,68 @@ public class BricklayerDbController {
 
     /**
      * 获取表结构
+     *
      * @param tableDetailDTO
      * @return
      */
     @RequestMapping("/getTableDetail")
     public ResponseVo getTableDetail(@RequestBody TableDetailDTO tableDetailDTO) {
         ResponseVo responseVo = new ResponseVo();
-        DBTableModel tableDetail = bricklayerDbServiceI.getTableDetail(tableDetailDTO);
-        responseVo.setData(tableDetail.getDbColumnModelList());
+        BricklayerTableDTO tableDetail = bricklayerDbServiceI.getTableDetail(tableDetailDTO);
+        responseVo.setData(tableDetail.getBricklayerColumnDTOList());
+        return responseVo;
+    }
+
+    @RequestMapping("/getTables")
+    public ResponseVo getTables(@RequestBody TableDetailDTO tableDetailDTO) {
+        ResponseVo responseVo = new ResponseVo();
+        List<String> tables = bricklayerDbServiceI.getTables(tableDetailDTO);
+        responseVo.setData(tables);
         return responseVo;
     }
 
     /**
      * 创建单个模型
-     * @param dbTableModel
+     *
+     * @param bricklayerTableDTO
      * @return
      */
     @RequestMapping("/saveSingleModel")
-    public ResponseVo saveSingleModel(@RequestBody DBTableModel dbTableModel) {
+    public ResponseVo saveSingleModel(@RequestBody BricklayerTableDTO bricklayerTableDTO) {
         ResponseVo responseVo = new ResponseVo();
-        bricklayerDbServiceI.saveSingleModel(dbTableModel);
+        bricklayerDbServiceI.saveSingleModel(bricklayerTableDTO);
+        return responseVo;
+    }
+
+    /**
+     * 创建单个模型
+     *
+     * @param bricklayerTableDTO
+     * @return
+     */
+    @RequestMapping("/saveBatchModels")
+    public ResponseVo saveBatchModels(@RequestBody BricklayerTableDTO bricklayerTableDTO) {
+        ResponseVo responseVo = new ResponseVo();
+        bricklayerDbServiceI.saveBatchModels(bricklayerTableDTO);
         return responseVo;
     }
 
 
+    @RequestMapping("/generateCode")
+    public void generateCode(@RequestBody GenerateCodeDTO generateCodeDTO, HttpServletResponse httpServletResponse) {
+        List<BricklayerTableDTO> dbTableModels = bricklayerDbServiceI.getBricklayerTablesByIds(generateCodeDTO);
+        List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x, generateCodeDTO.getBasePath(), generateCodeDTO.getContextPath())).collect(Collectors.toList());
+        byte[] build = BricklayerBuilder.build(collect);
+        httpServletResponse.setContentType("charset=utf-8");
+
+        try {
+            ServletOutputStream out = httpServletResponse.getOutputStream();
+            out.write(build);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

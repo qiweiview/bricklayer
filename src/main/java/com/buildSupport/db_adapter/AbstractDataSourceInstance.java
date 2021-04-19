@@ -1,6 +1,6 @@
 package com.buildSupport.db_adapter;
 
-import com.buildSupport.db_model.DBTableModel;
+import com.management.model.dto.BricklayerTableDTO;
 
 import java.sql.Connection;
 import java.util.HashSet;
@@ -36,9 +36,9 @@ public abstract class AbstractDataSourceInstance {
 
     public abstract List<String> getDatabases();
 
-    public abstract List<DBTableModel> getDBTableModelsByDataSource(String dbName);
+    public abstract List<BricklayerTableDTO> getDBTableModelsByDataSource(String dbName);
 
-    public abstract DBTableModel getDBTableModelByName(String taleName);
+    public abstract BricklayerTableDTO getDBTableModelByName(String taleName);
 
     public abstract List<String> getTables(String dbName);
 

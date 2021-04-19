@@ -12,6 +12,12 @@ public class BricklayerTableVO {
 
     private  String originalTableName;
 
+    private  String remark;
+
+    private  String sourceDataBase;
+
+    private  String sourceDevice;
+
 
 /*  ------------ data conversion ------------  */
 
@@ -32,5 +38,29 @@ public class BricklayerTableVO {
 
     public void setOriginalTableName(String originalTableName){
     this.originalTableName=originalTableName;
+    }
+
+    public String getRemark(){
+        return remark;
+        }
+
+    public void setRemark(String remark){
+    this.remark=remark;
+    }
+
+    public String getSourceDataBase(){
+        return sourceDataBase;
+        }
+
+    public void setSourceDataBase(String sourceDataBase){
+    this.sourceDataBase=sourceDataBase;
+    }
+
+    public String getSourceDevice(){
+        return sourceDevice;
+        }
+
+    public void setSourceDevice(String sourceDevice){
+    this.sourceDevice = sourceDevice;
     }
 }

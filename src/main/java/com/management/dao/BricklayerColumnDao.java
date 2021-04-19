@@ -25,4 +25,9 @@ public interface BricklayerColumnDao extends BaseMapper<BricklayerColumnDO>{
     public  List<BricklayerColumnDO>   listBricklayerColumn(@Param("do")  BricklayerColumnDO bricklayerColumnDO);
 
     public  BricklayerColumnDO   getBricklayerColumnById(BricklayerColumnDO bricklayerColumnDO);
+
+    void deleteBricklayerColumnByBelongTableId(BricklayerColumnDO bricklayerColumnDO);
+
+    List<BricklayerColumnDO> getBricklayerColumnsByBelongTableId(BricklayerColumnDO bricklayerColumnDO);
+
 }

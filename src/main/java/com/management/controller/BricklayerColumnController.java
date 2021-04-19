@@ -83,37 +83,6 @@ public class BricklayerColumnController {
 
 
 
-    /**
-     * 导出BricklayerColumn
-     */
-    //@ApiOperation(value = "导出BricklayerColumn", httpMethod = "POST")
-    /* @RequestMapping("/export")
-    public ResponseVo<BricklayerColumnVO> listBricklayerColumnPage(@RequestBody(required = false) BricklayerColumnDTO bricklayerColumnDTO, HttpServletResponse httpServletResponse) {
-        ResponseVo responseVo=new ResponseVo();
-        List<BricklayerColumnDTO> bricklayerColumnDTOList = bricklayerColumnServiceI.listBricklayerColumn(bricklayerColumnDTO);
-        List<BricklayerColumnVO> bricklayerColumnVO = BricklayerColumnDTO.toBricklayerColumnVOList(bricklayerColumnDTOList);
-
-        ExcelExporter excelExporter = new ExcelExporter();
-        excelExporter.addSheet(trainingDetailVOS, BricklayerColumnVO.class);
-        byte[] bytes = excelExporter.list2Excel();
-
-
-        httpServletResponse.reset();
-        httpServletResponse.setHeader("Content-Disposition", "attachment;filename=\"" + "export.xlsx" + "\"");
-        httpServletResponse.setHeader("Set-Cookie", "fileDownload=true; path=/");
-        httpServletResponse.setContentType("application/vnd.ms-excel;charset=utf-8");
-
-        try {
-        ServletOutputStream out = httpServletResponse.getOutputStream();
-        out.write(bytes);
-        out.close();
-        } catch (IOException e) {
-        e.printStackTrace();
-        }
-
-        return responseVo;
-        }*/
-
 
     /**
      * 根据主键获取BricklayerColumn
@@ -130,5 +99,20 @@ public class BricklayerColumnController {
 
 
 
+    @RequestMapping("/getBricklayerColumnsByBelongTableId")
+    public ResponseVo<BricklayerColumnVO> getBricklayerColumnsByBelongTableId(@RequestBody(required = false) BricklayerColumnDTO bricklayerColumnDTO) {
+        ResponseVo responseVo=new ResponseVo();
+        List<BricklayerColumnDTO> bricklayerColumnDTOS=bricklayerColumnServiceI.getBricklayerColumnsByBelongTableId(bricklayerColumnDTO);
+        List<BricklayerColumnVO> bricklayerColumnVOS = BricklayerColumnDTO.toBricklayerColumnVOList(bricklayerColumnDTOS);
+        responseVo.setData(bricklayerColumnVOS);
+        return responseVo;
+    }
+
+    @ExceptionHandler
+    public ResponseVo exp(Exception ex, HttpServletResponse httpServletResponse) {
+        ex.printStackTrace();
+        httpServletResponse.setStatus(500);
+        return ResponseVo.error("服务器异常");
+    }
 
 }

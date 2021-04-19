@@ -84,38 +84,6 @@ public class BricklayerTableController {
 
 
     /**
-     * 导出BricklayerTable
-     */
-    //@ApiOperation(value = "导出BricklayerTable", httpMethod = "POST")
-    /* @RequestMapping("/export")
-    public ResponseVo<BricklayerTableVO> listBricklayerTablePage(@RequestBody(required = false) BricklayerTableDTO bricklayerTableDTO, HttpServletResponse httpServletResponse) {
-        ResponseVo responseVo=new ResponseVo();
-        List<BricklayerTableDTO> bricklayerTableDTOList = bricklayerTableServiceI.listBricklayerTable(bricklayerTableDTO);
-        List<BricklayerTableVO> bricklayerTableVO = BricklayerTableDTO.toBricklayerTableVOList(bricklayerTableDTOList);
-
-        ExcelExporter excelExporter = new ExcelExporter();
-        excelExporter.addSheet(trainingDetailVOS, BricklayerTableVO.class);
-        byte[] bytes = excelExporter.list2Excel();
-
-
-        httpServletResponse.reset();
-        httpServletResponse.setHeader("Content-Disposition", "attachment;filename=\"" + "export.xlsx" + "\"");
-        httpServletResponse.setHeader("Set-Cookie", "fileDownload=true; path=/");
-        httpServletResponse.setContentType("application/vnd.ms-excel;charset=utf-8");
-
-        try {
-        ServletOutputStream out = httpServletResponse.getOutputStream();
-        out.write(bytes);
-        out.close();
-        } catch (IOException e) {
-        e.printStackTrace();
-        }
-
-        return responseVo;
-        }*/
-
-
-    /**
      * 根据主键获取BricklayerTable
      */
     //@ApiOperation(value = "根据主键获取BricklayerTable", httpMethod = "POST")
@@ -129,6 +97,11 @@ public class BricklayerTableController {
         }
 
 
-
+    @ExceptionHandler
+    public ResponseVo exp(Exception ex, HttpServletResponse httpServletResponse) {
+        ex.printStackTrace();
+        httpServletResponse.setStatus(500);
+        return ResponseVo.error("服务器异常");
+    }
 
 }

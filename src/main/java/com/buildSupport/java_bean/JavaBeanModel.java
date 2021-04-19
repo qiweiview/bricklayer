@@ -1,9 +1,10 @@
 package com.buildSupport.java_bean;
 
 
-import com.buildSupport.db_model.DBColumnModel;
-import com.buildSupport.db_model.DBTableModel;
+
 import com.buildSupport.utils.StringUtils4V;
+import com.management.model.dto.BricklayerColumnDTO;
+import com.management.model.dto.BricklayerTableDTO;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class JavaBeanModel {
     private List<JavaFiledModel> fieldList = new ArrayList();
 
 
-    public static JavaBeanModel of(DBTableModel x, String basePath, String contextPath) {
+    public static JavaBeanModel of(BricklayerTableDTO x, String basePath, String contextPath) {
         JavaBeanModel javaBeanModel = new JavaBeanModel();
         String originalTableName = x.getOriginalTableName();
         javaBeanModel.setClassName(StringUtils4V.underLine2UnCapFirst(originalTableName, false));
@@ -36,7 +37,7 @@ public class JavaBeanModel {
         ContextModel contextModel = createContextModel(javaBeanModel.getClassName(), basePath);
         contextModel.setContextPath(contextPath);//设置请求地址前缀
         javaBeanModel.setContextModel(contextModel);//上下文
-        List<JavaFiledModel> dbColumnModelList = createDbColumnModelList(x.getDbColumnModelList(), basePath);
+        List<JavaFiledModel> dbColumnModelList = createDbColumnModelList(x.getBricklayerColumnDTOList(), basePath);
         javaBeanModel.setFieldList(dbColumnModelList);//属性列表
         for (JavaFiledModel javaFiledModel : dbColumnModelList) {
             if (javaFiledModel.isPrimaryKey()) {
@@ -50,7 +51,7 @@ public class JavaBeanModel {
         return javaBeanModel;
     }
 
-    private static List<JavaFiledModel> createDbColumnModelList(List<DBColumnModel> dbColumnModelList, String basePath) {
+    private static List<JavaFiledModel> createDbColumnModelList(List<BricklayerColumnDTO> dbColumnModelList, String basePath) {
         return dbColumnModelList.stream().map(x -> JavaFiledModel.of(x)).collect(Collectors.toList());
 
     }

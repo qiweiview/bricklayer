@@ -1,8 +1,10 @@
 package com.buildSupport.db_adapter;
 
-import com.buildSupport.db_model.DBColumnModel;
-import com.buildSupport.db_model.DBTableModel;
+
 import com.buildSupport.utils.JDBCResultUtils;
+import com.management.model.dto.BricklayerColumnDTO;
+import com.management.model.dto.BricklayerTableDTO;
+
 
 import java.sql.*;
 import java.util.*;
@@ -51,6 +53,7 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
         try {
             conn = DriverManager.getConnection(dbUrl, userName, passWord);
         } catch (SQLException throwables) {
+            throwables.printStackTrace();
             throw new RuntimeException("connect to datasource fail");
         }
         return conn;
@@ -71,7 +74,7 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
             preparedStatement = conn.prepareStatement(sql);
             //数据拼接
             for (int i = 0; i < objects.length; i++) {
-                preparedStatement.setObject(i+1, objects[i]);
+                preparedStatement.setObject(i + 1, objects[i]);
             }
             resultSet = preparedStatement.executeQuery();
             List<Map> maps = JDBCResultUtils.parseResult(resultSet);
@@ -98,23 +101,24 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     }
 
     @Override
-    public List<DBTableModel> getDBTableModelsByDataSource(String dbName) {
+    public List<BricklayerTableDTO> getDBTableModelsByDataSource(String dbName) {
         List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ?", dbName);
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
             return x.get("TABLE_NAME");
         }));
-        List<DBTableModel> dbTableModels = new ArrayList<>();
+        List<BricklayerTableDTO> dbTableModels = new ArrayList<>();
         table_name.forEach((k, v) -> {
             //todo 表分组
-            DBTableModel dbTableModel = new DBTableModel();
-            List<DBColumnModel> dbColumnModelList = new ArrayList();
+            BricklayerTableDTO dbTableModel = new BricklayerTableDTO();
+            List<BricklayerColumnDTO> dbColumnModelList = new ArrayList();
             dbTableModel.setOriginalTableName(k.toString());
-            dbTableModel.setDbColumnModelList(dbColumnModelList);
+            dbTableModel.setBricklayerColumnDTOList(dbColumnModelList);
             v.forEach(z -> {
 
                 //todo 列
-                DBColumnModel dbColumnModel = new DBColumnModel();
+                BricklayerColumnDTO dbColumnModel = new BricklayerColumnDTO();
                 dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
+                dbColumnModel.setColumnType(z.getOrDefault("COLUMN_TYPE", "").toString());
                 dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
                 dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
                 dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
@@ -134,17 +138,17 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     }
 
     @Override
-    public DBTableModel getDBTableModelByName(String taleName) {
+    public BricklayerTableDTO getDBTableModelByName(String taleName) {
         List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE table_name = ?", taleName);
         //todo 表分组
-        DBTableModel dbTableModel = new DBTableModel();
-        List<DBColumnModel> dbColumnModelList = new ArrayList();
+        BricklayerTableDTO dbTableModel = new BricklayerTableDTO();
+        List<BricklayerColumnDTO> dbColumnModelList = new ArrayList();
         dbTableModel.setOriginalTableName(taleName);
-        dbTableModel.setDbColumnModelList(dbColumnModelList);
+        dbTableModel.setBricklayerColumnDTOList(dbColumnModelList);
         maps.forEach(z -> {
 
             //todo 列
-            DBColumnModel dbColumnModel = new DBColumnModel();
+            BricklayerColumnDTO dbColumnModel = new BricklayerColumnDTO();
             dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
             dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
             dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());

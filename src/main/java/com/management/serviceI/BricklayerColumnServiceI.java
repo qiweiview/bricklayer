@@ -10,6 +10,7 @@ import java.util.List;
 */
 public interface BricklayerColumnServiceI {
 
+
     public  BricklayerColumnDTO   saveBricklayerColumn(BricklayerColumnDTO bricklayerColumnDTO);
 
     public  BricklayerColumnDTO   updateBricklayerColumn(BricklayerColumnDTO bricklayerColumnDTO);
@@ -21,4 +22,6 @@ public interface BricklayerColumnServiceI {
     public  List<BricklayerColumnDTO>   listBricklayerColumn(BricklayerColumnDTO bricklayerColumnDTO);
 
     public  BricklayerColumnDTO   getBricklayerColumnById(BricklayerColumnDTO bricklayerColumnDTO);
+
+    List<BricklayerColumnDTO> getBricklayerColumnsByBelongTableId(BricklayerColumnDTO bricklayerColumnDTO);
 }

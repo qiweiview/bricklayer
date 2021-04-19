@@ -31,7 +31,7 @@ public class BricklayerColumnDTO {
 
     private  String comment;
 
-    private  Integer tableId;
+    private  Integer belongTableId;
 
 
 /*  ------------ data conversion ------------  */
@@ -44,7 +44,7 @@ public  BricklayerColumnDO toBricklayerColumnDO(){
         bricklayerColumnDO.setColumnKey(getColumnKey());
         bricklayerColumnDO.setExtra(getExtra());
         bricklayerColumnDO.setComment(getComment());
-        bricklayerColumnDO.setTableId(getTableId());
+        bricklayerColumnDO.setBelongTableId(getBelongTableId());
         return bricklayerColumnDO;
 
         }
@@ -58,7 +58,7 @@ public  BricklayerColumnVO toBricklayerColumnVO(){
         bricklayerColumnVO.setColumnKey(getColumnKey());
         bricklayerColumnVO.setExtra(getExtra());
         bricklayerColumnVO.setComment(getComment());
-        bricklayerColumnVO.setTableId(getTableId());
+        bricklayerColumnVO.setBelongTableId(getBelongTableId());
         return bricklayerColumnVO;
 
         }
@@ -149,11 +149,11 @@ public  BricklayerColumnVO toBricklayerColumnVO(){
         this.comment=comment;
     }
 
-    public Integer getTableId(){
-        return tableId;
+    public Integer getBelongTableId(){
+        return belongTableId;
     }
 
-    public void setTableId(Integer tableId){
-        this.tableId=tableId;
+    public void setBelongTableId(Integer belongTableId){
+        this.belongTableId = belongTableId;
     }
 }

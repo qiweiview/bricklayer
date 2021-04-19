@@ -1,8 +1,8 @@
 package com.buildSupport.java_bean;
 
 import com.buildSupport.db_adapter.TypeConverter;
-import com.buildSupport.db_model.DBColumnModel;
 import com.buildSupport.utils.StringUtils4V;
+import com.management.model.dto.BricklayerColumnDTO;
 import lombok.Data;
 
 /**
@@ -23,7 +23,7 @@ public class JavaFiledModel {
     private boolean autoIncrease;//自增标识
 
 
-    public static JavaFiledModel of(DBColumnModel x) {
+    public static JavaFiledModel of(BricklayerColumnDTO x) {
         JavaFiledModel javaFiledModel = new JavaFiledModel();
         javaFiledModel.setColumnComment(x.getComment());//备注
         javaFiledModel.setJavaType(TypeConverter.covert(x.getSimpleColumnType()));//java类型
