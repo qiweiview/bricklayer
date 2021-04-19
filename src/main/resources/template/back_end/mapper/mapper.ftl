@@ -27,10 +27,10 @@
         '1'as blank_
         from ${originalName}
         where 1=1
-        and del_flag=false
+
     </select>
 
- <select id="list${className}" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
+    <select id="list${className}" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
         select
         <#list fieldList as field>
             ${field.originalColumnName},
@@ -38,7 +38,7 @@
         '1'as blank_
         from ${originalName}
         where 1=1
-        and del_flag=false
+
     </select>
 
     <select id="get${className}ById" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
@@ -50,7 +50,7 @@
         from ${originalName}
         where 1=1
         and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
-        and del_flag=false
+
     </select>
 
 
@@ -59,7 +59,7 @@
         from ${originalName}
         where 1=1
         and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
-        and del_flag=false
+
     </delete>
 
     <update id="update${className}" parameterType="${contextModel.doPath}" >
@@ -75,7 +75,7 @@
         ${primaryName}=${primaryName}
         where 1=1
         and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
-        and del_flag=false
+
     </update>
 
 

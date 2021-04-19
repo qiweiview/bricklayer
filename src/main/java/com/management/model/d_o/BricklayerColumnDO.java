@@ -1,9 +1,13 @@
 package com.management.model.d_o;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.management.model.dto.BricklayerColumnDTO;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import com.baomidou.mybatisplus.annotation.*;
 
 /**
 *
@@ -52,23 +56,26 @@ public class BricklayerColumnDO {
      * 备注
      */
     @TableField(value = "comment")
-    private  String comment;
+    private String comment;
 
     /**
      * 所属吧表格
      */
     @TableField(value = "belong_table_id")
-    private  Integer belongTableId;
+    private Integer belongTableId;
 
-/*  ------------ init value ------------  */
+    @TableField(exist = false)
+    private String belongTableName;
+
+    /*  ------------ init value ------------  */
     public void doInit() {
         //setDelFlag(false);
         //setCreateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-        }
+    }
 
     public void doUpdate() {
         //setUpdateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-        }
+    }
 
     public void doDelete() {
         //setDelFlag(true);
@@ -89,26 +96,33 @@ public class BricklayerColumnDO {
     bricklayerColumnDTO.setBelongTableId(getBelongTableId());
         return bricklayerColumnDTO;
 
-}
+    }
 
 
-    public static   List<BricklayerColumnDTO>  toBricklayerColumnDTOList(List<BricklayerColumnDO> bricklayerColumnDOList){
+    public static List<BricklayerColumnDTO> toBricklayerColumnDTOList(List<BricklayerColumnDO> bricklayerColumnDOList) {
         List<BricklayerColumnDTO> collect = bricklayerColumnDOList.stream().map(x -> x.toBricklayerColumnDTO()).collect(Collectors.toList());
         return collect;
-}
-
-/*  ------------ getter setter ------------  */
-
-
-    public Integer getId(){
-    return id;
     }
 
-    public void setId(Integer id){
-    this.id=id;
+    /*  ------------ getter setter ------------  */
+
+    public String getBelongTableName() {
+        return belongTableName;
     }
 
-    public String getOriginalColumnName(){
+    public void setBelongTableName(String belongTableName) {
+        this.belongTableName = belongTableName;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getOriginalColumnName() {
     return originalColumnName;
     }
 

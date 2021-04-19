@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.BricklayerTemplateDao">
+
+    <resultMap type="com.management.model.d_o.BricklayerTemplateDO" id="BricklayerTemplateMap">
+        <id property="id" column="id"/>
+        <result property="templateName" column="template_name"/>
+        <result property="templateContent" column="template_content"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+
+    <select id="listBricklayerTemplatePage" parameterType="com.management.model.d_o.BricklayerTemplateDO"
+            resultMap="BricklayerTemplateMap">
+        select
+        id,
+        template_name,
+        template_content,
+        remark,
+        '1'as blank_
+        from bricklayer_template
+        where 1=1
+        
+    </select>
+
+    <select id="listBricklayerTemplate" parameterType="com.management.model.d_o.BricklayerTemplateDO"
+            resultMap="BricklayerTemplateMap">
+        select
+            id,
+            template_name,
+            template_content,
+            remark,
+        '1'as blank_
+        from bricklayer_template
+        where 1=1
+        
+    </select>
+
+    <select id="getBricklayerTemplateById" parameterType="com.management.model.d_o.BricklayerTemplateDO"
+            resultMap="BricklayerTemplateMap">
+        select
+        id,
+        template_name,
+        template_content,
+        remark,
+        '1'as blank_
+        from bricklayer_template
+        where 1=1
+        and id  = #{id}
+        
+    </select>
+
+
+    <delete id="deleteBricklayerTemplate" parameterType="com.management.model.d_o.BricklayerTemplateDO">
+        delete
+        from bricklayer_template
+        where 1=1
+        and id  = #{id}
+        
+    </delete>
+
+    <update id="updateBricklayerTemplate" parameterType="com.management.model.d_o.BricklayerTemplateDO">
+        update bricklayer_template
+        set
+        <if test="templateName!=null  and templateName!=''">
+            template_name = #{ templateName},
+        </if>
+        <if test="templateContent!=null  and templateContent!=''">
+            template_content = #{ templateContent},
+        </if>
+        <if test="remark!=null  and remark!=''">
+            remark = #{ remark},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>

@@ -1,25 +1,22 @@
 package com.management.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.buildSupport.build_task.BricklayerBuilder;
-import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
 import com.buildSupport.java_bean.JavaBeanModel;
 import com.management.model.dto.BricklayerDbDTO;
 import com.management.model.dto.BricklayerTableDTO;
 import com.management.model.dto.GenerateCodeDTO;
 import com.management.model.dto.TableDetailDTO;
 import com.management.model.vo.BricklayerDbVO;
-import com.management.serviceI.BricklayerColumnServiceI;
 import com.management.serviceI.BricklayerDbServiceI;
-
-import com.management.serviceI.BricklayerTableServiceI;
-import com.webSupport.model.DBInfo;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.management.utils.ResponseVo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;

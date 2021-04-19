@@ -12,8 +12,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.io.IOException;
-//import cn.anicert.university.constant.ErrorEnum;
-//import cn.anicert.university.common.entity.dto.ResponseVo;
+
 
 <#include "signature.ftl">
 @RestController

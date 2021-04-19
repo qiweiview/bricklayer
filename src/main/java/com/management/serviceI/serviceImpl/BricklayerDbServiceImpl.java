@@ -1,25 +1,25 @@
 package com.management.serviceI.serviceImpl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
-
-
 import com.management.dao.BricklayerColumnDao;
+import com.management.dao.BricklayerDbDao;
 import com.management.dao.BricklayerTableDao;
 import com.management.model.d_o.BricklayerColumnDO;
 import com.management.model.d_o.BricklayerDbDO;
-import com.management.dao.BricklayerDbDao;
 import com.management.model.d_o.BricklayerTableDO;
 import com.management.model.dto.*;
+import com.management.serviceI.BricklayerDbServiceI;
+import com.management.utils.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.management.serviceI.BricklayerDbServiceI;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import java.util.List;
-
-import com.management.utils.DataNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * create by view
@@ -217,7 +217,22 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
     @Override
     public List<BricklayerTableDTO> getBricklayerTablesByIds(GenerateCodeDTO generateCodeDTO) {
 
-        return null;
+        List<Integer> ids = generateCodeDTO.getIds();
+        //default value
+        ids.add(-1);
+
+        List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTablesByIds(generateCodeDTO);
+        Map<String, List<BricklayerColumnDO>> collect = bricklayerColumnDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongTableName()));
+
+        List<BricklayerTableDTO> rs = new ArrayList<>();
+
+        collect.forEach((k, v) -> {
+            BricklayerTableDTO bricklayerTableDTO = new BricklayerTableDTO();
+            bricklayerTableDTO.setOriginalTableName(k);
+            bricklayerTableDTO.setBricklayerColumnDTOList(BricklayerColumnDO.toBricklayerColumnDTOList(v));
+            rs.add(bricklayerTableDTO);
+        });
+        return rs;
     }
 
 }

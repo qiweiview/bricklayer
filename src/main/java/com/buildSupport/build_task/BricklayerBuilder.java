@@ -5,35 +5,36 @@ import com.buildSupport.build_task.front_end.ListPageBuildTask;
 import com.buildSupport.build_task.output_task.OutPutTask;
 import com.buildSupport.java_bean.JavaBeanModel;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class BricklayerBuilder {
-    private static List<JavaBuildTask> list = new ArrayList<>();
+    private static List<JavaBuildTask> taskList = new ArrayList<>();
 
     static {
         //back end
-        list.add(new VOBuildTask());
-        list.add(new DTOBuildTask());
-        list.add(new DOBuildTask());
-        list.add(new ControllerBuildTask());
-        list.add(new ServiceIBuildTask());
-        list.add(new ServiceImplBuildTask());
-        list.add(new DaoBuildTask());
-        list.add(new MapperBuildTask());
-        list.add(new UtilsBuildTask());
+        taskList.add(new VOBuildTask());
+        taskList.add(new DTOBuildTask());
+        taskList.add(new DOBuildTask());
+        taskList.add(new ControllerBuildTask());
+        taskList.add(new ServiceIBuildTask());
+        taskList.add(new ServiceImplBuildTask());
+        taskList.add(new DaoBuildTask());
+        taskList.add(new MapperBuildTask());
+        taskList.add(new UtilsBuildTask());
 
         //front end
-        list.add(new ListPageBuildTask());
+        taskList.add(new ListPageBuildTask());
 
     }
 
     public static  byte[] build(List<JavaBeanModel> javaBeanModels) {
         List<OutPutTask> build = new ArrayList<>();
-        list.forEach(x -> {
+        taskList.forEach(x -> {
             build.addAll(x.build(javaBeanModels));
         });
 

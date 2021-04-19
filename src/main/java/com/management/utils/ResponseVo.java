@@ -1,6 +1,5 @@
 package com.management.utils;
 
-import com.webSupport.utils.UnifiedResponse;
 
 import java.io.Serializable;
 

@@ -73,17 +73,17 @@
 <script>
     import request from "@/config/requestConfig";
 
-            export default {
+    export default {
         name: "serviceList",
         data() {
-        return {
-        queryKey: '',
-        editEnable: false,
-        editDialog: false,
-        dbConnectionDialog: false,
-        tableList: [],
-        recordRows: 5,//单页条数
-        recordCurrentPage: 1,//当前页
+            return {
+                queryKey: '',
+                editEnable: false,
+                editDialog: false,
+                dbConnectionDialog: false,
+                tableList: [],
+                recordRows: 5,//单页条数
+                recordCurrentPage: 1,//当前页
         total: 0,//总计条数
         ${className?uncap_first}Insert:{
         <#list fieldList as field>
@@ -163,7 +163,6 @@
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
         });
-        this.${className?uncap_first}Query.dbIp = this.queryKey
         request({
         url: '/${contextModel.contextPath}/${className?uncap_first}/listPage',
         method: 'post',
