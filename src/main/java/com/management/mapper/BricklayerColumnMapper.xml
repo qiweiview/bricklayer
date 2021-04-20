@@ -103,6 +103,23 @@
             #{id}
         </foreach>
     </select>
+    <select id="getBricklayerTableById" parameterType="java.lang.Integer"
+            resultMap="BricklayerColumnMap">
+        SELECT
+        a.id,
+        original_column_name,
+        simple_column_type,
+        column_type,
+        column_key,
+        extra,
+        b.original_table_name as belong_table_name,
+        COMMENT
+        FROM
+        bricklayer_column a
+        LEFT JOIN bricklayer_table b ON a.belong_table_id = b.id
+        where 1=1
+        and b.id =#{id}
+    </select>
 
 
     <delete id="deleteBricklayerColumn" parameterType="com.management.model.d_o.BricklayerColumnDO">

@@ -134,7 +134,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
         String dbName = "mysql";
         String connectionPath = "jdbc:mysql://" + bricklayerDbDO.getDbIp() + ":" + bricklayerDbDO.getDbPort() + "/" + dbName + "?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(),bricklayerDbDO.getDbPassword());
+        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(), bricklayerDbDO.getDbPassword());
 
         return mysqlAbstractDataSourceInstance;
     }
@@ -222,6 +222,9 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         ids.add(-1);
 
         List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTablesByIds(generateCodeDTO);
+        if (bricklayerColumnDOS.size() < 1) {
+            throw new RuntimeException("not found data");
+        }
         Map<String, List<BricklayerColumnDO>> collect = bricklayerColumnDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongTableName()));
 
         List<BricklayerTableDTO> rs = new ArrayList<>();
@@ -234,5 +237,19 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         });
         return rs;
     }
+
+    @Override
+    public BricklayerTableDTO getBricklayerTableById(Integer id) {
+        List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTableById(id);
+        if (bricklayerColumnDOS.size() < 1) {
+            throw new RuntimeException("not found data");
+        }
+
+        BricklayerTableDTO bricklayerTableDTO = new BricklayerTableDTO();
+        bricklayerTableDTO.setOriginalTableName(bricklayerColumnDOS.get(0).getBelongTableName());
+        bricklayerTableDTO.setBricklayerColumnDTOList(BricklayerColumnDO.toBricklayerColumnDTOList(bricklayerColumnDOS));
+        return bricklayerTableDTO;
+    }
+
 
 }

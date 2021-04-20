@@ -7,7 +7,6 @@ import com.management.dao.BricklayerTableDao;
 import com.management.model.dto.BricklayerTableDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.management.serviceI.BricklayerTableServiceI;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,7 +15,6 @@ import java.util.List;
 
 import com.management.utils.DataNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
-//import cn.anicert.university.common.exception.EntityNotFoundException;
 
 /**
  * create by view

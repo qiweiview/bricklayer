@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.management.dao.BricklayerTemplateDao;
 import com.management.model.d_o.BricklayerTemplateDO;
 import com.management.model.dto.BricklayerTemplateDTO;
+import com.management.model.dto.SimulatedRenderDTO;
 import com.management.serviceI.BricklayerTemplateServiceI;
 import com.management.utils.DataNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +20,12 @@ import java.util.List;
  */
 
 @Service
+@RequiredArgsConstructor
 public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI {
 
     private final BricklayerTemplateDao bricklayerTemplateDao;
 
-    @Autowired
-    public BricklayerTemplateServiceImpl(BricklayerTemplateDao bricklayerTemplateDao) {
-        this.bricklayerTemplateDao = bricklayerTemplateDao;
-    }
+
 
     @Override
     public BricklayerTemplateDTO saveBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO) {
@@ -82,5 +82,7 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
         }
         return bricklayerTemplateDO.toBricklayerTemplateDTO();
     }
+
+
 
 }

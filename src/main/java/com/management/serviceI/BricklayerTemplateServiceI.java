@@ -2,6 +2,7 @@ package com.management.serviceI;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.management.model.dto.BricklayerTemplateDTO;
+import com.management.model.dto.SimulatedRenderDTO;
 
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface BricklayerTemplateServiceI {
     public List<BricklayerTemplateDTO> listBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO);
 
     public BricklayerTemplateDTO getBricklayerTemplateById(BricklayerTemplateDTO bricklayerTemplateDTO);
+
+
+
 }

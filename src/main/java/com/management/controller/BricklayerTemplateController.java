@@ -2,10 +2,20 @@ package com.management.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.buildSupport.java_bean.JavaBeanModel;
+import com.buildSupport.utils.FreemarkerTemplateBuilder;
+import com.management.model.dto.BricklayerTableDTO;
 import com.management.model.dto.BricklayerTemplateDTO;
+import com.management.model.dto.GenerateCodeDTO;
+import com.management.model.dto.SimulatedRenderDTO;
 import com.management.model.vo.BricklayerTemplateVO;
+import com.management.model.vo.SimulatedRenderVO;
+import com.management.serviceI.BricklayerDbServiceI;
 import com.management.serviceI.BricklayerTemplateServiceI;
 import com.management.utils.ResponseVo;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 //import cn.anicert.university.constant.ErrorEnum;
 //import cn.anicert.university.common.entity.dto.ResponseVo;
 
@@ -21,14 +37,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/bricklayerTemplate")
+@RequiredArgsConstructor
 public class BricklayerTemplateController {
 
     private final BricklayerTemplateServiceI bricklayerTemplateServiceI;
 
-    @Autowired
-    public BricklayerTemplateController(BricklayerTemplateServiceI bricklayerTemplateServiceI) {
-        this.bricklayerTemplateServiceI = bricklayerTemplateServiceI;
-    }
+    private final BricklayerDbServiceI bricklayerDbServiceI;
 
     /**
      * 创建BricklayerTemplate
@@ -93,6 +107,29 @@ public class BricklayerTemplateController {
         BricklayerTemplateVO bricklayerTemplateVO = bricklayerTemplateDTO.toBricklayerTemplateVO();
         responseVo.setData(bricklayerTemplateVO);
         return responseVo;
+    }
+
+
+    @RequestMapping("/performSimulatedRendering")
+    public ResponseVo<BricklayerTemplateVO> performSimulatedRendering(@RequestBody(required = false) SimulatedRenderDTO simulatedRenderDTO) {
+        ResponseVo responseVo = new ResponseVo();
+        BricklayerTableDTO dbTableModels = bricklayerDbServiceI.getBricklayerTableById(simulatedRenderDTO.getModelId());
+        JavaBeanModel of = JavaBeanModel.of(dbTableModels, simulatedRenderDTO.getBasePath(), simulatedRenderDTO.getContextPath());
+        Template templateByString = FreemarkerTemplateBuilder.getTemplateByString(simulatedRenderDTO.getTemplateContent());
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+        try {
+            templateByString.process(of, outputStreamWriter);
+            SimulatedRenderVO simulatedRenderVO = new SimulatedRenderVO();
+            simulatedRenderVO.setRenderResult(new String(byteArrayOutputStream.toByteArray()));
+            responseVo.setData(simulatedRenderVO);
+            return responseVo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseVo.error("渲染异常");
+        }
+
+
     }
 
     @ExceptionHandler

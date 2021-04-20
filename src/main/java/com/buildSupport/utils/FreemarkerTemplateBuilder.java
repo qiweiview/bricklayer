@@ -3,6 +3,7 @@ package com.buildSupport.utils;
 import com.buildSupport.StructureConstant;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.StringTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.*;
 
@@ -40,8 +41,6 @@ public class FreemarkerTemplateBuilder {
 
         MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoaders);
 
-//        StringTemplateLoader stringTemplateLoader=new StringTemplateLoader();
-//        stringTemplateLoader.putTemplate("tt","hi ${name}");
 
         cfg.setTemplateLoader(mtl);
         cfg.setDefaultEncoding("UTF-8");
@@ -56,6 +55,24 @@ public class FreemarkerTemplateBuilder {
         }
     }
 
+    public static Template getTemplateByString(String templateString) {
+        String fixName = "fixName";
+        StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
+        stringTemplateLoader.putTemplate(fixName, templateString);
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
+        cfg.setTemplateLoader(stringTemplateLoader);
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setLogTemplateExceptions(false);
+        cfg.setWrapUncheckedExceptions(true);
+        cfg.setFallbackOnNullLoopVariable(false);
+        try {
+            Template template = cfg.getTemplate(fixName);
+            return template;
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
     public static Template getTemplate(String templateName) {
         try {

@@ -33,4 +33,6 @@ public interface BricklayerColumnDao extends BaseMapper<BricklayerColumnDO>{
 
     List<BricklayerColumnDO> getBricklayerTablesByIds(GenerateCodeDTO generateCodeDTO);
 
+    List<BricklayerColumnDO> getBricklayerTableById(@Param("id") Integer id);
+
 }

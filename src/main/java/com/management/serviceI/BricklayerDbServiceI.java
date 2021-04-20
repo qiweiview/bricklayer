@@ -1,11 +1,9 @@
 package com.management.serviceI;
 
 
-import com.management.model.dto.BricklayerDbDTO;
+import com.management.model.dto.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.management.model.dto.BricklayerTableDTO;
-import com.management.model.dto.GenerateCodeDTO;
-import com.management.model.dto.TableDetailDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -41,4 +39,7 @@ public interface BricklayerDbServiceI {
     List<String> getTables(TableDetailDTO tableDetailDTO);
 
     List<BricklayerTableDTO> getBricklayerTablesByIds(GenerateCodeDTO generateCodeDTO);
+
+    BricklayerTableDTO getBricklayerTableById(Integer id);
+
 }

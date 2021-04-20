@@ -2,7 +2,6 @@ package com.buildSupport.utils;
 
 
 public class SuffixManager {
-    public static String before = "com";
     public static String dOSuffix = "DO";
     public static String dTOSuffix = "DTO";
     public static String vOSuffix = "VO";
