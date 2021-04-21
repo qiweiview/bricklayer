@@ -8,6 +8,7 @@ import com.management.model.dto.BricklayerTemplateDTO;
 import com.management.model.dto.SimulatedRenderDTO;
 import com.management.serviceI.BricklayerTemplateServiceI;
 import com.management.utils.DataNotFoundException;
+import com.management.utils.MessageRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,16 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
     private final BricklayerTemplateDao bricklayerTemplateDao;
 
 
-
     @Override
     public BricklayerTemplateDTO saveBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO) {
+
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
+
+        BricklayerTemplateDO bricklayerTemplateByTemplateName = bricklayerTemplateDao.getBricklayerTemplateByTemplateName(bricklayerTemplateDO);
+        if (bricklayerTemplateByTemplateName != null) {
+            throw new MessageRuntimeException("已存在同名模板：" + bricklayerTemplateByTemplateName.getTemplateName());
+        }
+
         bricklayerTemplateDO.doInit();
         bricklayerTemplateDao.insert(bricklayerTemplateDO);
         return bricklayerTemplateDO.toBricklayerTemplateDTO();
@@ -82,7 +89,6 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
         }
         return bricklayerTemplateDO.toBricklayerTemplateDTO();
     }
-
 
 
 }

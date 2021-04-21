@@ -115,12 +115,7 @@ public class BricklayerDbController {
         return responseVo;
     }
 
-    @ExceptionHandler
-    public ResponseVo exp(Exception ex, HttpServletResponse httpServletResponse) {
-        ex.printStackTrace();
-        httpServletResponse.setStatus(500);
-        return ResponseVo.error("服务器异常");
-    }
+
 
     /* ----------- 分割线 -------------- */
 

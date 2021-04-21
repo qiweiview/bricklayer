@@ -52,6 +52,20 @@
         
     </select>
 
+    <select id="getBricklayerTemplateByTemplateName" parameterType="com.management.model.d_o.BricklayerTemplateDO"
+            resultMap="BricklayerTemplateMap">
+        select
+        id,
+        template_name,
+        template_content,
+        remark,
+        '1'as blank_
+        from bricklayer_template
+        where 1=1
+        and template_name  = #{templateName}
+
+    </select>
+
 
     <delete id="deleteBricklayerTemplate" parameterType="com.management.model.d_o.BricklayerTemplateDO">
         delete

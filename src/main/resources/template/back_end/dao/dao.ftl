@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
-<#include "signature.ftl">
+
 @Mapper
 public interface ${contextModel.daoName} extends BaseMapper<${contextModel.doName}>{
 

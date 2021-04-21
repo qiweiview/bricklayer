@@ -14,7 +14,6 @@ import java.util.List;
 import java.io.IOException;
 
 
-<#include "signature.ftl">
 @RestController
 @RequestMapping("/${className?uncap_first}")
 public class ${contextModel.controllerName} {

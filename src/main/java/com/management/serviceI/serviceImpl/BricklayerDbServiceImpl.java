@@ -12,6 +12,7 @@ import com.management.model.d_o.BricklayerTableDO;
 import com.management.model.dto.*;
 import com.management.serviceI.BricklayerDbServiceI;
 import com.management.utils.DataNotFoundException;
+import com.management.utils.MessageRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,7 +105,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
         BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
         if (bricklayerDbById == null) {
-            throw new RuntimeException("can not found the datasource");
+            throw new MessageRuntimeException("can not found the datasource");
         }
 
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
@@ -120,7 +121,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
         BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
         if (bricklayerDbById == null) {
-            throw new RuntimeException("can not found the datasource");
+            throw new MessageRuntimeException("can not found the datasource");
         }
 
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
@@ -164,7 +165,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         bricklayerDbDO.setId(bricklayerTableDTO.getDeviceId());
         BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
         if (bricklayerDbById == null) {
-            throw new RuntimeException("can not found the datasource");
+            throw new MessageRuntimeException("can not found the datasource");
         }
 
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
@@ -207,7 +208,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
         BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
         if (bricklayerDbById == null) {
-            throw new RuntimeException("can not found the datasource");
+            throw new MessageRuntimeException("can not found the datasource");
         }
         MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
         List<String> tables = mysqlAbstractDataSourceInstance.getTables(tableDetailDTO.getDataSourceName());
@@ -223,7 +224,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
         List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTablesByIds(generateCodeDTO);
         if (bricklayerColumnDOS.size() < 1) {
-            throw new RuntimeException("not found data");
+            throw new MessageRuntimeException("not found data");
         }
         Map<String, List<BricklayerColumnDO>> collect = bricklayerColumnDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongTableName()));
 
@@ -242,7 +243,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
     public BricklayerTableDTO getBricklayerTableById(Integer id) {
         List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTableById(id);
         if (bricklayerColumnDOS.size() < 1) {
-            throw new RuntimeException("not found data");
+            throw new MessageRuntimeException("not found data");
         }
 
         BricklayerTableDTO bricklayerTableDTO = new BricklayerTableDTO();

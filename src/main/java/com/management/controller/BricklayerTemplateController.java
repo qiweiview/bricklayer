@@ -6,31 +6,26 @@ import com.buildSupport.java_bean.JavaBeanModel;
 import com.buildSupport.utils.FreemarkerTemplateBuilder;
 import com.management.model.dto.BricklayerTableDTO;
 import com.management.model.dto.BricklayerTemplateDTO;
-import com.management.model.dto.GenerateCodeDTO;
 import com.management.model.dto.SimulatedRenderDTO;
 import com.management.model.vo.BricklayerTemplateVO;
 import com.management.model.vo.SimulatedRenderVO;
 import com.management.serviceI.BricklayerDbServiceI;
 import com.management.serviceI.BricklayerTemplateServiceI;
+import com.management.utils.MessageRuntimeException;
 import com.management.utils.ResponseVo;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
+
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-//import cn.anicert.university.constant.ErrorEnum;
-//import cn.anicert.university.common.entity.dto.ResponseVo;
 
 /**
  * create by view
@@ -126,18 +121,13 @@ public class BricklayerTemplateController {
             return responseVo;
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseVo.error("渲染异常");
+            throw new MessageRuntimeException("渲染异常");
         }
 
 
     }
 
-    @ExceptionHandler
-    public ResponseVo exp(Exception ex, HttpServletResponse httpServletResponse) {
-        ex.printStackTrace();
-        httpServletResponse.setStatus(500);
-        return ResponseVo.error("服务器异常");
-    }
+
 
 
 }

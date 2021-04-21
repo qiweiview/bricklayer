@@ -5,7 +5,7 @@ import ${contextModel.voPath};
 import java.util.List;
 import java.util.stream.Collectors;
 
-<#include "signature.ftl">
+
 public class ${contextModel.dtoName} {
 
     // page field

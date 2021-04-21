@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-<#include "signature.ftl">
+
+
 @TableName("${originalName}")
 public class ${contextModel.doName} {
 <#list fieldList as field>

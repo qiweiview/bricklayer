@@ -4,7 +4,8 @@ import ${contextModel.dtoPath};
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import java.util.List;
 
-<#include "signature.ftl">
+
+
 public interface ${contextModel.serviceIName} {
 
     public  ${contextModel.dtoName}   save${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first});

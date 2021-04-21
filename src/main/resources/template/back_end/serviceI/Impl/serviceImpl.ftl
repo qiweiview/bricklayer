@@ -12,7 +12,8 @@ import java.util.List;
 import ${contextModel.utilsBase}.DataNotFoundException;
 //import cn.anicert.university.common.exception.EntityNotFoundException;
 
-<#include "signature.ftl">
+
+
 
 @Service
 public class ${contextModel.serviceImplName} implements ${contextModel.serviceIName}{

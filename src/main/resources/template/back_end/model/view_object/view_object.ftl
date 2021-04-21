@@ -2,7 +2,8 @@ ${contextModel.voPackage}
 
 
 
-<#include "signature.ftl">
+
+
 public class ${contextModel.voName} {
 <#list fieldList as field>
 

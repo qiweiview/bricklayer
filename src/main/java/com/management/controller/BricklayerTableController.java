@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.management.utils.ResponseVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import javax.servlet.ServletOutputStream;
+
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.io.IOException;
 //import cn.anicert.university.constant.ErrorEnum;
 //import cn.anicert.university.common.entity.dto.ResponseVo;
 
@@ -97,11 +95,6 @@ public class BricklayerTableController {
         }
 
 
-    @ExceptionHandler
-    public ResponseVo exp(Exception ex, HttpServletResponse httpServletResponse) {
-        ex.printStackTrace();
-        httpServletResponse.setStatus(500);
-        return ResponseVo.error("服务器异常");
-    }
+
 
 }
