@@ -22,7 +22,9 @@
         '1'as blank_
         from bricklayer_template
         where 1=1
-        
+        <if test="do.templateName!=null  and do.templateName!=''">
+            and template_name like concat('%',#{ do.templateName},'%')
+        </if>
     </select>
 
     <select id="listBricklayerTemplate" parameterType="com.management.model.d_o.BricklayerTemplateDO"

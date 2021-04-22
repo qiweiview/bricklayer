@@ -9,21 +9,19 @@ import ${contextModel.serviceIPath};
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import ${contextModel.utilsBase}.DataNotFoundException;
-//import cn.anicert.university.common.exception.EntityNotFoundException;
 
 
 
 
 @Service
+@RequiredArgsConstructor
 public class ${contextModel.serviceImplName} implements ${contextModel.serviceIName}{
 
     private final ${contextModel.daoName} ${contextModel.daoName?uncap_first};
 
-    @Autowired
-    public ${contextModel.serviceImplName}(${contextModel.daoName} ${contextModel.daoName?uncap_first}){
-        this.${contextModel.daoName?uncap_first} =${contextModel.daoName?uncap_first};
-        }
+
 
     @Override
     public  ${contextModel.dtoName}   save${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first}){
