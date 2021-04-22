@@ -2,17 +2,18 @@
     <el-row style="padding: 10px">
 
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-            <el-input @change="query${className}" clearable v-model="queryKey" placeholder="输入查询ip"
-        style="width: 20%"></el-input>
+            <el-input @change="query${className}" clearable v-model="queryKey" placeholder="输入查询主键"
+                      style="width: 20%"></el-input>
             <el-button size="mini" @click="query${className}" style="margin-left:15px">查 询</el-button>
             <el-button size="mini" style="margin-left: 15px;" @click="openDBConnectDialog">新 增</el-button>
             <el-table :data="tableList">
-            <#list fieldList as field>
-             <el-table-column label="${field.columnComment}">
-                <template slot-scope="scope"><span style="text-align: left">{{ scope.row.${field.beanName} }}</span>
-                </template>
-             </el-table-column>
-            </#list>
+                <#list fieldList as field>
+                    <el-table-column label="${field.columnComment}">
+                        <template slot-scope="scope"><span
+                                    style="text-align: left">{{ scope.row.${field.beanName} }}</span>
+                        </template>
+                    </el-table-column>
+                </#list>
                 <el-table-column label="操作" width="300px">
                     <template slot-scope="scope">
                         <el-button size="mini" type="success" @click="openViewDialog(scope.row)">查 看</el-button>
@@ -84,24 +85,28 @@
                 tableList: [],
                 recordRows: 5,//单页条数
                 recordCurrentPage: 1,//当前页
-        total: 0,//总计条数
-        ${className?uncap_first}Insert:{
-        <#list fieldList as field>
-            ${field.beanName}: '',
-        </#list>
+                total: 0,//总计条数
+                ${className?uncap_first}Insert: {
+            <#list fieldList as field>
+            ${field.beanName}:
+            '',
+            </#list>
         },
-        ${className?uncap_first}Edit: {},
-        ${className?uncap_first}Query: {
-        <#list fieldList as field>
-            ${field.beanName}: '',
-        </#list>
-        }
+            ${className?uncap_first}Edit: {
+            }
+        ,
+            ${className?uncap_first}Query: {
+                <#list fieldList as field>
+                ${field.beanName}:
+                '',
+                </#list>
+            }
         }
         },
         methods: {
-        clearInsertForm() {
-        this.${className?uncap_first}Insert = {
-        <#list fieldList as field>
+            clearInsertForm() {
+                this.${className?uncap_first}Insert = {
+                <#list fieldList as field>
             ${field.beanName}: '',
         </#list>
         }
