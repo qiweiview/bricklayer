@@ -23,6 +23,8 @@ public class BricklayerProjectDTO {
 
     private String contextPath;
 
+    private TreeNodeDTO tree;
+
 
     /*  ------------ data conversion ------------  */
     public BricklayerProjectDO toBricklayerProjectDO() {
@@ -57,6 +59,15 @@ public class BricklayerProjectDTO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public TreeNodeDTO getTree() {
+        return tree;
+    }
+
+    public void setTree(TreeNodeDTO tree) {
+        this.tree = tree;
+    }
+
     public int getCurrent() {
         return current;
     }

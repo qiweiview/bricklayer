@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.BricklayerDirectDao">
+
+    <resultMap type="com.management.model.d_o.BricklayerDirectDO" id="BricklayerDirectMap">
+        <id property="id" column="id"/>
+        <result property="belongProjectId" column="belong_project_id"/>
+        <result property="directName" column="direct_name"/>
+        <result property="directType" column="direct_type"/>
+        <result property="parentDirectId" column="parent_direct_id"/>
+    </resultMap>
+
+
+    <select id="listBricklayerDirectPage" parameterType="com.management.model.d_o.BricklayerDirectDO"
+            resultMap="BricklayerDirectMap">
+        select
+        belong_project_id,
+        direct_name,
+        direct_type,
+        id,
+        parent_direct_id,
+        '1'as blank_
+        from bricklayer_direct
+        where 1=1
+
+    </select>
+
+    <select id="listBricklayerDirect" parameterType="com.management.model.d_o.BricklayerDirectDO"
+            resultMap="BricklayerDirectMap">
+        select
+            belong_project_id,
+            direct_name,
+            direct_type,
+            id,
+            parent_direct_id,
+        '1'as blank_
+        from bricklayer_direct
+        where 1=1
+
+    </select>
+
+    <select id="getBricklayerDirectById" parameterType="com.management.model.d_o.BricklayerDirectDO"
+            resultMap="BricklayerDirectMap">
+        select
+        belong_project_id,
+        direct_name,
+        direct_type,
+        id,
+        parent_direct_id,
+        '1'as blank_
+        from bricklayer_direct
+        where 1=1
+        and id  = #{id}
+
+    </select>
+
+    <select id="listBricklayerDirectsByProjectId"  parameterType="java.lang.Integer" resultType="com.management.model.d_o.BricklayerDirectDO">
+          select
+        belong_project_id,
+        direct_name,
+        direct_type,
+        id,
+        parent_direct_id,
+        '1'as blank_
+        from bricklayer_direct
+        where 1=1
+        and belong_project_id  = #{id}
+    </select>
+
+
+    <delete id="deleteBricklayerDirect" parameterType="com.management.model.d_o.BricklayerDirectDO">
+        delete
+        from bricklayer_direct
+        where 1=1
+        and id  = #{id}
+
+    </delete>
+    <delete id="deleteDirectByProjectId" parameterType="java.lang.Integer">
+        delete
+        from bricklayer_direct
+        where 1=1
+        and belong_project_id  = #{id}
+    </delete>
+
+    <update id="updateBricklayerDirect" parameterType="com.management.model.d_o.BricklayerDirectDO">
+        update bricklayer_direct
+        set
+        <if test="belongProjectId!=null ">
+            belong_project_id = #{ belongProjectId},
+        </if>
+        <if test="directName!=null  and directName!=''">
+            direct_name = #{ directName},
+        </if>
+        <if test="directType!=null  and directType!=''">
+            direct_type = #{ directType},
+        </if>
+        <if test="parentDirectId!=null ">
+            parent_direct_id = #{ parentDirectId},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>
