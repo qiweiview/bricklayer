@@ -15,8 +15,13 @@ public class TreeNodeDTO {
 
     private String label;
 
-    private String templateId;
+    private Integer templateId;
 
-    List<TreeNodeDTO> children=new ArrayList<>();
+    private List<TreeNodeDTO> children = new ArrayList<>();
+
+
+    public void addChild(TreeNodeDTO treeNodeDTO) {
+        children.add(treeNodeDTO);
+    }
 
 }

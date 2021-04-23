@@ -2,6 +2,7 @@ package com.management.model.dto;
 
 import com.management.model.d_o.BricklayerDirectDO;
 import com.management.model.vo.BricklayerDirectVO;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,7 @@ public class BricklayerDirectDTO {
 
     private  String directName;
 
-    private  String directType;
+    private String directFullPath;
 
     private  Integer id;
 
@@ -29,9 +30,9 @@ public class BricklayerDirectDTO {
 public  BricklayerDirectDO toBricklayerDirectDO(){
         BricklayerDirectDO bricklayerDirectDO =new BricklayerDirectDO();
         bricklayerDirectDO.setBelongProjectId(getBelongProjectId());
-        bricklayerDirectDO.setDirectName(getDirectName());
-        bricklayerDirectDO.setDirectType(getDirectType());
-        bricklayerDirectDO.setId(getId());
+    bricklayerDirectDO.setDirectName(getDirectName());
+    bricklayerDirectDO.setDirectFullPath(getDirectFullPath());
+    bricklayerDirectDO.setId(getId());
         bricklayerDirectDO.setParentDirectId(getParentDirectId());
         return bricklayerDirectDO;
 
@@ -40,9 +41,9 @@ public  BricklayerDirectDO toBricklayerDirectDO(){
 public  BricklayerDirectVO toBricklayerDirectVO(){
         BricklayerDirectVO bricklayerDirectVO =new BricklayerDirectVO();
         bricklayerDirectVO.setBelongProjectId(getBelongProjectId());
-        bricklayerDirectVO.setDirectName(getDirectName());
-        bricklayerDirectVO.setDirectType(getDirectType());
-        bricklayerDirectVO.setId(getId());
+    bricklayerDirectVO.setDirectName(getDirectName());
+    bricklayerDirectVO.setDirectFullPath(getDirectFullPath());
+    bricklayerDirectVO.setId(getId());
         bricklayerDirectVO.setParentDirectId(getParentDirectId());
         return bricklayerDirectVO;
 
@@ -86,28 +87,28 @@ public  BricklayerDirectVO toBricklayerDirectVO(){
         this.belongProjectId=belongProjectId;
     }
 
-    public String getDirectName(){
+    public String getDirectName() {
         return directName;
     }
 
-    public void setDirectName(String directName){
-        this.directName=directName;
+    public void setDirectName(String directName) {
+        this.directName = directName;
     }
 
-    public String getDirectType(){
-        return directType;
+    public String getDirectFullPath() {
+        return directFullPath;
     }
 
-    public void setDirectType(String directType){
-        this.directType=directType;
+    public void setDirectFullPath(String directFullPath) {
+        this.directFullPath = directFullPath;
     }
 
-    public Integer getId(){
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id){
-        this.id=id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getParentDirectId(){

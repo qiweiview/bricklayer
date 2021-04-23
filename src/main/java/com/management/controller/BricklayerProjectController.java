@@ -77,7 +77,7 @@ public class BricklayerProjectController {
     @RequestMapping("/getById")
     public ResponseVo<BricklayerProjectVO> getBricklayerProjectById(@RequestBody(required = false) BricklayerProjectDTO bricklayerProjectDTO) {
         ResponseVo responseVo = new ResponseVo();
-        bricklayerProjectDTO = bricklayerProjectServiceI.getBricklayerProjectById(bricklayerProjectDTO);
+        bricklayerProjectDTO = bricklayerProjectServiceI.getBricklayerProjectByIdWithTree(bricklayerProjectDTO);
         BricklayerProjectVO bricklayerProjectVO = bricklayerProjectDTO.toBricklayerProjectVO();
         responseVo.setData(bricklayerProjectVO);
         return responseVo;

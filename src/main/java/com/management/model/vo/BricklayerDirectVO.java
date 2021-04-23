@@ -10,7 +10,7 @@ public class BricklayerDirectVO {
 
     private  String directName;
 
-    private  String directType;
+    private String directFullPath;
 
     private  Integer id;
 
@@ -30,28 +30,28 @@ public class BricklayerDirectVO {
     this.belongProjectId=belongProjectId;
     }
 
-    public String getDirectName(){
+    public String getDirectName() {
         return directName;
-        }
-
-    public void setDirectName(String directName){
-    this.directName=directName;
     }
 
-    public String getDirectType(){
-        return directType;
-        }
-
-    public void setDirectType(String directType){
-    this.directType=directType;
+    public void setDirectName(String directName) {
+        this.directName = directName;
     }
 
-    public Integer getId(){
+    public String getDirectFullPath() {
+        return directFullPath;
+    }
+
+    public void setDirectFullPath(String directFullPath) {
+        this.directFullPath = directFullPath;
+    }
+
+    public Integer getId() {
         return id;
-        }
+    }
 
-    public void setId(Integer id){
-    this.id=id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getParentDirectId(){

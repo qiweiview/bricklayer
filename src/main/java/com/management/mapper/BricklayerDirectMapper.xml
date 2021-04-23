@@ -8,7 +8,7 @@
         <id property="id" column="id"/>
         <result property="belongProjectId" column="belong_project_id"/>
         <result property="directName" column="direct_name"/>
-        <result property="directType" column="direct_type"/>
+        <result property="directFullPath" column="direct_full_path"/>
         <result property="parentDirectId" column="parent_direct_id"/>
     </resultMap>
 
@@ -18,7 +18,7 @@
         select
         belong_project_id,
         direct_name,
-        direct_type,
+        direct_full_path,
         id,
         parent_direct_id,
         '1'as blank_
@@ -32,7 +32,7 @@
         select
             belong_project_id,
             direct_name,
-            direct_type,
+            direct_full_path,
             id,
             parent_direct_id,
         '1'as blank_
@@ -46,7 +46,7 @@
         select
         belong_project_id,
         direct_name,
-        direct_type,
+        direct_full_path,
         id,
         parent_direct_id,
         '1'as blank_
@@ -60,7 +60,7 @@
           select
         belong_project_id,
         direct_name,
-        direct_type,
+        direct_full_path,
         id,
         parent_direct_id,
         '1'as blank_
@@ -84,6 +84,16 @@
         and belong_project_id  = #{id}
     </delete>
 
+    <delete id="deleteByDirectIds" parameterType="java.util.List">
+        delete
+        from bricklayer_direct
+        where 1=1
+        and id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
     <update id="updateBricklayerDirect" parameterType="com.management.model.d_o.BricklayerDirectDO">
         update bricklayer_direct
         set
@@ -93,8 +103,8 @@
         <if test="directName!=null  and directName!=''">
             direct_name = #{ directName},
         </if>
-        <if test="directType!=null  and directType!=''">
-            direct_type = #{ directType},
+        <if test="directFullPath!=null  and directFullPath!=''">
+            direct_full_path = #{ directFullPath},
         </if>
         <if test="parentDirectId!=null ">
             parent_direct_id = #{ parentDirectId},

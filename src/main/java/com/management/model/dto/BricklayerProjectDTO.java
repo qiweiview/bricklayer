@@ -43,6 +43,7 @@ public class BricklayerProjectDTO {
         bricklayerProjectVO.setProjectName(getProjectName());
         bricklayerProjectVO.setProjectDescription(getProjectDescription());
         bricklayerProjectVO.setContextPath(getContextPath());
+        bricklayerProjectVO.setTree(getTree());
         return bricklayerProjectVO;
 
     }

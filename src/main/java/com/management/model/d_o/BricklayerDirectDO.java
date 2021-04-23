@@ -1,11 +1,13 @@
 package com.management.model.d_o;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.management.model.dto.BricklayerDirectDTO;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import com.baomidou.mybatisplus.annotation.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 
 
@@ -27,8 +29,8 @@ public class BricklayerDirectDO {
     /**
      * 文件夹类型
      */
-    @TableField(value = "direct_type")
-    private  String directType;
+    @TableField(value = "direct_full_path")
+    private String directFullPath;
 
     /**
      * 
@@ -62,9 +64,9 @@ public class BricklayerDirectDO {
     public  BricklayerDirectDTO toBricklayerDirectDTO(){
     BricklayerDirectDTO bricklayerDirectDTO =new BricklayerDirectDTO();
     bricklayerDirectDTO.setBelongProjectId(getBelongProjectId());
-    bricklayerDirectDTO.setDirectName(getDirectName());
-    bricklayerDirectDTO.setDirectType(getDirectType());
-    bricklayerDirectDTO.setId(getId());
+        bricklayerDirectDTO.setDirectName(getDirectName());
+        bricklayerDirectDTO.setDirectFullPath(getDirectFullPath());
+        bricklayerDirectDTO.setId(getId());
     bricklayerDirectDTO.setParentDirectId(getParentDirectId());
         return bricklayerDirectDTO;
 
@@ -86,28 +88,28 @@ public class BricklayerDirectDO {
     this.belongProjectId=belongProjectId;
     }
 
-    public String getDirectName(){
-    return directName;
+    public String getDirectName() {
+        return directName;
     }
 
-    public void setDirectName(String directName){
-    this.directName=directName;
+    public void setDirectName(String directName) {
+        this.directName = directName;
     }
 
-    public String getDirectType(){
-    return directType;
+    public String getDirectFullPath() {
+        return directFullPath;
     }
 
-    public void setDirectType(String directType){
-    this.directType=directType;
+    public void setDirectFullPath(String directFullPath) {
+        this.directFullPath = directFullPath;
     }
 
-    public Integer getId(){
-    return id;
+    public Integer getId() {
+        return id;
     }
 
-    public void setId(Integer id){
-    this.id=id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getParentDirectId(){

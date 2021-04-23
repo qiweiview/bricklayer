@@ -1,6 +1,8 @@
 package com.management.model.vo;
 
 
+import com.management.model.dto.TreeNodeDTO;
+
 public class BricklayerProjectVO {
 
     private Integer id;
@@ -11,11 +13,20 @@ public class BricklayerProjectVO {
 
     private String contextPath;
 
+    private TreeNodeDTO tree;
 
     /*  ------------ data conversion ------------  */
 
 
     /*  ------------ getter setter ------------  */
+
+    public TreeNodeDTO getTree() {
+        return tree;
+    }
+
+    public void setTree(TreeNodeDTO tree) {
+        this.tree = tree;
+    }
 
     public Integer getId() {
         return id;
