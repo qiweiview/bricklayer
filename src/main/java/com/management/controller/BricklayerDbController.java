@@ -3,8 +3,6 @@ package com.management.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.buildSupport.build_task.BricklayerBuilder;
-import com.buildSupport.java_bean.JavaBeanModel;
 import com.management.model.dto.BricklayerDbDTO;
 import com.management.model.dto.BricklayerTableDTO;
 import com.management.model.dto.GenerateCodeDTO;
@@ -13,16 +11,12 @@ import com.management.model.vo.BricklayerDbVO;
 import com.management.serviceI.BricklayerDbServiceI;
 import com.management.utils.ResponseVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -184,18 +178,19 @@ public class BricklayerDbController {
 
     @RequestMapping("/generateCode")
     public void generateCode(@RequestBody GenerateCodeDTO generateCodeDTO, HttpServletResponse httpServletResponse) {
-        List<BricklayerTableDTO> dbTableModels = bricklayerDbServiceI.getBricklayerTablesByIds(generateCodeDTO);
-        List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x, generateCodeDTO.getBasePath(), generateCodeDTO.getContextPath())).collect(Collectors.toList());
-        byte[] build = BricklayerBuilder.build(collect);
-        httpServletResponse.setContentType("charset=utf-8");
-
-        try {
-            ServletOutputStream out = httpServletResponse.getOutputStream();
-            out.write(build);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(generateCodeDTO);
+//        List<BricklayerTableDTO> dbTableModels = bricklayerDbServiceI.getBricklayerTablesByIds(generateCodeDTO);
+//        List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x, generateCodeDTO.getBasePath(), generateCodeDTO.getContextPath())).collect(Collectors.toList());
+//        byte[] build = BricklayerBuilder.build(collect);
+//        httpServletResponse.setContentType("charset=utf-8");
+//
+//        try {
+//            ServletOutputStream out = httpServletResponse.getOutputStream();
+//            out.write(build);
+//            out.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
