@@ -1,17 +1,17 @@
-${contextModel.dtoPackage}
+package ${basePath};
 
-import ${contextModel.doPath};
-import ${contextModel.voPath};
+import com.model.dto.${className}DO;
+import com.model.dto.${className}VO;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class ${contextModel.dtoName} {
+public class ${className}DTO {
 
-    // page field
-    private int current;
+// page field
+private int current;
 
-    private int size;
+private int size;
 
 <#list fieldList as field>
 
@@ -20,43 +20,50 @@ public class ${contextModel.dtoName} {
 
 
 /*  ------------ data conversion ------------  */
-public  ${contextModel.doName} to${contextModel.doName}(){
-        ${contextModel.doName} ${contextModel.doName?uncap_first} =new ${contextModel.doName}();
+public  ${className}DO to${className}DO(){
+${className}DO ${className?uncap_first}DO =new ${className}DO();
 <#list fieldList as field>
-        ${contextModel.doName?uncap_first}.set${field.beanName?cap_first}(get${field.beanName?cap_first}());
+    ${className?uncap_first}DO.set${field.beanName?cap_first}(get${field.beanName?cap_first}());
 </#list>
-        return ${contextModel.doName?uncap_first};
+return ${className?uncap_first}DO;
 
-        }
+}
 
-public  ${contextModel.voName} to${contextModel.voName}(){
-        ${contextModel.voName} ${contextModel.voName?uncap_first} =new ${contextModel.voName}();
+public  ${className}VO to${className}VO(){
+${className}VO ${className?uncap_first}VO =new ${className}VO();
 <#list fieldList as field>
-        ${contextModel.voName?uncap_first}.set${field.beanName?cap_first}(get${field.beanName?cap_first}());
+    ${className?uncap_first}VO.set${field.beanName?cap_first}(get${field.beanName?cap_first}());
 </#list>
-        return ${contextModel.voName?uncap_first};
+return ${className?uncap_first}VO;
 
-        }
+}
 
 
+public static   List
+<${className}VO> to${className}VOList(List
+    <${className}DTO> ${className?uncap_first}DTOList){
+        List
+        <${className}VO> collect= ${className?uncap_first}DTOList.stream().map(x->x.to${className}
+            VO()).collect(Collectors.toList());
+            return collect;
+            }
 
-    public static   List<${contextModel.voName}>  to${contextModel.voName}List(List<${contextModel.dtoName}> ${contextModel.dtoName?uncap_first}List){
-        List<${contextModel.voName}> collect= ${contextModel.dtoName?uncap_first}List.stream().map(x->x.to${contextModel.voName}()).collect(Collectors.toList());
-        return collect;
-    }
+            public static List
+            <${className}DO> to${className}DOList(List
+                <${className}DTO> ${className?uncap_first}DtOList){
+                    List
+                    <${className}DO> collect= ${className?uncap_first}DtOList.stream().map(x->x.to${className}
+                        DO()).collect(Collectors.toList());
+                        return collect;
+                        }
 
-    public static   List<${contextModel.doName}>  to${contextModel.doName}List(List<${contextModel.dtoName}> ${contextModel.dtoName?uncap_first}List){
-        List<${contextModel.doName}> collect= ${contextModel.dtoName?uncap_first}List.stream().map(x->x.to${contextModel.doName}()).collect(Collectors.toList());
-        return collect;
-    }
+                        /* ------------ getter setter ------------ */
+                        public int getCurrent(){
+                        return current;
+                        }
 
-/*  ------------ getter setter ------------  */
-    public int getCurrent(){
-        return current;
-    }
-
-    public void setCurrent(int current){
-        this.current=current;
+                        public void setCurrent(int current){
+                        this.current=current;
     }
 
     public int getSize(){

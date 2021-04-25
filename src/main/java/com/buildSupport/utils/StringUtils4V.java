@@ -44,7 +44,7 @@ public class StringUtils4V {
 
 
     public static String systemPath2JavaPackagePath(String systemPath){
-        String s = systemPath.replaceAll(Pattern.quote(File.separator), ".");
+        String s = systemPath.replaceAll(Pattern.quote("\\"), ".").replaceAll(Pattern.quote("/"), ".");
         return s;
 
     }

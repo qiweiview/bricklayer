@@ -1,15 +1,16 @@
 package com.management.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.management.model.dto.BricklayerColumnDTO;
 import com.management.model.vo.BricklayerColumnVO;
 import com.management.serviceI.BricklayerColumnServiceI;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.management.utils.ResponseVo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 //import cn.anicert.university.constant.ErrorEnum;
 //import cn.anicert.university.common.entity.dto.ResponseVo;

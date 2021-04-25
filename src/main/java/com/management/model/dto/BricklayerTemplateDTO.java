@@ -21,7 +21,11 @@ public class BricklayerTemplateDTO {
 
     private String templateName;
 
+    private Boolean fixedTemplate;
+
     private String templateSuffix;
+
+    private String nameEndString;
 
     private String templateContent;
 
@@ -32,6 +36,8 @@ public class BricklayerTemplateDTO {
     public BricklayerTemplateDO toBricklayerTemplateDO() {
         BricklayerTemplateDO bricklayerTemplateDO = new BricklayerTemplateDO();
         bricklayerTemplateDO.setId(getId());
+        bricklayerTemplateDO.setFixedTemplate(getFixedTemplate());
+        bricklayerTemplateDO.setNameEndString(getNameEndString());
         bricklayerTemplateDO.setTemplateName(getTemplateName());
         bricklayerTemplateDO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateDO.setTemplateContent(getTemplateContent());
@@ -43,6 +49,8 @@ public class BricklayerTemplateDTO {
     public BricklayerTemplateVO toBricklayerTemplateVO() {
         BricklayerTemplateVO bricklayerTemplateVO = new BricklayerTemplateVO();
         bricklayerTemplateVO.setId(getId());
+        bricklayerTemplateVO.setFixedTemplate(getFixedTemplate());
+        bricklayerTemplateVO.setNameEndString(getNameEndString());
         bricklayerTemplateVO.setTemplateName(getTemplateName());
         bricklayerTemplateVO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateVO.setTemplateContent(getTemplateContent());
@@ -63,6 +71,22 @@ public class BricklayerTemplateDTO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public Boolean getFixedTemplate() {
+        return fixedTemplate;
+    }
+
+    public void setFixedTemplate(Boolean fixedTemplate) {
+        this.fixedTemplate = fixedTemplate;
+    }
+
+    public String getNameEndString() {
+        return nameEndString;
+    }
+
+    public void setNameEndString(String nameEndString) {
+        this.nameEndString = nameEndString;
+    }
 
     public String getTemplateSuffix() {
         return templateSuffix;

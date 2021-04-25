@@ -2,7 +2,6 @@ package com.management.serviceI.serviceImpl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.buildSupport.build_task.output_task.OutPutTask;
 import com.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
 import com.buildSupport.java_bean.JavaBeanModel;
 import com.buildSupport.utils.FreemarkerTemplateBuilder;
@@ -14,7 +13,6 @@ import com.management.utils.DataNotFoundException;
 import com.management.utils.MessageRuntimeException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -311,22 +309,42 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                         String templateName = y.getTemplateName();
                         try {
                             Template template = configurationByTemplateMap.getTemplate(templateName);
-                            //循环数据模型
-                            bricklayerTablesByIds.forEach(z -> {
-                                JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
+                            if (y.getFixedTemplate()) {
+                                //todo 字符串模板
                                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
                                 try {
-                                    template.process(of, outputStreamWriter);
+                                    JavaBeanModel javaBeanModel = new JavaBeanModel();
+                                    javaBeanModel.handleBasePath(x.getDirectFullPath());
+                                    template.process(javaBeanModel, outputStreamWriter);
                                     byte[] bytes = byteArrayOutputStream.toByteArray();
-                                    String name = x.getDirectFullPath() + File.separator + of.getClassName() +y.getRemark()+ y.getTemplateSuffix();
+                                    String name = x.getDirectFullPath() + File.separator + y.getNameEndString() + y.getTemplateSuffix();
                                     out.putNextEntry(new ZipEntry(name.substring(1)));
                                     out.write(bytes);
                                     out.closeEntry();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            });
+                            } else {
+                                //todo 模型模板
+                                //循环数据模型
+                                bricklayerTablesByIds.forEach(z -> {
+
+                                    JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
+                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+                                    try {
+                                        template.process(of, outputStreamWriter);
+                                        byte[] bytes = byteArrayOutputStream.toByteArray();
+                                        String name = x.getDirectFullPath() + File.separator + of.getClassName() + y.getNameEndString() + y.getTemplateSuffix();
+                                        out.putNextEntry(new ZipEntry(name.substring(1)));
+                                        out.write(bytes);
+                                        out.closeEntry();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

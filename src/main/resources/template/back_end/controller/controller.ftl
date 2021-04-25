@@ -1,90 +1,99 @@
-${contextModel.controllerPackage}
+package ${basePath};
 
-import ${contextModel.dtoPath};
-import ${contextModel.voPath};
-import ${contextModel.serviceIPath};
+import com.model.dto.${className}DTO;
+import com.model.dto.${className}VO;
+import com.serviceI.${className}ServiceI;
+import com.utils.ResponseVo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import ${contextModel.utilsBase}.ResponseVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping("/${className?uncap_first}")
-public class ${contextModel.controllerName} {
+@RequiredArgsConstructor
+public class ${className}Controller {
 
-    private final ${contextModel.serviceIName} ${contextModel.serviceIName?uncap_first};
+private final ${className}ServiceI ${className?uncap_first}ServiceI;
 
-    @Autowired
-    public ${contextModel.controllerName}(${contextModel.serviceIName} ${contextModel.serviceIName?uncap_first}) {
-    this.${contextModel.serviceIName?uncap_first} = ${contextModel.serviceIName?uncap_first};
+
+/**
+* 创建${className}
+*/
+@RequestMapping("/save")
+public ResponseVo
+<${className}VO> save${className}(@RequestBody(required = false) ${className}DTO ${className?uncap_first}DTO) {
+    ResponseVo responseVo=new ResponseVo();
+    ${className?uncap_first}DTO=${className?uncap_first}ServiceI.save${className}(${className?uncap_first}DTO);
+    ${className}VO ${className?uncap_first}VO=${className?uncap_first}DTO.to${className}VO();
+    responseVo.setData(${className?uncap_first}VO);
+    return responseVo;
     }
 
     /**
-     * 创建${className}
-     */
-    @RequestMapping("/save")
-    public ResponseVo<${contextModel.voName}> save${className}(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
-        ResponseVo responseVo=new ResponseVo();
-        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.save${className}(${contextModel.dtoName?uncap_first});
-        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        responseVo.setData(${contextModel.voName?uncap_first});
-        return responseVo;
-    }
-
-    /**
-     * 更新${className}
-     */
+    * 更新${className}
+    */
     @RequestMapping("/update")
-    public ResponseVo<${contextModel.voName}> update${className}(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
+    public ResponseVo
+    <${className}VO> update${className}(@RequestBody(required = false) ${className}DTO ${className?uncap_first}DTO) {
         ResponseVo responseVo=new ResponseVo();
-        ${contextModel.serviceIName?uncap_first}.update${className}(${contextModel.dtoName?uncap_first});
-        return responseVo;
-    }
-
-    /**
-     * 删除${className}
-     */
-    @RequestMapping("/delete")
-    public ResponseVo<${contextModel.voName}> delete${className}(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
-        ResponseVo responseVo=new ResponseVo();
-        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.delete${className}(${contextModel.dtoName?uncap_first});
-        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        responseVo.setData(${contextModel.voName?uncap_first});
-        return responseVo;
-    }
-
-    /**
-     * 分页查询${className}
-     */
-    @RequestMapping("/listPage")
-    public ResponseVo<${contextModel.voName}> list${className}Page(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
-        ResponseVo responseVo=new ResponseVo();
-        IPage<${contextModel.dtoName}> ${contextModel.dtoName?uncap_first}IPage = ${contextModel.serviceIName?uncap_first}.list${className}Page(${contextModel.dtoName?uncap_first});
-        IPage<${contextModel.voName}> rs = new Page(${contextModel.dtoName?uncap_first}IPage.getCurrent(), ${contextModel.dtoName?uncap_first}IPage.getSize(), ${contextModel.dtoName?uncap_first}IPage.getTotal());
-        rs.setRecords(${contextModel.dtoName}.to${contextModel.voName}List(${contextModel.dtoName?uncap_first}IPage.getRecords()));
-        responseVo.setData(rs);
-        return responseVo;
-    }
-
-
-
-
-    /**
-     * 根据主键获取${className}
-     */
-    @RequestMapping("/getById")
-    public ResponseVo<${contextModel.voName}> get${className}ById(@RequestBody(required = false) ${contextModel.dtoName} ${contextModel.dtoName?uncap_first}) {
-        ResponseVo responseVo=new ResponseVo();
-        ${contextModel.dtoName?uncap_first}=${contextModel.serviceIName?uncap_first}.get${className}ById(${contextModel.dtoName?uncap_first});
-        ${contextModel.voName} ${contextModel.voName?uncap_first}=${contextModel.dtoName?uncap_first}.to${contextModel.voName}();
-        responseVo.setData(${contextModel.voName?uncap_first});
+        ${className?uncap_first}ServiceI.update${className}(${className?uncap_first}DTO);
         return responseVo;
         }
 
+        /**
+        * 删除${className}
+        */
+        @RequestMapping("/delete")
+        public ResponseVo
+        <${className}VO> delete${className}(@RequestBody(required = false) ${className}DTO ${className?uncap_first}DTO)
+            {
+            ResponseVo responseVo=new ResponseVo();
+            ${className?uncap_first}DTO=${className?uncap_first}ServiceI.delete${className}(${className?uncap_first}
+            DTO);
+            ${className}VO ${className?uncap_first}VO=${className?uncap_first}DTO.to${className}VO();
+            responseVo.setData(${className?uncap_first}VO);
+            return responseVo;
+            }
+
+            /**
+            * 分页查询${className}
+            */
+            @RequestMapping("/listPage")
+            public ResponseVo
+            <${className}VO> list${className}Page(@RequestBody(required = false) ${className}
+                DTO ${className?uncap_first}DTO) {
+                ResponseVo responseVo=new ResponseVo();
+                IPage
+                <${className}DTO> ${className?uncap_first}DTOIPage = ${className?uncap_first}ServiceI.list${className}
+                    Page(${className?uncap_first}DTO);
+                    IPage
+                    <${className}VO> rs = new Page(${className?uncap_first}
+                        DTOIPage.getCurrent(), ${className?uncap_first}DTOIPage.getSize(), ${className?uncap_first}
+                        DTOIPage.getTotal());
+                        rs.setRecords(${className}DTO.to${className}VOList(${className?uncap_first}
+                        DTOIPage.getRecords()));
+                        responseVo.setData(rs);
+                        return responseVo;
+                        }
 
 
+                        /**
+                        * 根据主键获取${className}
+                        */
+                        @RequestMapping("/getById")
+                        public ResponseVo
+                        <${className}VO> get${className}ById(@RequestBody(required = false) ${className}
+                            DTO ${className?uncap_first}DTO) {
+                            ResponseVo responseVo=new ResponseVo();
+                            ${className?uncap_first}DTO= ${className?uncap_first}ServiceI.get${className}
+                            ById(${className?uncap_first}DTO);
+                            ${className}VO ${className?uncap_first}VO=${className?uncap_first}DTO.to${className}VO();
+                            responseVo.setData(${className?uncap_first}VO);
+                            return responseVo;
+                            }
 
-}
+
+                            }

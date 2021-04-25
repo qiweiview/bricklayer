@@ -1,14 +1,15 @@
-${contextModel.utilsPackage}
+package ${basePath};
 
 import java.io.Serializable;
 
 
-public class ResponseVo<T> implements Serializable {
+public class ResponseVo
+<T> implements Serializable {
     private static final int SUCCESS_CODE=0;
     private static final int ERROR_CODE=1;
     private int code=0;
     private String msg="";
-    private   T data;
+    private T data;
 
     public ResponseVo() {
     }

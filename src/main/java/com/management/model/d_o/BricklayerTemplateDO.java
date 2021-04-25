@@ -36,6 +36,12 @@ public class BricklayerTemplateDO {
     /**
      *
      */
+    @TableField(value = "fixed_template")
+    private Boolean fixedTemplate;
+
+    /**
+     *
+     */
     @TableField(value = "template_content")
     private String templateContent;
 
@@ -46,8 +52,13 @@ public class BricklayerTemplateDO {
     private String remark;
 
 
-    @TableField(value = "belong_direct_id",exist = false)
+    @TableField(value = "name_end_string")
+    private String nameEndString;
+
+
+    @TableField(value = "belong_direct_id", exist = false)
     private Integer belongDirectId;
+
 
     /*  ------------ init value ------------  */
     public void doInit() {
@@ -69,6 +80,8 @@ public class BricklayerTemplateDO {
     public BricklayerTemplateDTO toBricklayerTemplateDTO() {
         BricklayerTemplateDTO bricklayerTemplateDTO = new BricklayerTemplateDTO();
         bricklayerTemplateDTO.setId(getId());
+        bricklayerTemplateDTO.setFixedTemplate(getFixedTemplate());
+        bricklayerTemplateDTO.setNameEndString(getNameEndString());
         bricklayerTemplateDTO.setTemplateName(getTemplateName());
         bricklayerTemplateDTO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateDTO.setTemplateContent(getTemplateContent());
@@ -84,6 +97,22 @@ public class BricklayerTemplateDO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public Boolean getFixedTemplate() {
+        return fixedTemplate;
+    }
+
+    public void setFixedTemplate(Boolean fixedTemplate) {
+        this.fixedTemplate = fixedTemplate;
+    }
+
+    public String getNameEndString() {
+        return nameEndString;
+    }
+
+    public void setNameEndString(String nameEndString) {
+        this.nameEndString = nameEndString;
+    }
 
     public String getTemplateSuffix() {
         return templateSuffix;

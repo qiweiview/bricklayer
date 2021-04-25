@@ -2,35 +2,23 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="${contextModel.daoPath}" >
+<mapper namespace="com.dao.${className}Dao">
 
-    <resultMap type="${contextModel.doPath}" id="${className}Map" >
-<#list fieldList as field>
-    <#if field.primaryKey>
-                <id property="${field.beanName}" column="${field.originalColumnName}" />
-    </#if>
-</#list>
-<#list fieldList as field>
-    <#if !field.primaryKey>
-                <result property="${field.beanName}" column="${field.originalColumnName}" />
-    </#if>
-</#list>
+    <resultMap type="com.model.dto.${className}DO" id="${className}Map">
+        <#list fieldList as field>
+            <#if field.primaryKey>
+                <id property="${field.beanName}" column="${field.originalColumnName}"/>
+            </#if>
+        </#list>
+        <#list fieldList as field>
+            <#if !field.primaryKey>
+                <result property="${field.beanName}" column="${field.originalColumnName}"/>
+            </#if>
+        </#list>
     </resultMap>
 
 
-
-    <select id="list${className}Page" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
-        select
-        <#list fieldList as field>
-        ${field.originalColumnName},
-        </#list>
-        '1'as blank_
-        from ${originalName}
-        where 1=1
-
-    </select>
-
-    <select id="list${className}" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
+    <select id="list${className}Page" parameterType="com.model.dto.${className}DO" resultMap="${className}Map">
         select
         <#list fieldList as field>
             ${field.originalColumnName},
@@ -41,37 +29,48 @@
 
     </select>
 
-    <select id="get${className}ById" parameterType="${contextModel.doPath}" resultMap="${className}Map" >
+    <select id="list${className}" parameterType="com.model.dto.${className}DO" resultMap="${className}Map">
         select
-<#list fieldList as field>
-        ${field.originalColumnName},
-</#list>
+        <#list fieldList as field>
+            ${field.originalColumnName},
+        </#list>
         '1'as blank_
         from ${originalName}
         where 1=1
-        and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
+
+    </select>
+
+    <select id="get${className}ById" parameterType="com.model.dto.${className}DO" resultMap="${className}Map">
+        select
+        <#list fieldList as field>
+            ${field.originalColumnName},
+        </#list>
+        '1'as blank_
+        from ${originalName}
+        where 1=1
+        and ${primaryName} = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
 
     </select>
 
 
-    <delete id="delete${className}" parameterType="${contextModel.doPath}" >
+    <delete id="delete${className}" parameterType="com.model.dto.${className}DO">
         delete
         from ${originalName}
         where 1=1
-        and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
+        and ${primaryName} = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>
 
     </delete>
 
-    <update id="update${className}" parameterType="${contextModel.doPath}" >
+    <update id="update${className}" parameterType="com.model.dto.${className}DO">
         update ${originalName}
         set
-<#list fieldList as field>
-    <#if !field.primaryKey>
-        <if test="${field.beanName}!=null <#if field.javaType?contains("String")> and ${field.beanName}!=''</#if>" >
-        ${field.originalColumnName} = <#noparse>#{</#noparse> ${field.beanName}<#noparse>}</#noparse>,
-        </if>
-    </#if>
-</#list>
+        <#list fieldList as field>
+            <#if !field.primaryKey>
+                <if test="${field.beanName}!=null <#if field.javaType?contains("String")> and ${field.beanName}!=''</#if>">
+                    ${field.originalColumnName} = <#noparse>#{</#noparse> ${field.beanName}<#noparse>}</#noparse>,
+                </if>
+            </#if>
+        </#list>
         ${primaryName}=${primaryName}
         where 1=1
         and ${primaryName}  = <#noparse>#{</#noparse>${primaryName}<#noparse>}</#noparse>

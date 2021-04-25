@@ -10,6 +10,8 @@
         <result property="templateContent" column="template_content"/>
         <result property="templateSuffix" column="template_suffix"/>
         <result property="belongDirectId" column="belong_direct_id"/>
+        <result property="nameEndString" column="name_end_string"/>
+        <result property="fixedTemplate" column="fixed_template"/>
         <result property="remark" column="remark"/>
     </resultMap>
 
@@ -18,6 +20,8 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
+        fixed_template,
+        name_end_string,
         template_name,
         template_suffix,
         template_content,
@@ -34,6 +38,8 @@
             resultMap="BricklayerTemplateMap">
         select
             id,
+            fixed_template,
+            name_end_string,
             template_name,
             template_suffix,
             template_content,
@@ -48,6 +54,8 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
+        fixed_template,
+        name_end_string,
         template_name,
         template_suffix,
         template_content,
@@ -63,6 +71,8 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
+        fixed_template,
+        name_end_string,
         template_name,
         template_suffix,
         template_content,
@@ -76,18 +86,20 @@
 
     <select id="listBricklayerTemplateByProjectId" parameterType="java.util.List"
             resultMap="BricklayerTemplateMap">
-SELECT
-	b.id,
-	b.template_name,
-    template_suffix,
-	b.template_content,
-	b.remark,
-    a.belong_direct_id,
-	'1' AS blank_
-FROM
-	bricklayer_direct_template_relation a
-	LEFT JOIN bricklayer_template b ON a.template_id = b.id
-WHERE
+        SELECT
+        b.id,
+        fixed_template,
+        name_end_string,
+        b.template_name,
+        template_suffix,
+        b.template_content,
+        b.remark,
+        a.belong_direct_id,
+        '1' AS blank_
+        FROM
+        bricklayer_direct_template_relation a
+        LEFT JOIN bricklayer_template b ON a.template_id = b.id
+        WHERE
 	1 = 1
 	AND a.belong_direct_id IN
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
@@ -109,6 +121,12 @@ WHERE
         set
         <if test="templateName!=null  and templateName!=''">
             template_name = #{ templateName},
+        </if>
+        <if test="fixedTemplate!=null">
+            fixed_template = #{ fixedTemplate},
+        </if>
+        <if test="nameEndString!=null  and nameEndString!=''">
+            name_end_string = #{ nameEndString},
         </if>
         <if test="templateSuffix!=null  and templateSuffix!=''">
             template_suffix = #{ templateSuffix},

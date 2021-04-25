@@ -1,10 +1,7 @@
-${contextModel.voPackage}
+package ${basePath};
 
 
-
-
-
-public class ${contextModel.voName} {
+public class ${className}VO {
 <#list fieldList as field>
 
     private  ${field.javaType} ${field.beanName};

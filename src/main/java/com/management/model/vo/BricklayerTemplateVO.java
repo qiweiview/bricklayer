@@ -10,6 +10,10 @@ public class BricklayerTemplateVO {
 
     private String templateName;
 
+    private Boolean fixedTemplate;
+
+    private String nameEndString;
+
     private String templateSuffix;
 
     private String templateContent;
@@ -21,6 +25,22 @@ public class BricklayerTemplateVO {
 
 
     /*  ------------ getter setter ------------  */
+
+    public String getNameEndString() {
+        return nameEndString;
+    }
+
+    public void setNameEndString(String nameEndString) {
+        this.nameEndString = nameEndString;
+    }
+
+    public Boolean getFixedTemplate() {
+        return fixedTemplate;
+    }
+
+    public void setFixedTemplate(Boolean fixedTemplate) {
+        this.fixedTemplate = fixedTemplate;
+    }
 
     public String getTemplateSuffix() {
         return templateSuffix;

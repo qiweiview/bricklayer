@@ -1,7 +1,7 @@
-${contextModel.daoPackage}
+package ${basePath};
 
-import ${contextModel.daoPath};
-import ${contextModel.doPath};
+import com.model.dto.${className}DO;
+import com.serviceI.${className}Dao;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,15 +11,18 @@ import java.util.List;
 
 
 @Mapper
-public interface ${contextModel.daoName} extends BaseMapper<${contextModel.doName}>{
+public interface ${className}Dao extends BaseMapper
+<${className}DO>{
 
-    public  void   update${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
+    public void update${className}(${className}DO ${className?uncap_first}DO);
 
-    public  void   delete${className}(${contextModel.doName} ${contextModel.doName?uncap_first});
+    public void delete${className}(${className}DO ${className?uncap_first}DO);
 
-    public  IPage<${contextModel.doName}>   list${className}Page(Page page,@Param("do")  ${contextModel.doName} ${contextModel.doName?uncap_first});
+    public IPage
+    <${className}DO> list${className}Page(Page page,@Param("do") ${className}DO ${className?uncap_first}DO);
 
-    public  List<${contextModel.doName}>   list${className}(@Param("do")  ${contextModel.doName} ${contextModel.doName?uncap_first});
+        public List
+        <${className}DO> list${className}(@Param("do") ${className}DO ${className?uncap_first}DO);
 
-    public  ${contextModel.doName}   get${className}ById(${contextModel.doName} ${contextModel.doName?uncap_first});
-}
+            public ${className}DO get${className}ById(${className}DO ${className?uncap_first}DO);
+            }

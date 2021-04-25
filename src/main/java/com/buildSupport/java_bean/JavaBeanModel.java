@@ -1,7 +1,6 @@
 package com.buildSupport.java_bean;
 
 
-
 import com.buildSupport.utils.StringUtils4V;
 import com.management.model.dto.BricklayerColumnDTO;
 import com.management.model.dto.BricklayerTableDTO;
@@ -23,7 +22,9 @@ public class JavaBeanModel {
 
     private String primaryName;
 
-    private ContextModel contextModel;
+    private String basePath;
+
+    private String contextPath;
 
     private List<JavaFiledModel> fieldList = new ArrayList();
 
@@ -33,10 +34,9 @@ public class JavaBeanModel {
         String originalTableName = x.getOriginalTableName();
         javaBeanModel.setClassName(StringUtils4V.underLine2UnCapFirst(originalTableName, false));
         javaBeanModel.setOriginalName(x.getOriginalTableName());
+        javaBeanModel.setContextPath(contextPath);//设置请求地址前缀
+        javaBeanModel.handleBasePath(basePath);
 
-        ContextModel contextModel = createContextModel(javaBeanModel.getClassName(), basePath);
-        contextModel.setContextPath(contextPath);//设置请求地址前缀
-        javaBeanModel.setContextModel(contextModel);//上下文
         List<JavaFiledModel> dbColumnModelList = createDbColumnModelList(x.getBricklayerColumnDTOList(), basePath);
         javaBeanModel.setFieldList(dbColumnModelList);//属性列表
         for (JavaFiledModel javaFiledModel : dbColumnModelList) {
@@ -56,10 +56,21 @@ public class JavaBeanModel {
 
     }
 
-    private static ContextModel createContextModel(String className, String basePath) {
-        ContextModel contextModel = new ContextModel();
-        contextModel.load(className, basePath);
-        return contextModel;
+    public void handleBasePath(String basePath) {
+        //分隔符转换
+        basePath = StringUtils4V.systemPath2JavaPackagePath(basePath);
+
+        //去除头部
+        if (basePath.startsWith(".")) {
+            basePath = basePath.substring(1);
+        }
+
+        //去除尾部
+        if (basePath.endsWith(".")) {
+            basePath = basePath.substring(0, basePath.length() - 1);
+        }
+
+        setBasePath(basePath);
 
     }
 }

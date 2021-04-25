@@ -14,18 +14,13 @@ import com.management.serviceI.BricklayerTemplateServiceI;
 import com.management.utils.MessageRuntimeException;
 import com.management.utils.ResponseVo;
 import freemarker.template.Template;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import java.io.ByteArrayOutputStream;
-
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 
 /**
  * create by view
@@ -112,7 +107,7 @@ public class BricklayerTemplateController {
         JavaBeanModel of = JavaBeanModel.of(dbTableModels, simulatedRenderDTO.getBasePath(), simulatedRenderDTO.getContextPath());
         Template templateByString = FreemarkerTemplateBuilder.getTemplateByString(simulatedRenderDTO.getTemplateContent());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
         try {
             templateByString.process(of, outputStreamWriter);
             SimulatedRenderVO simulatedRenderVO = new SimulatedRenderVO();

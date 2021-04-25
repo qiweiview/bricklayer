@@ -1,22 +1,23 @@
-${contextModel.serviceIPackage}
+package ${basePath};
 
-import ${contextModel.dtoPath};
+import com.model.dto.${className}DTO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import java.util.List;
 
 
+public interface ${className}ServiceI {
 
-public interface ${contextModel.serviceIName} {
+public  ${className}DTO   save${className}(${className}DTO ${className?uncap_first}DTO);
 
-    public  ${contextModel.dtoName}   save${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first});
+public  ${className}DTO   update${className}(${className}DTO ${className?uncap_first}DTO);
 
-    public  ${contextModel.dtoName}   update${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first});
+public  ${className}DTO   delete${className}(${className}DTO ${className?uncap_first}DTO);
 
-    public  ${contextModel.dtoName}   delete${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first});
+public  IPage
+<${className}DTO> list${className}Page(${className}DTO ${className?uncap_first}DTO);
 
-    public  IPage<${contextModel.dtoName}>   list${className}Page(${contextModel.dtoName} ${contextModel.dtoName?uncap_first});
+    public List
+    <${className}DTO> list${className}(${className}DTO ${className?uncap_first}DTO);
 
-    public  List<${contextModel.dtoName}>   list${className}(${contextModel.dtoName} ${contextModel.dtoName?uncap_first});
-
-    public  ${contextModel.dtoName}   get${className}ById(${contextModel.dtoName} ${contextModel.dtoName?uncap_first});
-}
+        public ${className}DTO get${className}ById(${className}DTO ${className?uncap_first}DTO);
+        }
