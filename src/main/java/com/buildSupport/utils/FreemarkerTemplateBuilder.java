@@ -74,6 +74,23 @@ public class FreemarkerTemplateBuilder {
         }
     }
 
+    public static Configuration getConfigurationByTemplateMap(Map<String,String> map) {
+
+        StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
+        map.forEach((k,v)->{
+            stringTemplateLoader.putTemplate(k, v);
+        });
+
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
+        cfg.setTemplateLoader(stringTemplateLoader);
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setLogTemplateExceptions(false);
+        cfg.setWrapUncheckedExceptions(true);
+        cfg.setFallbackOnNullLoopVariable(false);
+       return cfg;
+    }
+
     public static Template getTemplate(String templateName) {
         try {
             Template template = templateMap.get(templateName);

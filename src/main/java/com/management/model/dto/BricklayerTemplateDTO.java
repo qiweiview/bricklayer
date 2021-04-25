@@ -21,6 +21,8 @@ public class BricklayerTemplateDTO {
 
     private String templateName;
 
+    private String templateSuffix;
+
     private String templateContent;
 
     private String remark;
@@ -31,6 +33,7 @@ public class BricklayerTemplateDTO {
         BricklayerTemplateDO bricklayerTemplateDO = new BricklayerTemplateDO();
         bricklayerTemplateDO.setId(getId());
         bricklayerTemplateDO.setTemplateName(getTemplateName());
+        bricklayerTemplateDO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateDO.setTemplateContent(getTemplateContent());
         bricklayerTemplateDO.setRemark(getRemark());
         return bricklayerTemplateDO;
@@ -41,6 +44,7 @@ public class BricklayerTemplateDTO {
         BricklayerTemplateVO bricklayerTemplateVO = new BricklayerTemplateVO();
         bricklayerTemplateVO.setId(getId());
         bricklayerTemplateVO.setTemplateName(getTemplateName());
+        bricklayerTemplateVO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateVO.setTemplateContent(getTemplateContent());
         bricklayerTemplateVO.setRemark(getRemark());
         return bricklayerTemplateVO;
@@ -59,6 +63,15 @@ public class BricklayerTemplateDTO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public String getTemplateSuffix() {
+        return templateSuffix;
+    }
+
+    public void setTemplateSuffix(String templateSuffix) {
+        this.templateSuffix = templateSuffix;
+    }
+
     public int getCurrent() {
         return current;
     }

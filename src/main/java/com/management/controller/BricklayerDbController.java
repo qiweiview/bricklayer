@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -178,19 +180,15 @@ public class BricklayerDbController {
 
     @RequestMapping("/generateCode")
     public void generateCode(@RequestBody GenerateCodeDTO generateCodeDTO, HttpServletResponse httpServletResponse) {
-        System.out.println(generateCodeDTO);
-//        List<BricklayerTableDTO> dbTableModels = bricklayerDbServiceI.getBricklayerTablesByIds(generateCodeDTO);
-//        List<JavaBeanModel> collect = dbTableModels.stream().map(x -> JavaBeanModel.of(x, generateCodeDTO.getBasePath(), generateCodeDTO.getContextPath())).collect(Collectors.toList());
-//        byte[] build = BricklayerBuilder.build(collect);
-//        httpServletResponse.setContentType("charset=utf-8");
-//
-//        try {
-//            ServletOutputStream out = httpServletResponse.getOutputStream();
-//            out.write(build);
-//            out.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        byte[] build = bricklayerDbServiceI.generateCode(generateCodeDTO);
+        httpServletResponse.setContentType("charset=utf-8");
+        try {
+            ServletOutputStream out = httpServletResponse.getOutputStream();
+            out.write(build);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

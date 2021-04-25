@@ -10,6 +10,8 @@ public class BricklayerTemplateVO {
 
     private String templateName;
 
+    private String templateSuffix;
+
     private String templateContent;
 
     private String remark;
@@ -19,6 +21,14 @@ public class BricklayerTemplateVO {
 
 
     /*  ------------ getter setter ------------  */
+
+    public String getTemplateSuffix() {
+        return templateSuffix;
+    }
+
+    public void setTemplateSuffix(String templateSuffix) {
+        this.templateSuffix = templateSuffix;
+    }
 
     public Integer getId() {
         return id;

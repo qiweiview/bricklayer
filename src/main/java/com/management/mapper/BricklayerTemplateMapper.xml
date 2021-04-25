@@ -8,6 +8,8 @@
         <id property="id" column="id"/>
         <result property="templateName" column="template_name"/>
         <result property="templateContent" column="template_content"/>
+        <result property="templateSuffix" column="template_suffix"/>
+        <result property="belongDirectId" column="belong_direct_id"/>
         <result property="remark" column="remark"/>
     </resultMap>
 
@@ -17,6 +19,7 @@
         select
         id,
         template_name,
+        template_suffix,
         template_content,
         remark,
         '1'as blank_
@@ -32,6 +35,7 @@
         select
             id,
             template_name,
+            template_suffix,
             template_content,
             remark,
         '1'as blank_
@@ -45,6 +49,7 @@
         select
         id,
         template_name,
+        template_suffix,
         template_content,
         remark,
         '1'as blank_
@@ -59,6 +64,7 @@
         select
         id,
         template_name,
+        template_suffix,
         template_content,
         remark,
         '1'as blank_
@@ -66,6 +72,27 @@
         where 1=1
         and template_name  = #{templateName}
 
+    </select>
+
+    <select id="listBricklayerTemplateByProjectId" parameterType="java.util.List"
+            resultMap="BricklayerTemplateMap">
+SELECT
+	b.id,
+	b.template_name,
+    template_suffix,
+	b.template_content,
+	b.remark,
+    a.belong_direct_id,
+	'1' AS blank_
+FROM
+	bricklayer_direct_template_relation a
+	LEFT JOIN bricklayer_template b ON a.template_id = b.id
+WHERE
+	1 = 1
+	AND a.belong_direct_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </select>
 
 
@@ -82,6 +109,9 @@
         set
         <if test="templateName!=null  and templateName!=''">
             template_name = #{ templateName},
+        </if>
+        <if test="templateSuffix!=null  and templateSuffix!=''">
+            template_suffix = #{ templateSuffix},
         </if>
         <if test="templateContent!=null  and templateContent!=''">
             template_content = #{ templateContent},

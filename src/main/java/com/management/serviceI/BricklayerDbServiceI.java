@@ -38,8 +38,10 @@ public interface BricklayerDbServiceI {
 
     List<String> getTables(TableDetailDTO tableDetailDTO);
 
-    List<BricklayerTableDTO> getBricklayerTablesByIds(GenerateCodeDTO generateCodeDTO);
+    List<BricklayerTableDTO> getBricklayerTablesByIds(List<Integer> ids);
 
     BricklayerTableDTO getBricklayerTableById(Integer id);
+
+    byte[] generateCode(GenerateCodeDTO generateCodeDTO);
 
 }

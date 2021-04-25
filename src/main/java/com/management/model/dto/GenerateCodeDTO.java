@@ -9,7 +9,7 @@ import java.util.List;
 public class GenerateCodeDTO {
     private List<Integer> ids = new ArrayList<>();
 
-    private String projectId;
+    private Integer projectId;
 
 
 }

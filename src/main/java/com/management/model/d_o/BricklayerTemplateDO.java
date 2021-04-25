@@ -30,6 +30,12 @@ public class BricklayerTemplateDO {
     /**
      *
      */
+    @TableField(value = "template_suffix")
+    private String templateSuffix;
+
+    /**
+     *
+     */
     @TableField(value = "template_content")
     private String templateContent;
 
@@ -38,6 +44,10 @@ public class BricklayerTemplateDO {
      */
     @TableField(value = "remark")
     private String remark;
+
+
+    @TableField(value = "belong_direct_id",exist = false)
+    private Integer belongDirectId;
 
     /*  ------------ init value ------------  */
     public void doInit() {
@@ -60,6 +70,7 @@ public class BricklayerTemplateDO {
         BricklayerTemplateDTO bricklayerTemplateDTO = new BricklayerTemplateDTO();
         bricklayerTemplateDTO.setId(getId());
         bricklayerTemplateDTO.setTemplateName(getTemplateName());
+        bricklayerTemplateDTO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateDTO.setTemplateContent(getTemplateContent());
         bricklayerTemplateDTO.setRemark(getRemark());
         return bricklayerTemplateDTO;
@@ -73,6 +84,22 @@ public class BricklayerTemplateDO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public String getTemplateSuffix() {
+        return templateSuffix;
+    }
+
+    public void setTemplateSuffix(String templateSuffix) {
+        this.templateSuffix = templateSuffix;
+    }
+
+    public Integer getBelongDirectId() {
+        return belongDirectId;
+    }
+
+    public void setBelongDirectId(Integer belongDirectId) {
+        this.belongDirectId = belongDirectId;
+    }
 
     public Integer getId() {
         return id;

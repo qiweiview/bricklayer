@@ -26,4 +26,7 @@ public interface BricklayerTemplateDao extends BaseMapper<BricklayerTemplateDO> 
     public BricklayerTemplateDO getBricklayerTemplateById(BricklayerTemplateDO bricklayerTemplateDO);
 
     public BricklayerTemplateDO getBricklayerTemplateByTemplateName(BricklayerTemplateDO bricklayerTemplateDO);
+
+    List<BricklayerTemplateDO> listBricklayerTemplateByProjectId(@Param("ids") List<Integer> ids);
+
 }
