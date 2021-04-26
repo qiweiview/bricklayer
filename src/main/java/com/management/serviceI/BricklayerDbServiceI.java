@@ -3,6 +3,7 @@ package com.management.serviceI;
 
 import com.management.model.dto.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.management.model.vo.GenerationVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -42,6 +43,6 @@ public interface BricklayerDbServiceI {
 
     BricklayerTableDTO getBricklayerTableById(Integer id);
 
-    byte[] generateCode(GenerateCodeDTO generateCodeDTO);
+    GenerationVO generateCode(GenerateCodeDTO generateCodeDTO);
 
 }

@@ -8,15 +8,18 @@ import com.management.model.dto.BricklayerTableDTO;
 import com.management.model.dto.GenerateCodeDTO;
 import com.management.model.dto.TableDetailDTO;
 import com.management.model.vo.BricklayerDbVO;
+import com.management.model.vo.GenerationVO;
 import com.management.serviceI.BricklayerDbServiceI;
 import com.management.utils.ResponseVo;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -179,16 +182,9 @@ public class BricklayerDbController {
 
 
     @RequestMapping("/generateCode")
-    public void generateCode(@RequestBody GenerateCodeDTO generateCodeDTO, HttpServletResponse httpServletResponse) {
-        byte[] build = bricklayerDbServiceI.generateCode(generateCodeDTO);
-        httpServletResponse.setContentType("charset=utf-8");
-        try {
-            ServletOutputStream out = httpServletResponse.getOutputStream();
-            out.write(build);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ResponseVo generateCode(@RequestBody GenerateCodeDTO generateCodeDTO, HttpServletResponse httpServletResponse) throws IOException {
+        GenerationVO generationVO = bricklayerDbServiceI.generateCode(generateCodeDTO);
+       return ResponseVo.success(generationVO);
     }
 
 

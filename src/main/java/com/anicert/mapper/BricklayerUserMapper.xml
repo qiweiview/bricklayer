@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anicert.dao.BricklayerUserDao">
+
+    <resultMap type="com.anicert.model.d_o.BricklayerUserDO" id="BricklayerUserMap">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userPassword" column="user_password"/>
+        <result property="userRole" column="user_role"/>
+    </resultMap>
+
+
+    <select id="listBricklayerUserPage" parameterType="com.anicert.model.d_o.BricklayerUserDO"
+            resultMap="BricklayerUserMap">
+        select
+        id,
+        user_name,
+        user_role,
+        '1'as blank_
+        from bricklayer_user
+        where 1=1
+
+    </select>
+
+    <select id="listBricklayerUser" parameterType="com.anicert.model.d_o.BricklayerUserDO"
+            resultMap="BricklayerUserMap">
+        select
+            id,
+            user_name,
+            user_role,
+        '1'as blank_
+        from bricklayer_user
+        where 1=1
+
+    </select>
+
+    <select id="getBricklayerUserById" parameterType="com.anicert.model.d_o.BricklayerUserDO"
+            resultMap="BricklayerUserMap">
+        select
+        id,
+        user_name,
+        user_role,
+        '1'as blank_
+        from bricklayer_user
+        where 1=1
+        and id  = #{id}
+
+    </select>
+
+    <select id="getBricklayerUserByName" parameterType="com.anicert.model.d_o.BricklayerUserDO"
+            resultMap="BricklayerUserMap">
+ select
+        id,
+        user_password,
+        user_name,
+        user_role,
+        '1'as blank_
+        from bricklayer_user
+        where 1=1
+        and user_name  = #{name}
+    </select>
+
+
+    <delete id="deleteBricklayerUser" parameterType="com.anicert.model.d_o.BricklayerUserDO">
+        delete
+        from bricklayer_user
+        where 1=1
+        and id  = #{id}
+
+    </delete>
+
+    <update id="updateBricklayerUser" parameterType="com.anicert.model.d_o.BricklayerUserDO">
+        update bricklayer_user
+        set
+        <if test="userName!=null  and userName!=''">
+            user_name = #{ userName},
+        </if>
+        <if test="userPassword!=null  and userPassword!=''">
+            user_password = #{ userPassword},
+        </if>
+        <if test="userRole!=null  and userRole!=''">
+            user_role = #{ userRole},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>

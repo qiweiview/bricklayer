@@ -118,7 +118,7 @@
         type: 'warning'
         }).then(() => {
         request({
-        url: '/${contextModel.contextPath}/${className?uncap_first}/delete',
+        url: '/${contextPath}/${className?uncap_first}/delete',
         method: 'post',
         data: {id: row.id}
         }).then(() => {
@@ -169,7 +169,7 @@
         background: 'rgba(0, 0, 0, 0.7)'
         });
         request({
-        url: '/${contextModel.contextPath}/${className?uncap_first}/listPage',
+        url: '/${contextPath}/${className?uncap_first}/listPage',
         method: 'post',
         data: this.${className?uncap_first}Query
         }).then(response => {
@@ -182,7 +182,7 @@
         },
         update${className}() {
         request({
-        url: '/${contextModel.contextPath}/${className?uncap_first}/update',
+        url: '/${contextPath}/${className?uncap_first}/update',
         method: 'post',
         data: this.${className?uncap_first}Edit
         }).then(() => {
@@ -193,7 +193,7 @@
         },
         insert${className}() {
         request({
-        url: '/${contextModel.contextPath}/${className?uncap_first}/save',
+        url: '/${contextPath}/${className?uncap_first}/save',
         method: 'post',
         data: this.${className?uncap_first}Insert
         }).then(() => {

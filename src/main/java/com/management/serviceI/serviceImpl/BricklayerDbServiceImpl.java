@@ -8,9 +8,11 @@ import com.buildSupport.utils.FreemarkerTemplateBuilder;
 import com.management.dao.*;
 import com.management.model.d_o.*;
 import com.management.model.dto.*;
+import com.management.model.vo.GenerationVO;
 import com.management.serviceI.BricklayerDbServiceI;
 import com.management.utils.DataNotFoundException;
 import com.management.utils.MessageRuntimeException;
+import com.management.utils.NullToEmptyString;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.RequiredArgsConstructor;
@@ -267,10 +269,12 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
     }
 
     @Override
-    public byte[] generateCode(GenerateCodeDTO generateCodeDTO) {
+    public GenerationVO generateCode(GenerateCodeDTO generateCodeDTO) {
+
+
         ByteArrayOutputStream zipStream = new ByteArrayOutputStream();
         //ZipOutputStream类：完成文件或文件夹的压缩
-        ZipOutputStream out = new ZipOutputStream(zipStream);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(zipStream);
 
 
         List<BricklayerTableDTO> bricklayerTablesByIds = getBricklayerTablesByIds(generateCodeDTO.getIds());
@@ -318,10 +322,10 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                     javaBeanModel.handleBasePath(x.getDirectFullPath());
                                     template.process(javaBeanModel, outputStreamWriter);
                                     byte[] bytes = byteArrayOutputStream.toByteArray();
-                                    String name = x.getDirectFullPath() + File.separator + y.getNameEndString() + y.getTemplateSuffix();
-                                    out.putNextEntry(new ZipEntry(name.substring(1)));
-                                    out.write(bytes);
-                                    out.closeEntry();
+                                    String name = x.getDirectFullPath() + "/" + y.getNameEndString() + y.getTemplateSuffix();
+                                    zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+                                    zipOutputStream.write(bytes);
+                                    zipOutputStream.closeEntry();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -336,10 +340,10 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                     try {
                                         template.process(of, outputStreamWriter);
                                         byte[] bytes = byteArrayOutputStream.toByteArray();
-                                        String name = x.getDirectFullPath() + File.separator + of.getClassName() + y.getNameEndString() + y.getTemplateSuffix();
-                                        out.putNextEntry(new ZipEntry(name.substring(1)));
-                                        out.write(bytes);
-                                        out.closeEntry();
+                                        String name = x.getDirectFullPath() +"/" + of.getClassName() + NullToEmptyString.handle(y.getNameEndString()) + y.getTemplateSuffix();
+                                        zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+                                        zipOutputStream.write(bytes);
+                                        zipOutputStream.closeEntry();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -356,12 +360,17 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         }
 
 
+
         try {
-            zipStream.close();
+            zipOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return zipStream.toByteArray();
+        GenerationVO generationVO = new GenerationVO();
+        generationVO.setData(zipStream.toByteArray());
+        generationVO.setFileName(bricklayerProjectById.getProjectName()+"_export.zip");
+
+        return generationVO;
     }
 
 

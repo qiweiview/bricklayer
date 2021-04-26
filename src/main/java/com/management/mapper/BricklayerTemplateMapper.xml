@@ -47,7 +47,7 @@
         '1'as blank_
         from bricklayer_template
         where 1=1
-        
+        order by template_name
     </select>
 
     <select id="getBricklayerTemplateById" parameterType="com.management.model.d_o.BricklayerTemplateDO"
@@ -81,7 +81,7 @@
         from bricklayer_template
         where 1=1
         and template_name  = #{templateName}
-
+        order by template_name
     </select>
 
     <select id="listBricklayerTemplateByProjectId" parameterType="java.util.List"
@@ -105,6 +105,7 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+        order by template_name
     </select>
 
 
