@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,6 +138,8 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
         List<Integer> collect = bricklayerDirectDOS.stream().map(x -> x.getId()).collect(Collectors.toList());
 
+        collect.add(-999);
+
         List<BricklayerDirectTemplateRelationDO> bricklayerDirectTemplateRelationDOS = bricklayerDirectTemplateRelationDao.getByDirectIds(collect);
 
         Map<Integer, List<BricklayerDirectTemplateRelationDO>> collect1 = bricklayerDirectTemplateRelationDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongDirectId()));
@@ -187,6 +190,11 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
         });
 
+        if (root[0] == null) {
+            TreeNodeDTO treeNodeDTO = new TreeNodeDTO();
+            treeNodeDTO.toBeRoot();
+            root[0] = treeNodeDTO;
+        }
 
         bricklayerProjectById.setTree(root[0]);
         return bricklayerProjectById;

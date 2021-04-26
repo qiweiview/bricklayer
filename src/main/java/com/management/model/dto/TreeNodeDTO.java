@@ -20,6 +20,13 @@ public class TreeNodeDTO {
     private List<TreeNodeDTO> children = new ArrayList<>();
 
 
+    public void toBeRoot(){
+        setLevel("root");
+        setChildren(new ArrayList<>());
+        setType("direct");
+        setLabel("/");
+    }
+
     public void addChild(TreeNodeDTO treeNodeDTO) {
         children.add(treeNodeDTO);
     }

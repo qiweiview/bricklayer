@@ -234,7 +234,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
 
         //default value
-        ids.add(-1);
+        ids.add(-999);
 
         List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTablesByIds(ids);
         if (bricklayerColumnDOS.size() < 1) {
