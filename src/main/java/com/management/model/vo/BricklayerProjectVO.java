@@ -11,6 +11,7 @@ public class BricklayerProjectVO {
 
     private String projectDescription;
 
+
     private String contextPath;
 
     private TreeNodeDTO tree;
@@ -19,6 +20,7 @@ public class BricklayerProjectVO {
 
 
     /*  ------------ getter setter ------------  */
+
 
     public TreeNodeDTO getTree() {
         return tree;

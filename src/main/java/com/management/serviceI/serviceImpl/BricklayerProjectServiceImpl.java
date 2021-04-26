@@ -12,11 +12,11 @@ import com.management.model.dto.BricklayerProjectDTO;
 import com.management.model.dto.TreeNodeDTO;
 import com.management.serviceI.BricklayerProjectServiceI;
 import com.management.utils.DataNotFoundException;
+import com.management.utils.MessageRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +44,13 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     @Transactional
     @Override
     public BricklayerProjectDTO updateBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
-        getBricklayerProjectById(bricklayerProjectDTO);
+        BricklayerProjectDTO bricklayerProjectById = getBricklayerProjectById(bricklayerProjectDTO);
+
+        if (bricklayerProjectById.getFixProject()) {
+            //todo 基础项目无法编辑
+            throw new MessageRuntimeException("基础项目无法编辑");
+        }
+
         BricklayerProjectDO bricklayerProjectDO = bricklayerProjectDTO.toBricklayerProjectDO();
         bricklayerProjectDO.doUpdate();
         bricklayerProjectDao.updateById(bricklayerProjectDO);
@@ -101,12 +107,20 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     }
 
 
+    @Transactional
     @Override
     public BricklayerProjectDTO deleteBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
         bricklayerProjectDTO = getBricklayerProjectById(bricklayerProjectDTO);
+        if (bricklayerProjectDTO.getFixProject()) {
+            //todo 固定项目无法删除
+            throw new MessageRuntimeException("基础项目无法删除");
+        }
         BricklayerProjectDO bricklayerProjectDO = bricklayerProjectDTO.toBricklayerProjectDO();
         bricklayerProjectDO.doDelete();
         bricklayerProjectDao.deleteBricklayerProject(bricklayerProjectDO);
+
+        //删除相关目录
+        bricklayerDirectDao.deleteByDirectsByProjectId(bricklayerProjectDO.getId());
         return bricklayerProjectDO.toBricklayerProjectDTO();
     }
 

@@ -56,7 +56,8 @@
 
     </select>
 
-    <select id="listBricklayerDirectsByProjectId"  parameterType="java.lang.Integer" resultType="com.management.model.d_o.BricklayerDirectDO">
+    <select id="listBricklayerDirectsByProjectId" parameterType="java.lang.Integer"
+            resultType="com.management.model.d_o.BricklayerDirectDO">
           select
         belong_project_id,
         direct_name,
@@ -92,6 +93,13 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+    </delete>
+
+    <delete id="deleteByDirectsByProjectId" parameterType="java.lang.Integer">
+         delete
+        from bricklayer_direct
+        where 1=1
+        and belong_project_id=#{id}
     </delete>
 
     <update id="updateBricklayerDirect" parameterType="com.management.model.d_o.BricklayerDirectDO">

@@ -23,6 +23,8 @@ public class BricklayerProjectDTO {
 
     private String contextPath;
 
+    private Boolean fixProject;
+
     private TreeNodeDTO tree;
 
 
@@ -30,6 +32,7 @@ public class BricklayerProjectDTO {
     public BricklayerProjectDO toBricklayerProjectDO() {
         BricklayerProjectDO bricklayerProjectDO = new BricklayerProjectDO();
         bricklayerProjectDO.setId(getId());
+        bricklayerProjectDO.setFixProject(getFixProject());
         bricklayerProjectDO.setProjectName(getProjectName());
         bricklayerProjectDO.setProjectDescription(getProjectDescription());
         bricklayerProjectDO.setContextPath(getContextPath());
@@ -60,6 +63,14 @@ public class BricklayerProjectDTO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public Boolean getFixProject() {
+        return fixProject;
+    }
+
+    public void setFixProject(Boolean fixProject) {
+        this.fixProject = fixProject;
+    }
 
     public TreeNodeDTO getTree() {
         return tree;

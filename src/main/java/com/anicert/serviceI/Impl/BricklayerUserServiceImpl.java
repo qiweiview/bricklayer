@@ -1,19 +1,16 @@
 package com.anicert.serviceI.Impl;
 
-import com.anicert.model.dto.BricklayerUserDTO;
-import com.anicert.model.d_o.BricklayerUserDO;
 import com.anicert.dao.BricklayerUserDao;
+import com.anicert.model.d_o.BricklayerUserDO;
+import com.anicert.model.dto.BricklayerUserDTO;
 import com.anicert.serviceI.BricklayerUserServiceI;
-import com.anicert.utils.DataNotFoundException;
-import com.management.utils.MessageRuntimeException;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.management.utils.MessageRuntimeException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
 
 
 @Service
@@ -40,6 +37,9 @@ public class BricklayerUserServiceImpl implements BricklayerUserServiceI {
     public BricklayerUserDTO getBricklayerUserByName(BricklayerUserDTO bricklayerUserDTO) {
         BricklayerUserDO bricklayerUserDO = bricklayerUserDTO.toBricklayerUserDO();
         bricklayerUserDO = bricklayerUserDao.getBricklayerUserByName(bricklayerUserDO.getUserName());
+        if (bricklayerUserDO == null) {
+            return null;
+        }
         return bricklayerUserDO.toBricklayerUserDTO();
     }
 

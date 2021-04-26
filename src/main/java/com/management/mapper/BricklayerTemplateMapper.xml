@@ -12,6 +12,7 @@
         <result property="belongDirectId" column="belong_direct_id"/>
         <result property="nameEndString" column="name_end_string"/>
         <result property="fixedTemplate" column="fixed_template"/>
+        <result property="baseTemplate" column="base_template"/>
         <result property="remark" column="remark"/>
     </resultMap>
 
@@ -20,7 +21,8 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
-        fixed_template,
+        IFNULL(fixed_template,false) fixed_template,
+        IFNULL(base_template,false) base_template,
         name_end_string,
         template_name,
         template_suffix,
@@ -30,7 +32,8 @@
         from bricklayer_template
         where 1=1
         <if test="do.templateName!=null  and do.templateName!=''">
-            and template_name like concat('%',#{ do.templateName},'%')
+            and ( template_name like concat('%',#{ do.templateName},'%') or remark like
+            concat('%',#{ do.templateName},'%'))
         </if>
     </select>
 
@@ -38,7 +41,8 @@
             resultMap="BricklayerTemplateMap">
         select
             id,
-            fixed_template,
+          IFNULL(fixed_template,false) fixed_template,
+        IFNULL(base_template,false) base_template,
             name_end_string,
             template_name,
             template_suffix,
@@ -54,7 +58,8 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
-        fixed_template,
+      IFNULL(fixed_template,false) fixed_template,
+        IFNULL(base_template,false) base_template,
         name_end_string,
         template_name,
         template_suffix,
@@ -71,7 +76,8 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
-        fixed_template,
+        IFNULL(fixed_template,false) fixed_template,
+        IFNULL(base_template,false) base_template,
         name_end_string,
         template_name,
         template_suffix,
@@ -88,7 +94,8 @@
             resultMap="BricklayerTemplateMap">
         SELECT
         b.id,
-        fixed_template,
+        IFNULL(fixed_template,false) fixed_template,
+        IFNULL(base_template,false) base_template,
         name_end_string,
         b.template_name,
         template_suffix,
@@ -100,8 +107,8 @@
         bricklayer_direct_template_relation a
         LEFT JOIN bricklayer_template b ON a.template_id = b.id
         WHERE
-	1 = 1
-	AND a.belong_direct_id IN
+        1 = 1
+        AND a.belong_direct_id IN
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>

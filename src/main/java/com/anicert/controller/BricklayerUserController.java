@@ -4,12 +4,13 @@ import com.anicert.model.dto.BricklayerUserDTO;
 import com.anicert.model.vo.BricklayerUserVO;
 import com.anicert.serviceI.BricklayerUserServiceI;
 import com.anicert.utils.ResponseVo;
-import com.management.utils.MessageRuntimeException;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.management.utils.MessageRuntimeException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -95,7 +96,7 @@ public class BricklayerUserController {
             throw new MessageRuntimeException("密码错误");
         }
 
-        BricklayerUserVO bricklayerUserVO = bricklayerUserDTO.toBricklayerUserVO();
+        BricklayerUserVO bricklayerUserVO = fromDb.toBricklayerUserVO();
         responseVo.setData(bricklayerUserVO.secrete());
         return responseVo;
     }

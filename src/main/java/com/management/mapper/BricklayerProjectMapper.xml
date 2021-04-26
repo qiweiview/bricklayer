@@ -8,6 +8,7 @@
         <id property="id" column="id"/>
         <result property="projectName" column="project_name"/>
         <result property="projectDescription" column="project_description"/>
+        <result property="fixProject" column="fix_project"/>
         <result property="contextPath" column="context_path"/>
     </resultMap>
 
@@ -16,6 +17,8 @@
             resultMap="BricklayerProjectMap">
         select
         id,
+        IFNULL(fix_project,false) fix_project,
+
         project_name,
         project_description,
         context_path,
@@ -31,6 +34,7 @@
             resultMap="BricklayerProjectMap">
         select
             id,
+            IFNULL(fix_project,false) fix_project,
             project_name,
             project_description,
             context_path,
@@ -44,6 +48,7 @@
             resultMap="BricklayerProjectMap">
         select
         id,
+          IFNULL(fix_project,false) fix_project,
         project_name,
         project_description,
         context_path,

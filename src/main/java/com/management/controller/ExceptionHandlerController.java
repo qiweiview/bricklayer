@@ -1,5 +1,6 @@
 package com.management.controller;
 
+import com.management.utils.DataNotFoundException;
 import com.management.utils.MessageRuntimeException;
 import com.management.utils.ResponseVo;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,13 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 public class ExceptionHandlerController {
 
     @ExceptionHandler
-    public ResponseVo exceptionHandler(Exception e, HttpServletResponse httpServletResponse){
+    public ResponseVo exceptionHandler(Exception e, HttpServletResponse httpServletResponse) {
         httpServletResponse.setStatus(500);
-        if (e instanceof MessageRuntimeException){
+        if (e instanceof MessageRuntimeException) {
             return ResponseVo.error(e.getMessage());
-        }else{
-            e.printStackTrace();
         }
+
+        if (e instanceof DataNotFoundException) {
+            return ResponseVo.error("查询不到对应数据");
+        }
+
+        //补充
+        if (e instanceof com.anicert.utils.DataNotFoundException) {
+            return ResponseVo.error("查询不到对应数据");
+        }
+
+        e.printStackTrace();
         return ResponseVo.error("服务器异常");
     }
 }

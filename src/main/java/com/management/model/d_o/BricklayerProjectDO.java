@@ -25,6 +25,10 @@ public class BricklayerProjectDO {
     @TableField(value = "project_name")
     private String projectName;
 
+
+    @TableField(value = "fix_project")
+    private Boolean fixProject;
+
     /**
      * 项目描述
      */
@@ -57,6 +61,7 @@ public class BricklayerProjectDO {
     public BricklayerProjectDTO toBricklayerProjectDTO() {
         BricklayerProjectDTO bricklayerProjectDTO = new BricklayerProjectDTO();
         bricklayerProjectDTO.setId(getId());
+        bricklayerProjectDTO.setFixProject(getFixProject());
         bricklayerProjectDTO.setProjectName(getProjectName());
         bricklayerProjectDTO.setProjectDescription(getProjectDescription());
         bricklayerProjectDTO.setContextPath(getContextPath());
@@ -71,6 +76,14 @@ public class BricklayerProjectDO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public Boolean getFixProject() {
+        return fixProject;
+    }
+
+    public void setFixProject(Boolean fixProject) {
+        this.fixProject = fixProject;
+    }
 
     public Integer getId() {
         return id;

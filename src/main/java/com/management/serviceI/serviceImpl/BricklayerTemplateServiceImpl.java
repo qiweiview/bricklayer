@@ -5,12 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.management.dao.BricklayerTemplateDao;
 import com.management.model.d_o.BricklayerTemplateDO;
 import com.management.model.dto.BricklayerTemplateDTO;
-import com.management.model.dto.SimulatedRenderDTO;
 import com.management.serviceI.BricklayerTemplateServiceI;
 import com.management.utils.DataNotFoundException;
 import com.management.utils.MessageRuntimeException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,7 +42,13 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
 
     @Override
     public BricklayerTemplateDTO updateBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO) {
-        getBricklayerTemplateById(bricklayerTemplateDTO);
+        BricklayerTemplateDTO bricklayerTemplateById = getBricklayerTemplateById(bricklayerTemplateDTO);
+
+        if (bricklayerTemplateById.getBaseTemplate()) {
+            //todo 基础模板无法编辑
+            throw new MessageRuntimeException("基础模板无法编辑");
+        }
+
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
         bricklayerTemplateDO.doUpdate();
         bricklayerTemplateDao.updateById(bricklayerTemplateDO);
@@ -54,6 +58,10 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
     @Override
     public BricklayerTemplateDTO deleteBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO) {
         bricklayerTemplateDTO = getBricklayerTemplateById(bricklayerTemplateDTO);
+        if (bricklayerTemplateDTO.getBaseTemplate()) {
+            //todo 固定模板无法删除
+            throw new MessageRuntimeException("基础模板无法删除");
+        }
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
         bricklayerTemplateDO.doDelete();
         bricklayerTemplateDao.deleteBricklayerTemplate(bricklayerTemplateDO);

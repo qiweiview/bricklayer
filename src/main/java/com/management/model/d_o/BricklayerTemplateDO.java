@@ -33,6 +33,9 @@ public class BricklayerTemplateDO {
     @TableField(value = "template_suffix")
     private String templateSuffix;
 
+    @TableField(value = "base_template")
+    private Boolean baseTemplate;
+
     /**
      *
      */
@@ -80,6 +83,7 @@ public class BricklayerTemplateDO {
     public BricklayerTemplateDTO toBricklayerTemplateDTO() {
         BricklayerTemplateDTO bricklayerTemplateDTO = new BricklayerTemplateDTO();
         bricklayerTemplateDTO.setId(getId());
+        bricklayerTemplateDTO.setBaseTemplate(getBaseTemplate());
         bricklayerTemplateDTO.setFixedTemplate(getFixedTemplate());
         bricklayerTemplateDTO.setNameEndString(getNameEndString());
         bricklayerTemplateDTO.setTemplateName(getTemplateName());
@@ -97,6 +101,14 @@ public class BricklayerTemplateDO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public Boolean getBaseTemplate() {
+        return baseTemplate;
+    }
+
+    public void setBaseTemplate(Boolean baseTemplate) {
+        this.baseTemplate = baseTemplate;
+    }
 
     public Boolean getFixedTemplate() {
         return fixedTemplate;

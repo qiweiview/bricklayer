@@ -23,6 +23,8 @@ public class BricklayerTemplateDTO {
 
     private Boolean fixedTemplate;
 
+    private Boolean baseTemplate;
+
     private String templateSuffix;
 
     private String nameEndString;
@@ -36,6 +38,7 @@ public class BricklayerTemplateDTO {
     public BricklayerTemplateDO toBricklayerTemplateDO() {
         BricklayerTemplateDO bricklayerTemplateDO = new BricklayerTemplateDO();
         bricklayerTemplateDO.setId(getId());
+        bricklayerTemplateDO.setBaseTemplate(getBaseTemplate());
         bricklayerTemplateDO.setFixedTemplate(getFixedTemplate());
         bricklayerTemplateDO.setNameEndString(getNameEndString());
         bricklayerTemplateDO.setTemplateName(getTemplateName());
@@ -71,6 +74,14 @@ public class BricklayerTemplateDTO {
     }
 
     /*  ------------ getter setter ------------  */
+
+    public Boolean getBaseTemplate() {
+        return baseTemplate;
+    }
+
+    public void setBaseTemplate(Boolean baseTemplate) {
+        this.baseTemplate = baseTemplate;
+    }
 
     public Boolean getFixedTemplate() {
         return fixedTemplate;

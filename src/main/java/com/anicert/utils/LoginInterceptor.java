@@ -2,28 +2,37 @@ package com.anicert.utils;
 
 import com.anicert.model.vo.BricklayerUserVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.codec.cbor.Jackson2CborEncoder;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 
+    private static Set<String> freeSet = new HashSet<>();
+
+    static {
+        freeSet.add("/bricklayerUser/doLogin");
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String servletPath = request.getServletPath();
+        if (freeSet.contains(servletPath)) {
+            return true;
+        }
         String header = request.getHeader("auth-token");
-        System.out.println("find token " + header);
         if (header == null) {
             authError(response);
             return false;
         } else {
             BricklayerUserVO bricklayerUserVO = BricklayerUserVO.fromToken(header);
-
+            request.setAttribute("user", bricklayerUserVO);
             return true;
         }
     }
