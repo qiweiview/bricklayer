@@ -35,6 +35,7 @@
             and ( template_name like concat('%',#{ do.templateName},'%') or remark like
             concat('%',#{ do.templateName},'%'))
         </if>
+        order by template_name
     </select>
 
     <select id="listBricklayerTemplate" parameterType="com.management.model.d_o.BricklayerTemplateDO"

@@ -25,7 +25,7 @@
         from bricklayer_table
         where 1=1
         <if test="do.remark!=null  and do.remark!=''">
-            and remark like concat('%',#{ do.remark},'%')
+            and ( remark like concat('%',#{ do.remark},'%') or source_data_base like concat('%',#{ do.remark},'%'))
         </if>
     </select>
 

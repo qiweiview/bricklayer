@@ -21,7 +21,9 @@
         '1'as blank_
         from bricklayer_user
         where 1=1
-
+        <if test="do.userName!=null  and do.userName!=''">
+            and user_name like concat('%',#{ do.userName},'%')
+        </if>
     </select>
 
     <select id="listBricklayerUser" parameterType="com.anicert.model.d_o.BricklayerUserDO"

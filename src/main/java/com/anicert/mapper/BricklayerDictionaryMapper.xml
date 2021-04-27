@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anicert.dao.BricklayerDictionaryDao">
+
+    <resultMap type="com.anicert.model.d_o.BricklayerDictionaryDO" id="BricklayerDictionaryMap">
+        <id property="id" column="id"/>
+        <result property="dictionaryName" column="dictionary_name"/>
+        <result property="dictionaryValue" column="dictionary_value"/>
+        <result property="dictionaryCode" column="dictionary_code"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+
+    <select id="listBricklayerDictionaryPage" parameterType="com.anicert.model.d_o.BricklayerDictionaryDO"
+            resultMap="BricklayerDictionaryMap">
+        select
+        id,
+        dictionary_name,
+        dictionary_value,
+        dictionary_code,
+        remark,
+        '1'as blank_
+        from bricklayer_dictionary
+        where 1=1
+        <if test="do.dictionaryName!=null  and do.dictionaryName!=''">
+            and ( dictionary_name like concat('%',#{ do.dictionaryName},'%') or dictionary_code like
+            concat('%',#{ do.dictionaryName},'%') )
+        </if>
+    </select>
+
+    <select id="listBricklayerDictionary" parameterType="com.anicert.model.d_o.BricklayerDictionaryDO"
+            resultMap="BricklayerDictionaryMap">
+        select
+            id,
+            dictionary_name,
+            dictionary_value,
+            dictionary_code,
+            remark,
+        '1'as blank_
+        from bricklayer_dictionary
+        where 1=1
+
+    </select>
+
+    <select id="getBricklayerDictionaryById" parameterType="com.anicert.model.d_o.BricklayerDictionaryDO"
+            resultMap="BricklayerDictionaryMap">
+        select
+        id,
+        dictionary_name,
+        dictionary_value,
+        dictionary_code,
+        remark,
+        '1'as blank_
+        from bricklayer_dictionary
+        where 1=1
+        and id  = #{id}
+
+    </select>
+    <select id="listBricklayerDictionaryByCode" parameterType="java.lang.String"
+            resultMap="BricklayerDictionaryMap">
+ select
+        id,
+        dictionary_name,
+        dictionary_value,
+        dictionary_code,
+        remark,
+        '1'as blank_
+        from bricklayer_dictionary
+        where 1=1
+        and dictionary_code  = #{name}
+
+    </select>
+
+
+    <delete id="deleteBricklayerDictionary" parameterType="com.anicert.model.d_o.BricklayerDictionaryDO">
+        delete
+        from bricklayer_dictionary
+        where 1=1
+        and id  = #{id}
+
+    </delete>
+    <delete id="deleteBatch" parameterType="java.util.List">
+        delete
+        from bricklayer_dictionary
+        where 1=1
+        and id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateBricklayerDictionary" parameterType="com.anicert.model.d_o.BricklayerDictionaryDO">
+        update bricklayer_dictionary
+        set
+        <if test="dictionaryName!=null  and dictionaryName!=''">
+            dictionary_name = #{ dictionaryName},
+        </if>
+        <if test="dictionaryValue!=null  and dictionaryValue!=''">
+            dictionary_value = #{ dictionaryValue},
+        </if>
+        <if test="dictionaryCode!=null  and dictionaryCode!=''">
+            dictionary_code = #{ dictionaryCode},
+        </if>
+        <if test="remark!=null  and remark!=''">
+            remark = #{ remark},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>

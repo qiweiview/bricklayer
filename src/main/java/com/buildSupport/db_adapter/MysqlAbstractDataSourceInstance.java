@@ -34,7 +34,21 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     @Override
     public List<String> getDatabases() {
         List<Map> maps = doQuery("show databases;");
-        List<String> collect = maps.stream().map(x -> x.get("Database").toString()).collect(Collectors.toList());
+        List<String> collect = maps.stream().map(x -> {
+            //todo 获取名称
+            String dbName = "mysql";
+            Object DBName = x.get("DBName");
+            if (DBName != null) {
+                dbName = DBName.toString();
+            }
+
+            Object SCHEMA_NAME = x.get("SCHEMA_NAME");
+            if (SCHEMA_NAME != null) {
+                dbName = SCHEMA_NAME.toString();
+            }
+
+            return dbName;
+        }).collect(Collectors.toList());
         return collect;
     }
 
