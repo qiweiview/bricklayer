@@ -5,10 +5,7 @@ import com.anicert.model.vo.BricklayerDbVO;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
-*
-* create by view
-*/
+
 public class BricklayerDbDTO {
 
     // page field
@@ -16,19 +13,33 @@ public class BricklayerDbDTO {
 
     private int size;
 
-
+    /**
+     * 数据库驱动
+     */
     private  String dbDriverClass;
-
+    /**
+     * 数据库ip
+     */
     private  String dbIp;
-
+    /**
+     * 密码
+     */
     private  String dbPassword;
-
+    /**
+     * 数据库端口
+     */
     private  Integer dbPort;
-
+    /**
+     * 数据库类型
+     */
     private  String dbType;
-
+    /**
+     * 用户名
+     */
     private  String dbUser;
-
+    /**
+     * 
+     */
     private  Integer id;
 
 
@@ -66,8 +77,8 @@ public  BricklayerDbVO toBricklayerDbVO(){
         return collect;
     }
 
-    public static   List<BricklayerDbDO>  toBricklayerDbDOList(List<BricklayerDbDTO> bricklayerDbDTOList){
-        List<BricklayerDbDO> collect= bricklayerDbDTOList.stream().map(x->x.toBricklayerDbDO()).collect(Collectors.toList());
+    public static  List<BricklayerDbDO>  toBricklayerDbDOList(List<BricklayerDbDTO> bricklayerDbDtOList){
+        List<BricklayerDbDO> collect= bricklayerDbDtOList.stream().map(x->x.toBricklayerDbDO()).collect(Collectors.toList());
         return collect;
     }
 
@@ -143,9 +154,5 @@ public  BricklayerDbVO toBricklayerDbVO(){
 
     public void setId(Integer id){
         this.id=id;
-    }
-
-    public String getUniqueKey() {
-        return getDbDriverClass()+getDbIp()+":"+getDbPort();
     }
 }

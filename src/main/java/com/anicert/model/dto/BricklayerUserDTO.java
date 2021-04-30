@@ -18,6 +18,14 @@ public class BricklayerUserDTO {
      */
     private  Integer id;
     /**
+     * 昵称
+     */
+    private  String nickName;
+    /**
+     * 备注
+     */
+    private  String remark;
+    /**
      * 用户名
      */
     private  String userName;
@@ -35,6 +43,8 @@ public class BricklayerUserDTO {
 public  BricklayerUserDO toBricklayerUserDO(){
         BricklayerUserDO bricklayerUserDO =new BricklayerUserDO();
         bricklayerUserDO.setId(getId());
+        bricklayerUserDO.setNickName(getNickName());
+        bricklayerUserDO.setRemark(getRemark());
         bricklayerUserDO.setUserName(getUserName());
         bricklayerUserDO.setUserPassword(getUserPassword());
         bricklayerUserDO.setUserRole(getUserRole());
@@ -45,6 +55,8 @@ public  BricklayerUserDO toBricklayerUserDO(){
 public  BricklayerUserVO toBricklayerUserVO(){
         BricklayerUserVO bricklayerUserVO =new BricklayerUserVO();
         bricklayerUserVO.setId(getId());
+        bricklayerUserVO.setNickName(getNickName());
+        bricklayerUserVO.setRemark(getRemark());
         bricklayerUserVO.setUserName(getUserName());
         bricklayerUserVO.setUserPassword(getUserPassword());
         bricklayerUserVO.setUserRole(getUserRole());
@@ -88,6 +100,22 @@ public  BricklayerUserVO toBricklayerUserVO(){
 
     public void setId(Integer id){
         this.id=id;
+    }
+
+    public String getNickName(){
+        return nickName;
+    }
+
+    public void setNickName(String nickName){
+        this.nickName=nickName;
+    }
+
+    public String getRemark(){
+        return remark;
+    }
+
+    public void setRemark(String remark){
+        this.remark=remark;
     }
 
     public String getUserName(){

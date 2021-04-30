@@ -2,21 +2,49 @@ package com.anicert.model.vo;
 
 
 
-/**
-*
-* create by view
-*/
+
+
 public class BricklayerTableVO {
-
+    /**
+     * 创建人
+     */
+    private  String createBy;
+    /**
+     * 创建日期
+     */
+    private  java.sql.Timestamp createDate;
+    /**
+     * 
+     */
     private  Integer id;
-
+    /**
+     * 模型服务对象
+     */
+    private  String modelServiceTarget;
+    /**
+     * 来源表名
+     */
     private  String originalTableName;
-
+    /**
+     * 备注
+     */
     private  String remark;
-
+    /**
+     * 来源数据库名
+     */
     private  String sourceDataBase;
-
+    /**
+     * 来源设备
+     */
     private  String sourceDevice;
+    /**
+     * 修改人
+     */
+    private  String updateBy;
+    /**
+     * 修改日期
+     */
+    private  java.sql.Timestamp updateDate;
 
 
 /*  ------------ data conversion ------------  */
@@ -24,12 +52,36 @@ public class BricklayerTableVO {
 
 /*  ------------ getter setter ------------  */
 
+    public String getCreateBy(){
+        return createBy;
+        }
+
+    public void setCreateBy(String createBy){
+    this.createBy=createBy;
+    }
+
+    public java.sql.Timestamp getCreateDate(){
+        return createDate;
+        }
+
+    public void setCreateDate(java.sql.Timestamp createDate){
+    this.createDate=createDate;
+    }
+
     public Integer getId(){
         return id;
         }
 
     public void setId(Integer id){
     this.id=id;
+    }
+
+    public String getModelServiceTarget(){
+        return modelServiceTarget;
+        }
+
+    public void setModelServiceTarget(String modelServiceTarget){
+    this.modelServiceTarget=modelServiceTarget;
     }
 
     public String getOriginalTableName(){
@@ -61,6 +113,22 @@ public class BricklayerTableVO {
         }
 
     public void setSourceDevice(String sourceDevice){
-    this.sourceDevice = sourceDevice;
+    this.sourceDevice=sourceDevice;
+    }
+
+    public String getUpdateBy(){
+        return updateBy;
+        }
+
+    public void setUpdateBy(String updateBy){
+    this.updateBy=updateBy;
+    }
+
+    public java.sql.Timestamp getUpdateDate(){
+        return updateDate;
+        }
+
+    public void setUpdateDate(java.sql.Timestamp updateDate){
+    this.updateDate=updateDate;
     }
 }

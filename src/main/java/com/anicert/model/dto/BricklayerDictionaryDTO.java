@@ -14,9 +14,9 @@ public class BricklayerDictionaryDTO {
     private int size;
 
     /**
-     * 
+     * 字典编码
      */
-    private  Integer id;
+    private  String dictionaryCode;
     /**
      * 字典名称
      */
@@ -26,9 +26,9 @@ public class BricklayerDictionaryDTO {
      */
     private  String dictionaryValue;
     /**
-     * 字典编码
+     * 
      */
-    private  String dictionaryCode;
+    private  Integer id;
     /**
      * 备注
      */
@@ -38,10 +38,10 @@ public class BricklayerDictionaryDTO {
 /*  ------------ data conversion ------------  */
 public  BricklayerDictionaryDO toBricklayerDictionaryDO(){
         BricklayerDictionaryDO bricklayerDictionaryDO =new BricklayerDictionaryDO();
-        bricklayerDictionaryDO.setId(getId());
+        bricklayerDictionaryDO.setDictionaryCode(getDictionaryCode());
         bricklayerDictionaryDO.setDictionaryName(getDictionaryName());
         bricklayerDictionaryDO.setDictionaryValue(getDictionaryValue());
-        bricklayerDictionaryDO.setDictionaryCode(getDictionaryCode());
+        bricklayerDictionaryDO.setId(getId());
         bricklayerDictionaryDO.setRemark(getRemark());
         return bricklayerDictionaryDO;
 
@@ -49,10 +49,10 @@ public  BricklayerDictionaryDO toBricklayerDictionaryDO(){
 
 public  BricklayerDictionaryVO toBricklayerDictionaryVO(){
         BricklayerDictionaryVO bricklayerDictionaryVO =new BricklayerDictionaryVO();
-        bricklayerDictionaryVO.setId(getId());
+        bricklayerDictionaryVO.setDictionaryCode(getDictionaryCode());
         bricklayerDictionaryVO.setDictionaryName(getDictionaryName());
         bricklayerDictionaryVO.setDictionaryValue(getDictionaryValue());
-        bricklayerDictionaryVO.setDictionaryCode(getDictionaryCode());
+        bricklayerDictionaryVO.setId(getId());
         bricklayerDictionaryVO.setRemark(getRemark());
         return bricklayerDictionaryVO;
 
@@ -88,12 +88,12 @@ public  BricklayerDictionaryVO toBricklayerDictionaryVO(){
     }
 
 
-    public Integer getId(){
-        return id;
+    public String getDictionaryCode(){
+        return dictionaryCode;
     }
 
-    public void setId(Integer id){
-        this.id=id;
+    public void setDictionaryCode(String dictionaryCode){
+        this.dictionaryCode=dictionaryCode;
     }
 
     public String getDictionaryName(){
@@ -112,12 +112,12 @@ public  BricklayerDictionaryVO toBricklayerDictionaryVO(){
         this.dictionaryValue=dictionaryValue;
     }
 
-    public String getDictionaryCode(){
-        return dictionaryCode;
+    public Integer getId(){
+        return id;
     }
 
-    public void setDictionaryCode(String dictionaryCode){
-        this.dictionaryCode=dictionaryCode;
+    public void setId(Integer id){
+        this.id=id;
     }
 
     public String getRemark(){

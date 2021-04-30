@@ -6,9 +6,9 @@ package com.anicert.model.vo;
 
 public class BricklayerDictionaryVO {
     /**
-     * 
+     * 字典编码
      */
-    private  Integer id;
+    private  String dictionaryCode;
     /**
      * 字典名称
      */
@@ -18,9 +18,9 @@ public class BricklayerDictionaryVO {
      */
     private  String dictionaryValue;
     /**
-     * 字典编码
+     * 
      */
-    private  String dictionaryCode;
+    private  Integer id;
     /**
      * 备注
      */
@@ -32,12 +32,12 @@ public class BricklayerDictionaryVO {
 
 /*  ------------ getter setter ------------  */
 
-    public Integer getId(){
-        return id;
+    public String getDictionaryCode(){
+        return dictionaryCode;
         }
 
-    public void setId(Integer id){
-    this.id=id;
+    public void setDictionaryCode(String dictionaryCode){
+    this.dictionaryCode=dictionaryCode;
     }
 
     public String getDictionaryName(){
@@ -56,12 +56,12 @@ public class BricklayerDictionaryVO {
     this.dictionaryValue=dictionaryValue;
     }
 
-    public String getDictionaryCode(){
-        return dictionaryCode;
+    public Integer getId(){
+        return id;
         }
 
-    public void setDictionaryCode(String dictionaryCode){
-    this.dictionaryCode=dictionaryCode;
+    public void setId(Integer id){
+    this.id=id;
     }
 
     public String getRemark(){

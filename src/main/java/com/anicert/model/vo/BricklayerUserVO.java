@@ -9,22 +9,29 @@ public class BricklayerUserVO {
     /**
      * 主键
      */
-    private Integer id;
+    private  Integer id;
+    /**
+     * 昵称
+     */
+    private  String nickName;
+    /**
+     * 备注
+     */
+    private  String remark;
     /**
      * 用户名
      */
-    private String userName;
+    private  String userName;
     /**
      * 密码
      */
-    private String userPassword;
+    private  String userPassword;
     /**
      * 用户角色
      */
-    private String userRole;
+    private  String userRole;
 
     private String token;
-
 
     public BricklayerUserVO secrete() {
         setId(null);
@@ -49,10 +56,10 @@ public class BricklayerUserVO {
 
     }
 
-    /*  ------------ data conversion ------------  */
+/*  ------------ data conversion ------------  */
 
 
-    /*  ------------ getter setter ------------  */
+/*  ------------ getter setter ------------  */
 
     public String getToken() {
         return token;
@@ -62,35 +69,51 @@ public class BricklayerUserVO {
         this.token = token;
     }
 
-    public Integer getId() {
+    public Integer getId(){
         return id;
+        }
+
+    public void setId(Integer id){
+    this.id=id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public String getNickName(){
+        return nickName;
+        }
+
+    public void setNickName(String nickName){
+    this.nickName=nickName;
     }
 
-    public String getUserName() {
+    public String getRemark(){
+        return remark;
+        }
+
+    public void setRemark(String remark){
+    this.remark=remark;
+    }
+
+    public String getUserName(){
         return userName;
+        }
+
+    public void setUserName(String userName){
+    this.userName=userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserPassword() {
+    public String getUserPassword(){
         return userPassword;
+        }
+
+    public void setUserPassword(String userPassword){
+    this.userPassword=userPassword;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public String getUserRole() {
+    public String getUserRole(){
         return userRole;
-    }
+        }
 
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
+    public void setUserRole(String userRole){
+    this.userRole=userRole;
     }
 }

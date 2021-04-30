@@ -2,7 +2,6 @@ package com.anicert.model.dto;
 
 import com.anicert.model.d_o.BricklayerDirectDO;
 import com.anicert.model.vo.BricklayerDirectVO;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,15 +13,25 @@ public class BricklayerDirectDTO {
 
     private int size;
 
-
+    /**
+     * 所属项目主键
+     */
     private  Integer belongProjectId;
-
+    /**
+     * 目录全路径
+     */
+    private  String directFullPath;
+    /**
+     * 文件夹名称
+     */
     private  String directName;
-
-    private String directFullPath;
-
+    /**
+     * 
+     */
     private  Integer id;
-
+    /**
+     * 父级文件夹主键
+     */
     private  Integer parentDirectId;
 
 
@@ -30,9 +39,9 @@ public class BricklayerDirectDTO {
 public  BricklayerDirectDO toBricklayerDirectDO(){
         BricklayerDirectDO bricklayerDirectDO =new BricklayerDirectDO();
         bricklayerDirectDO.setBelongProjectId(getBelongProjectId());
-    bricklayerDirectDO.setDirectName(getDirectName());
-    bricklayerDirectDO.setDirectFullPath(getDirectFullPath());
-    bricklayerDirectDO.setId(getId());
+        bricklayerDirectDO.setDirectFullPath(getDirectFullPath());
+        bricklayerDirectDO.setDirectName(getDirectName());
+        bricklayerDirectDO.setId(getId());
         bricklayerDirectDO.setParentDirectId(getParentDirectId());
         return bricklayerDirectDO;
 
@@ -41,9 +50,9 @@ public  BricklayerDirectDO toBricklayerDirectDO(){
 public  BricklayerDirectVO toBricklayerDirectVO(){
         BricklayerDirectVO bricklayerDirectVO =new BricklayerDirectVO();
         bricklayerDirectVO.setBelongProjectId(getBelongProjectId());
-    bricklayerDirectVO.setDirectName(getDirectName());
-    bricklayerDirectVO.setDirectFullPath(getDirectFullPath());
-    bricklayerDirectVO.setId(getId());
+        bricklayerDirectVO.setDirectFullPath(getDirectFullPath());
+        bricklayerDirectVO.setDirectName(getDirectName());
+        bricklayerDirectVO.setId(getId());
         bricklayerDirectVO.setParentDirectId(getParentDirectId());
         return bricklayerDirectVO;
 
@@ -56,8 +65,8 @@ public  BricklayerDirectVO toBricklayerDirectVO(){
         return collect;
     }
 
-    public static   List<BricklayerDirectDO>  toBricklayerDirectDOList(List<BricklayerDirectDTO> bricklayerDirectDTOList){
-        List<BricklayerDirectDO> collect= bricklayerDirectDTOList.stream().map(x->x.toBricklayerDirectDO()).collect(Collectors.toList());
+    public static  List<BricklayerDirectDO>  toBricklayerDirectDOList(List<BricklayerDirectDTO> bricklayerDirectDtOList){
+        List<BricklayerDirectDO> collect= bricklayerDirectDtOList.stream().map(x->x.toBricklayerDirectDO()).collect(Collectors.toList());
         return collect;
     }
 
@@ -87,28 +96,28 @@ public  BricklayerDirectVO toBricklayerDirectVO(){
         this.belongProjectId=belongProjectId;
     }
 
-    public String getDirectName() {
-        return directName;
-    }
-
-    public void setDirectName(String directName) {
-        this.directName = directName;
-    }
-
-    public String getDirectFullPath() {
+    public String getDirectFullPath(){
         return directFullPath;
     }
 
-    public void setDirectFullPath(String directFullPath) {
-        this.directFullPath = directFullPath;
+    public void setDirectFullPath(String directFullPath){
+        this.directFullPath=directFullPath;
     }
 
-    public Integer getId() {
+    public String getDirectName(){
+        return directName;
+    }
+
+    public void setDirectName(String directName){
+        this.directName=directName;
+    }
+
+    public Integer getId(){
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(Integer id){
+        this.id=id;
     }
 
     public Integer getParentDirectId(){

@@ -1,13 +1,11 @@
 package com.anicert.model.d_o;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.anicert.model.dto.BricklayerDirectTemplateRelationDTO;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import com.baomidou.mybatisplus.annotation.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 
 
@@ -23,24 +21,26 @@ public class BricklayerDirectTemplateRelationDO {
     /**
      * 主键
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "id",type = IdType.AUTO)
+    private  Integer id;
 
     /**
      * 模板id
      */
     @TableField(value = "template_id")
-    private Integer templateId;
+    private  Integer templateId;
 
-    @TableField(value = "template_name", exist = false)
-    private String templateName;
+    /**
+     * 模板名称
+     */
+    @TableField(value = "template_name")
+    private  String templateName;
 
-
-    /*  ------------ init value ------------  */
+/*  ------------ init value ------------  */
     public void doInit() {
         //setDelFlag(false);
         //setCreateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-    }
+        }
 
     public void doUpdate() {
         //setUpdateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
@@ -58,35 +58,28 @@ public class BricklayerDirectTemplateRelationDO {
     bricklayerDirectTemplateRelationDTO.setBelongDirectId(getBelongDirectId());
     bricklayerDirectTemplateRelationDTO.setId(getId());
     bricklayerDirectTemplateRelationDTO.setTemplateId(getTemplateId());
+    bricklayerDirectTemplateRelationDTO.setTemplateName(getTemplateName());
         return bricklayerDirectTemplateRelationDTO;
 
-    }
+}
 
 
-    public static List<BricklayerDirectTemplateRelationDTO> toBricklayerDirectTemplateRelationDTOList(List<BricklayerDirectTemplateRelationDO> bricklayerDirectTemplateRelationDOList) {
+    public static   List<BricklayerDirectTemplateRelationDTO>  toBricklayerDirectTemplateRelationDTOList(List<BricklayerDirectTemplateRelationDO> bricklayerDirectTemplateRelationDOList){
         List<BricklayerDirectTemplateRelationDTO> collect = bricklayerDirectTemplateRelationDOList.stream().map(x -> x.toBricklayerDirectTemplateRelationDTO()).collect(Collectors.toList());
         return collect;
+}
+
+/*  ------------ getter setter ------------  */
+
+    public Integer getBelongDirectId(){
+    return belongDirectId;
     }
 
-    /*  ------------ getter setter ------------  */
-
-    public String getTemplateName() {
-        return templateName;
+    public void setBelongDirectId(Integer belongDirectId){
+    this.belongDirectId=belongDirectId;
     }
 
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
-
-    public Integer getBelongDirectId() {
-        return belongDirectId;
-    }
-
-    public void setBelongDirectId(Integer belongDirectId) {
-        this.belongDirectId = belongDirectId;
-    }
-
-    public Integer getId() {
+    public Integer getId(){
     return id;
     }
 
@@ -100,5 +93,13 @@ public class BricklayerDirectTemplateRelationDO {
 
     public void setTemplateId(Integer templateId){
     this.templateId=templateId;
+    }
+
+    public String getTemplateName(){
+    return templateName;
+    }
+
+    public void setTemplateName(String templateName){
+    this.templateName=templateName;
     }
 }

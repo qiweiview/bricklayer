@@ -4,19 +4,37 @@ import com.anicert.model.dto.BricklayerTableDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.annotation.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-/**
-*
-* create by view
-*/
+
+
 @TableName("bricklayer_table")
 public class BricklayerTableDO {
+
+    /**
+     * 创建人
+     */
+    @TableField(value = "create_by")
+    private  String createBy;
+
+    /**
+     * 创建日期
+     */
+    @TableField(value = "create_date")
+    private  Timestamp createDate;
 
     /**
      * 
      */
     @TableId(value = "id",type = IdType.AUTO)
     private  Integer id;
+
+    /**
+     * 模型服务对象
+     */
+    @TableField(value = "model_service_target")
+    private  String modelServiceTarget;
 
     /**
      * 来源表名
@@ -42,6 +60,18 @@ public class BricklayerTableDO {
     @TableField(value = "source_device")
     private  String sourceDevice;
 
+    /**
+     * 修改人
+     */
+    @TableField(value = "update_by")
+    private  String updateBy;
+
+    /**
+     * 修改日期
+     */
+    @TableField(value = "update_date")
+    private  Timestamp updateDate;
+
 /*  ------------ init value ------------  */
     public void doInit() {
         //setDelFlag(false);
@@ -61,11 +91,16 @@ public class BricklayerTableDO {
 /*  ------------ data conversion by model ------------  */
     public  BricklayerTableDTO toBricklayerTableDTO(){
     BricklayerTableDTO bricklayerTableDTO =new BricklayerTableDTO();
+    bricklayerTableDTO.setCreateBy(getCreateBy());
+    bricklayerTableDTO.setCreateDate(getCreateDate());
     bricklayerTableDTO.setId(getId());
+    bricklayerTableDTO.setModelServiceTarget(getModelServiceTarget());
     bricklayerTableDTO.setOriginalTableName(getOriginalTableName());
     bricklayerTableDTO.setRemark(getRemark());
     bricklayerTableDTO.setSourceDataBase(getSourceDataBase());
     bricklayerTableDTO.setSourceDevice(getSourceDevice());
+    bricklayerTableDTO.setUpdateBy(getUpdateBy());
+    bricklayerTableDTO.setUpdateDate(getUpdateDate());
         return bricklayerTableDTO;
 
 }
@@ -78,12 +113,36 @@ public class BricklayerTableDO {
 
 /*  ------------ getter setter ------------  */
 
+    public String getCreateBy(){
+    return createBy;
+    }
+
+    public void setCreateBy(String createBy){
+    this.createBy=createBy;
+    }
+
+    public Timestamp getCreateDate(){
+    return createDate;
+    }
+
+    public void setCreateDate(Timestamp createDate){
+    this.createDate=createDate;
+    }
+
     public Integer getId(){
     return id;
     }
 
     public void setId(Integer id){
     this.id=id;
+    }
+
+    public String getModelServiceTarget(){
+    return modelServiceTarget;
+    }
+
+    public void setModelServiceTarget(String modelServiceTarget){
+    this.modelServiceTarget=modelServiceTarget;
     }
 
     public String getOriginalTableName(){
@@ -115,6 +174,22 @@ public class BricklayerTableDO {
     }
 
     public void setSourceDevice(String sourceDevice){
-    this.sourceDevice = sourceDevice;
+    this.sourceDevice=sourceDevice;
+    }
+
+    public String getUpdateBy(){
+    return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy){
+    this.updateBy=updateBy;
+    }
+
+    public Timestamp getUpdateDate(){
+    return updateDate;
+    }
+
+    public void setUpdateDate(Timestamp updateDate){
+    this.updateDate=updateDate;
     }
 }

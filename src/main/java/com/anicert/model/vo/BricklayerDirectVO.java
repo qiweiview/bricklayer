@@ -5,15 +5,25 @@ package com.anicert.model.vo;
 
 
 public class BricklayerDirectVO {
-
+    /**
+     * 所属项目主键
+     */
     private  Integer belongProjectId;
-
+    /**
+     * 目录全路径
+     */
+    private  String directFullPath;
+    /**
+     * 文件夹名称
+     */
     private  String directName;
-
-    private String directFullPath;
-
+    /**
+     * 
+     */
     private  Integer id;
-
+    /**
+     * 父级文件夹主键
+     */
     private  Integer parentDirectId;
 
 
@@ -30,28 +40,28 @@ public class BricklayerDirectVO {
     this.belongProjectId=belongProjectId;
     }
 
-    public String getDirectName() {
-        return directName;
-    }
-
-    public void setDirectName(String directName) {
-        this.directName = directName;
-    }
-
-    public String getDirectFullPath() {
+    public String getDirectFullPath(){
         return directFullPath;
+        }
+
+    public void setDirectFullPath(String directFullPath){
+    this.directFullPath=directFullPath;
     }
 
-    public void setDirectFullPath(String directFullPath) {
-        this.directFullPath = directFullPath;
+    public String getDirectName(){
+        return directName;
+        }
+
+    public void setDirectName(String directName){
+    this.directName=directName;
     }
 
-    public Integer getId() {
+    public Integer getId(){
         return id;
-    }
+        }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(Integer id){
+    this.id=id;
     }
 
     public Integer getParentDirectId(){

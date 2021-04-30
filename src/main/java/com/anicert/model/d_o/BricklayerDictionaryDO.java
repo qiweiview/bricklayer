@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 public class BricklayerDictionaryDO {
 
     /**
-     * 
+     * 字典编码
      */
-    @TableId(value = "id",type = IdType.AUTO)
-    private  Integer id;
+    @TableField(value = "dictionary_code")
+    private  String dictionaryCode;
 
     /**
      * 字典名称
@@ -31,10 +31,10 @@ public class BricklayerDictionaryDO {
     private  String dictionaryValue;
 
     /**
-     * 字典编码
+     * 
      */
-    @TableField(value = "dictionary_code")
-    private  String dictionaryCode;
+    @TableId(value = "id",type = IdType.AUTO)
+    private  Integer id;
 
     /**
      * 备注
@@ -61,10 +61,10 @@ public class BricklayerDictionaryDO {
 /*  ------------ data conversion by model ------------  */
     public  BricklayerDictionaryDTO toBricklayerDictionaryDTO(){
     BricklayerDictionaryDTO bricklayerDictionaryDTO =new BricklayerDictionaryDTO();
-    bricklayerDictionaryDTO.setId(getId());
+    bricklayerDictionaryDTO.setDictionaryCode(getDictionaryCode());
     bricklayerDictionaryDTO.setDictionaryName(getDictionaryName());
     bricklayerDictionaryDTO.setDictionaryValue(getDictionaryValue());
-    bricklayerDictionaryDTO.setDictionaryCode(getDictionaryCode());
+    bricklayerDictionaryDTO.setId(getId());
     bricklayerDictionaryDTO.setRemark(getRemark());
         return bricklayerDictionaryDTO;
 
@@ -78,12 +78,12 @@ public class BricklayerDictionaryDO {
 
 /*  ------------ getter setter ------------  */
 
-    public Integer getId(){
-    return id;
+    public String getDictionaryCode(){
+    return dictionaryCode;
     }
 
-    public void setId(Integer id){
-    this.id=id;
+    public void setDictionaryCode(String dictionaryCode){
+    this.dictionaryCode=dictionaryCode;
     }
 
     public String getDictionaryName(){
@@ -102,12 +102,12 @@ public class BricklayerDictionaryDO {
     this.dictionaryValue=dictionaryValue;
     }
 
-    public String getDictionaryCode(){
-    return dictionaryCode;
+    public Integer getId(){
+    return id;
     }
 
-    public void setDictionaryCode(String dictionaryCode){
-    this.dictionaryCode=dictionaryCode;
+    public void setId(Integer id){
+    this.id=id;
     }
 
     public String getRemark(){

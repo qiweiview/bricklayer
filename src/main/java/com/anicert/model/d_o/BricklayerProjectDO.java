@@ -1,119 +1,180 @@
 package com.anicert.model.d_o;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.anicert.model.dto.BricklayerProjectDTO;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import com.baomidou.mybatisplus.annotation.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 
 @TableName("bricklayer_project")
 public class BricklayerProjectDO {
 
     /**
-     * 主键
+     * 前端访问前缀
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableField(value = "context_path")
+    private  String contextPath;
 
     /**
-     * 项目名
+     * 创建人
      */
-    @TableField(value = "project_name")
-    private String projectName;
+    @TableField(value = "create_by")
+    private  String createBy;
 
+    /**
+     * 创建日期
+     */
+    @TableField(value = "create_date")
+    private  Timestamp createDate;
 
+    /**
+     * 基础项目无法删除
+     */
     @TableField(value = "fix_project")
-    private Boolean fixProject;
+    private  Boolean fixProject;
+
+    /**
+     * 主键
+     */
+    @TableId(value = "id",type = IdType.AUTO)
+    private  Integer id;
 
     /**
      * 项目描述
      */
     @TableField(value = "project_description")
-    private String projectDescription;
+    private  String projectDescription;
 
     /**
-     * 前端访问前缀
+     * 项目名
      */
-    @TableField(value = "context_path")
-    private String contextPath;
+    @TableField(value = "project_name")
+    private  String projectName;
 
-    /*  ------------ init value ------------  */
+    /**
+     * 修改人
+     */
+    @TableField(value = "update_by")
+    private  String updateBy;
+
+    /**
+     * 修改日期
+     */
+    @TableField(value = "update_date")
+    private  Timestamp updateDate;
+
+/*  ------------ init value ------------  */
     public void doInit() {
         //setDelFlag(false);
         //setCreateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-    }
+        }
 
     public void doUpdate() {
         //setUpdateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-    }
+        }
 
     public void doDelete() {
         //setDelFlag(true);
         //doUpdate();
-    }
+        }
 
 
-    /*  ------------ data conversion by model ------------  */
-    public BricklayerProjectDTO toBricklayerProjectDTO() {
-        BricklayerProjectDTO bricklayerProjectDTO = new BricklayerProjectDTO();
-        bricklayerProjectDTO.setId(getId());
-        bricklayerProjectDTO.setFixProject(getFixProject());
-        bricklayerProjectDTO.setProjectName(getProjectName());
-        bricklayerProjectDTO.setProjectDescription(getProjectDescription());
-        bricklayerProjectDTO.setContextPath(getContextPath());
+/*  ------------ data conversion by model ------------  */
+    public  BricklayerProjectDTO toBricklayerProjectDTO(){
+    BricklayerProjectDTO bricklayerProjectDTO =new BricklayerProjectDTO();
+    bricklayerProjectDTO.setContextPath(getContextPath());
+    bricklayerProjectDTO.setCreateBy(getCreateBy());
+    bricklayerProjectDTO.setCreateDate(getCreateDate());
+    bricklayerProjectDTO.setFixProject(getFixProject());
+    bricklayerProjectDTO.setId(getId());
+    bricklayerProjectDTO.setProjectDescription(getProjectDescription());
+    bricklayerProjectDTO.setProjectName(getProjectName());
+    bricklayerProjectDTO.setUpdateBy(getUpdateBy());
+    bricklayerProjectDTO.setUpdateDate(getUpdateDate());
         return bricklayerProjectDTO;
 
-    }
+}
 
 
-    public static List<BricklayerProjectDTO> toBricklayerProjectDTOList(List<BricklayerProjectDO> bricklayerProjectDOList) {
+    public static   List<BricklayerProjectDTO>  toBricklayerProjectDTOList(List<BricklayerProjectDO> bricklayerProjectDOList){
         List<BricklayerProjectDTO> collect = bricklayerProjectDOList.stream().map(x -> x.toBricklayerProjectDTO()).collect(Collectors.toList());
         return collect;
+}
+
+/*  ------------ getter setter ------------  */
+
+    public String getContextPath(){
+    return contextPath;
     }
 
-    /*  ------------ getter setter ------------  */
-
-    public Boolean getFixProject() {
-        return fixProject;
+    public void setContextPath(String contextPath){
+    this.contextPath=contextPath;
     }
 
-    public void setFixProject(Boolean fixProject) {
-        this.fixProject = fixProject;
+    public String getCreateBy(){
+    return createBy;
     }
 
-    public Integer getId() {
-        return id;
+    public void setCreateBy(String createBy){
+    this.createBy=createBy;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Timestamp getCreateDate(){
+    return createDate;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public void setCreateDate(Timestamp createDate){
+    this.createDate=createDate;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public Boolean getFixProject(){
+    return fixProject;
     }
 
-    public String getProjectDescription() {
-        return projectDescription;
+    public void setFixProject(Boolean fixProject){
+    this.fixProject=fixProject;
     }
 
-    public void setProjectDescription(String projectDescription) {
-        this.projectDescription = projectDescription;
+    public Integer getId(){
+    return id;
     }
 
-    public String getContextPath() {
-        return contextPath;
+    public void setId(Integer id){
+    this.id=id;
     }
 
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
+    public String getProjectDescription(){
+    return projectDescription;
+    }
+
+    public void setProjectDescription(String projectDescription){
+    this.projectDescription=projectDescription;
+    }
+
+    public String getProjectName(){
+    return projectName;
+    }
+
+    public void setProjectName(String projectName){
+    this.projectName=projectName;
+    }
+
+    public String getUpdateBy(){
+    return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy){
+    this.updateBy=updateBy;
+    }
+
+    public Timestamp getUpdateDate(){
+    return updateDate;
+    }
+
+    public void setUpdateDate(Timestamp updateDate){
+    this.updateDate=updateDate;
     }
 }

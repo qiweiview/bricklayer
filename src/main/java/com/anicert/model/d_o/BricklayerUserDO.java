@@ -19,6 +19,18 @@ public class BricklayerUserDO {
     private  Integer id;
 
     /**
+     * 昵称
+     */
+    @TableField(value = "nick_name")
+    private  String nickName;
+
+    /**
+     * 备注
+     */
+    @TableField(value = "remark")
+    private  String remark;
+
+    /**
      * 用户名
      */
     @TableField(value = "user_name")
@@ -56,6 +68,8 @@ public class BricklayerUserDO {
     public  BricklayerUserDTO toBricklayerUserDTO(){
     BricklayerUserDTO bricklayerUserDTO =new BricklayerUserDTO();
     bricklayerUserDTO.setId(getId());
+    bricklayerUserDTO.setNickName(getNickName());
+    bricklayerUserDTO.setRemark(getRemark());
     bricklayerUserDTO.setUserName(getUserName());
     bricklayerUserDTO.setUserPassword(getUserPassword());
     bricklayerUserDTO.setUserRole(getUserRole());
@@ -77,6 +91,22 @@ public class BricklayerUserDO {
 
     public void setId(Integer id){
     this.id=id;
+    }
+
+    public String getNickName(){
+    return nickName;
+    }
+
+    public void setNickName(String nickName){
+    this.nickName=nickName;
+    }
+
+    public String getRemark(){
+    return remark;
+    }
+
+    public void setRemark(String remark){
+    this.remark=remark;
     }
 
     public String getUserName(){

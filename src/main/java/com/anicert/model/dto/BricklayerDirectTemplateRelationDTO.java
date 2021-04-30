@@ -13,12 +13,22 @@ public class BricklayerDirectTemplateRelationDTO {
 
     private int size;
 
-
+    /**
+     * 归属文件夹
+     */
     private  Integer belongDirectId;
-
+    /**
+     * 主键
+     */
     private  Integer id;
-
+    /**
+     * 模板id
+     */
     private  Integer templateId;
+    /**
+     * 模板名称
+     */
+    private  String templateName;
 
 
 /*  ------------ data conversion ------------  */
@@ -27,6 +37,7 @@ public  BricklayerDirectTemplateRelationDO toBricklayerDirectTemplateRelationDO(
         bricklayerDirectTemplateRelationDO.setBelongDirectId(getBelongDirectId());
         bricklayerDirectTemplateRelationDO.setId(getId());
         bricklayerDirectTemplateRelationDO.setTemplateId(getTemplateId());
+        bricklayerDirectTemplateRelationDO.setTemplateName(getTemplateName());
         return bricklayerDirectTemplateRelationDO;
 
         }
@@ -36,6 +47,7 @@ public  BricklayerDirectTemplateRelationVO toBricklayerDirectTemplateRelationVO(
         bricklayerDirectTemplateRelationVO.setBelongDirectId(getBelongDirectId());
         bricklayerDirectTemplateRelationVO.setId(getId());
         bricklayerDirectTemplateRelationVO.setTemplateId(getTemplateId());
+        bricklayerDirectTemplateRelationVO.setTemplateName(getTemplateName());
         return bricklayerDirectTemplateRelationVO;
 
         }
@@ -47,8 +59,8 @@ public  BricklayerDirectTemplateRelationVO toBricklayerDirectTemplateRelationVO(
         return collect;
     }
 
-    public static   List<BricklayerDirectTemplateRelationDO>  toBricklayerDirectTemplateRelationDOList(List<BricklayerDirectTemplateRelationDTO> bricklayerDirectTemplateRelationDTOList){
-        List<BricklayerDirectTemplateRelationDO> collect= bricklayerDirectTemplateRelationDTOList.stream().map(x->x.toBricklayerDirectTemplateRelationDO()).collect(Collectors.toList());
+    public static  List<BricklayerDirectTemplateRelationDO>  toBricklayerDirectTemplateRelationDOList(List<BricklayerDirectTemplateRelationDTO> bricklayerDirectTemplateRelationDtOList){
+        List<BricklayerDirectTemplateRelationDO> collect= bricklayerDirectTemplateRelationDtOList.stream().map(x->x.toBricklayerDirectTemplateRelationDO()).collect(Collectors.toList());
         return collect;
     }
 
@@ -92,5 +104,13 @@ public  BricklayerDirectTemplateRelationVO toBricklayerDirectTemplateRelationVO(
 
     public void setTemplateId(Integer templateId){
         this.templateId=templateId;
+    }
+
+    public String getTemplateName(){
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName){
+        this.templateName=templateName;
     }
 }

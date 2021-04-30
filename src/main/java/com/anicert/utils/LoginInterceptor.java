@@ -13,11 +13,18 @@ import java.util.Set;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
+    public static String CURRENT_NAME = "CURRENT_NAME";
 
     private static Set<String> freeSet = new HashSet<>();
+    private static Set<String> adminSet = new HashSet<>();
 
     static {
         freeSet.add("/bricklayerUser/doLogin");
+
+        adminSet.add("bricklayerDb");
+        adminSet.add("bricklayerDictionary");
+        adminSet.add("bricklayerUser");
+
     }
 
     @Override
@@ -31,8 +38,24 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             authError(response);
             return false;
         } else {
+
+
             BricklayerUserVO bricklayerUserVO = BricklayerUserVO.fromToken(header);
-            request.setAttribute("user", bricklayerUserVO);
+
+            String userRole = bricklayerUserVO.getUserRole();
+            if (!"admin".equals(userRole)) {
+                boolean[] check = {false};
+                adminSet.forEach(x -> {
+                    check[0] = servletPath.indexOf(x) != -1;
+                });
+                if (check[0]) {
+                    authError(response);
+                    return false;
+                }
+            }
+
+
+            request.setAttribute(CURRENT_NAME, bricklayerUserVO);
             return true;
         }
     }

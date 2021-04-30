@@ -5,12 +5,22 @@ package com.anicert.model.vo;
 
 
 public class BricklayerDirectTemplateRelationVO {
-
+    /**
+     * 归属文件夹
+     */
     private  Integer belongDirectId;
-
+    /**
+     * 主键
+     */
     private  Integer id;
-
+    /**
+     * 模板id
+     */
     private  Integer templateId;
+    /**
+     * 模板名称
+     */
+    private  String templateName;
 
 
 /*  ------------ data conversion ------------  */
@@ -40,5 +50,13 @@ public class BricklayerDirectTemplateRelationVO {
 
     public void setTemplateId(Integer templateId){
     this.templateId=templateId;
+    }
+
+    public String getTemplateName(){
+        return templateName;
+        }
+
+    public void setTemplateName(String templateName){
+    this.templateName=templateName;
     }
 }
