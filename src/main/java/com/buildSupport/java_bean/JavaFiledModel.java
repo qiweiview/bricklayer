@@ -2,7 +2,7 @@ package com.buildSupport.java_bean;
 
 import com.buildSupport.db_adapter.TypeConverter;
 import com.buildSupport.utils.StringUtils4V;
-import com.management.model.dto.BricklayerColumnDTO;
+import com.anicert.model.dto.BricklayerColumnDTO;
 import lombok.Data;
 
 /**

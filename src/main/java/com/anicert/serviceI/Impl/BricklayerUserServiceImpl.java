@@ -6,7 +6,7 @@ import com.anicert.model.dto.BricklayerUserDTO;
 import com.anicert.serviceI.BricklayerUserServiceI;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.management.utils.MessageRuntimeException;
+import com.anicert.utils.MessageRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

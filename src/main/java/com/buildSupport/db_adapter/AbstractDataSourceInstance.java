@@ -1,6 +1,6 @@
 package com.buildSupport.db_adapter;
 
-import com.management.model.dto.BricklayerTableDTO;
+import com.anicert.model.dto.BricklayerTableDTO;
 
 import java.sql.Connection;
 import java.util.HashSet;

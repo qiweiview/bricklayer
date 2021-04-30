@@ -2,8 +2,8 @@ package com.buildSupport.db_adapter;
 
 
 import com.buildSupport.utils.JDBCResultUtils;
-import com.management.model.dto.BricklayerColumnDTO;
-import com.management.model.dto.BricklayerTableDTO;
+import com.anicert.model.dto.BricklayerColumnDTO;
+import com.anicert.model.dto.BricklayerTableDTO;
 
 
 import java.sql.*;

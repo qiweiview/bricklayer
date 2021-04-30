@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anicert.dao.BricklayerTableDao">
+
+    <resultMap type="com.anicert.model.d_o.BricklayerTableDO" id="BricklayerTableMap">
+        <id property="id" column="id"/>
+        <result property="originalTableName" column="original_table_name"/>
+        <result property="remark" column="remark"/>
+        <result property="sourceDataBase" column="source_data_base"/>
+        <result property="sourceDevice" column="source_device"/>
+    </resultMap>
+
+
+    <select id="listBricklayerTablePage" parameterType="com.anicert.model.d_o.BricklayerTableDO"
+            resultMap="BricklayerTableMap">
+        select
+        id,
+        original_table_name,
+        remark,
+        source_data_base,
+        source_device,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        <if test="do.remark!=null  and do.remark!=''">
+            and ( remark like concat('%',#{ do.remark},'%') or source_data_base like concat('%',#{ do.remark},'%'))
+        </if>
+    </select>
+
+    <select id="listBricklayerTable" parameterType="com.anicert.model.d_o.BricklayerTableDO"
+            resultMap="BricklayerTableMap">
+        select
+            id,
+            original_table_name,
+            remark,
+            source_data_base,
+            source_device,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        <if test="do.remark!=null  and do.remark!=''">
+            and remark like concat('%',#{ do.remark},'%')
+        </if>
+    </select>
+
+    <select id="getBricklayerTableById" parameterType="com.anicert.model.d_o.BricklayerTableDO"
+            resultMap="BricklayerTableMap">
+        select
+        id,
+        original_table_name,
+        remark,
+        source_data_base,
+        source_device,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        and id = #{id}
+
+    </select>
+
+
+    <delete id="deleteBricklayerTable" parameterType="com.anicert.model.d_o.BricklayerTableDO">
+        delete
+        from bricklayer_table
+        where 1=1
+        and id  = #{id}
+        
+    </delete>
+
+    <update id="updateBricklayerTable" parameterType="com.anicert.model.d_o.BricklayerTableDO">
+        update bricklayer_table
+        set
+        <if test="originalTableName!=null  and originalTableName!=''">
+            original_table_name = #{ originalTableName},
+        </if>
+        <if test="remark!=null  and remark!=''">
+            remark = #{ remark},
+        </if>
+        <if test="sourceDataBase!=null  and sourceDataBase!=''">
+            source_data_base = #{ sourceDataBase},
+        </if>
+        <if test="sourceDevice!=null  and sourceDevice!=''">
+            source_device = #{ sourceDevice},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>

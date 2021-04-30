@@ -2,8 +2,8 @@ package com.buildSupport.java_bean;
 
 
 import com.buildSupport.utils.StringUtils4V;
-import com.management.model.dto.BricklayerColumnDTO;
-import com.management.model.dto.BricklayerTableDTO;
+import com.anicert.model.dto.BricklayerColumnDTO;
+import com.anicert.model.dto.BricklayerTableDTO;
 import lombok.Data;
 
 import java.util.ArrayList;
