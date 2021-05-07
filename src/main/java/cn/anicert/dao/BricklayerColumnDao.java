@@ -30,8 +30,10 @@ public interface BricklayerColumnDao extends BaseMapper<BricklayerColumnDO>{
 
     List<BricklayerColumnDO> getBricklayerColumnsByBelongTableId(BricklayerColumnDO bricklayerColumnDO);
 
-    List<BricklayerColumnDO> getBricklayerTablesByIds(@Param("ids")List<Integer> ids);
+    List<BricklayerColumnDO> getBricklayerTablesByIds(@Param("ids") List<Integer> ids);
 
     List<BricklayerColumnDO> getBricklayerTableById(@Param("id") Integer id);
+
+    void deleteBricklayerColumnByBelongTableIds(@Param("ids") List<Integer> ids);
 
 }

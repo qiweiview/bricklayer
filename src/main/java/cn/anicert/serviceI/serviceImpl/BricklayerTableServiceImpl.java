@@ -100,6 +100,7 @@ public class BricklayerTableServiceImpl implements BricklayerTableServiceI {
         List<Integer> ids = bricklayerTableDTO.getIds();
         if (ids != null && ids.size() > 0) {
             bricklayerTableDao.deleteBricklayerTableBatch(ids);
+            bricklayerColumnDao.deleteBricklayerColumnByBelongTableIds(ids);
         }
     }
 
