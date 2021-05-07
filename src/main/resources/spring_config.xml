@@ -17,7 +17,7 @@
 
 
     <!-- mapper 扫描 -->
-    <mybatis:scan base-package="com.**.dao"/>
+    <mybatis:scan base-package="cn.**.dao"/>
 
 
     <!-- 数据库连接池 -->
@@ -44,7 +44,7 @@
     </bean>
     <!-- sql session -->
     <bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
-        <property name="mapperLocations" value="classpath*:/com/**/*Mapper.xml"/>
+        <property name="mapperLocations" value="classpath*:/cn/**/*Mapper.xml"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="configuration" ref="configuration"/>
         <!--配置插件-->
@@ -72,7 +72,7 @@
 
 
     <!--启动注解扫描-->
-    <context:component-scan base-package="com">
+    <context:component-scan base-package="cn">
         <context:exclude-filter type="annotation"
                                 expression="org.springframework.stereotype.Controller"/><!--排除Controller-->
     </context:component-scan>

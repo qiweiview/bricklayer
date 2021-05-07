@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.anicert.dao.BricklayerColumnDao">
+
+    <resultMap type="cn.anicert.model.d_o.BricklayerColumnDO" id="BricklayerColumnMap">
+        <id property="id" column="id"/>
+        <result property="originalColumnName" column="original_column_name"/>
+        <result property="simpleColumnType" column="simple_column_type"/>
+        <result property="columnType" column="column_type"/>
+        <result property="columnKey" column="column_key"/>
+        <result property="extra" column="extra"/>
+        <result property="comment" column="comment"/>
+        <result property="belongTableName" column="belong_table_name"/>
+    </resultMap>
+
+
+    <select id="listBricklayerColumnPage" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
+            resultMap="BricklayerColumnMap">
+        select
+        id,
+        original_column_name,
+        simple_column_type,
+        column_type,
+        column_key,
+        extra,
+        comment,
+        '1'as blank_
+        from bricklayer_column
+        where 1=1
+        
+    </select>
+
+    <select id="listBricklayerColumn" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
+            resultMap="BricklayerColumnMap">
+        select
+            id,
+            original_column_name,
+            simple_column_type,
+            column_type,
+            column_key,
+            extra,
+            comment,
+        '1'as blank_
+        from bricklayer_column
+        where 1=1
+        
+    </select>
+
+    <select id="getBricklayerColumnById" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
+            resultMap="BricklayerColumnMap">
+        select
+        id,
+        original_column_name,
+        simple_column_type,
+        column_type,
+        column_key,
+        extra,
+        comment,
+        '1'as blank_
+        from bricklayer_column
+        where 1=1
+        and id  = #{id}
+        
+    </select>
+
+    <select id="getBricklayerColumnsByBelongTableId" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
+            resultMap="BricklayerColumnMap">
+        select
+        id,
+        original_column_name,
+        simple_column_type,
+        column_type,
+        column_key,
+        extra,
+        comment,
+        '1'as blank_
+        from bricklayer_column
+        where 1=1
+        <if test="belongTableId!=null  and belongTableId!=''">
+            and belong_table_id = #{ belongTableId}
+        </if>
+    </select>
+
+    <select id="getBricklayerTablesByIds" parameterType="cn.anicert.model.dto.GenerateCodeDTO"
+            resultMap="BricklayerColumnMap">
+        SELECT
+        a.id,
+        original_column_name,
+        simple_column_type,
+        column_type,
+        column_key,
+        extra,
+        b.original_table_name as belong_table_name,
+        COMMENT
+        FROM
+        bricklayer_column a
+        LEFT JOIN bricklayer_table b ON a.belong_table_id = b.id
+        where 1=1
+        and b.id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getBricklayerTableById" parameterType="java.lang.Integer"
+            resultMap="BricklayerColumnMap">
+        SELECT
+        a.id,
+        original_column_name,
+        simple_column_type,
+        column_type,
+        column_key,
+        extra,
+        b.original_table_name as belong_table_name,
+        COMMENT
+        FROM
+        bricklayer_column a
+        LEFT JOIN bricklayer_table b ON a.belong_table_id = b.id
+        where 1=1
+        and b.id =#{id}
+    </select>
+
+
+    <delete id="deleteBricklayerColumn" parameterType="cn.anicert.model.d_o.BricklayerColumnDO">
+        delete
+        from bricklayer_column
+        where 1=1
+        and id  = #{id}
+        
+    </delete>
+
+    <delete id="deleteBricklayerColumnByBelongTableId" parameterType="cn.anicert.model.d_o.BricklayerColumnDO">
+         delete
+        from bricklayer_column
+        where 1=1
+        and belong_table_id  = #{belongTableId}
+
+    </delete>
+
+    <update id="updateBricklayerColumn" parameterType="cn.anicert.model.d_o.BricklayerColumnDO">
+        update bricklayer_column
+        set
+        <if test="originalColumnName!=null  and originalColumnName!=''">
+            original_column_name = #{ originalColumnName},
+        </if>
+        <if test="simpleColumnType!=null  and simpleColumnType!=''">
+            simple_column_type = #{ simpleColumnType},
+        </if>
+        <if test="columnType!=null  and columnType!=''">
+            column_type = #{ columnType},
+        </if>
+        <if test="columnKey!=null  and columnKey!=''">
+            column_key = #{ columnKey},
+        </if>
+        <if test="extra!=null  and extra!=''">
+            extra = #{ extra},
+        </if>
+        <if test="comment!=null  and comment!=''">
+            comment = #{ comment},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>

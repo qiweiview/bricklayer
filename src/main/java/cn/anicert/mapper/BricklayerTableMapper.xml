@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.anicert.dao.BricklayerTableDao">
+
+    <resultMap type="cn.anicert.model.d_o.BricklayerTableDO" id="BricklayerTableMap">
+        <id property="id" column="id"/>
+        <result property="originalTableName" column="original_table_name"/>
+        <result property="remark" column="remark"/>
+        <result property="sourceDevice" column="source_device"/>
+        <result property="sourceDataBase" column="source_data_base"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+
+
+    <select id="listBricklayerTablePage" parameterType="cn.anicert.model.d_o.BricklayerTableDO"
+            resultMap="BricklayerTableMap">
+        select
+        id,
+        original_table_name,
+        remark,
+        source_device,
+        source_data_base,
+        create_by,
+        update_by,
+        create_date,
+        update_date,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        <if test="do.remark!=null  and do.remark!=''">
+            and ( remark like concat('%',#{ do.remark},'%') or source_data_base like concat('%',#{ do.remark},'%'))
+        </if>
+        <if test="do.createBy!=null  and do.createBy!=''">
+            and create_by = #{ do.createBy}
+        </if>
+    </select>
+
+    <select id="listBricklayerTable" parameterType="cn.anicert.model.d_o.BricklayerTableDO"
+            resultMap="BricklayerTableMap">
+        select
+        id,
+        original_table_name,
+        remark,
+        source_device,
+        source_data_base,
+        create_by,
+        update_by,
+        create_date,
+        update_date,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        <if test="do.remark!=null  and do.remark!=''">
+            and remark like concat('%',#{ do.remark},'%')
+        </if>
+    </select>
+
+    <select id="getBricklayerTableById" parameterType="cn.anicert.model.d_o.BricklayerTableDO"
+            resultMap="BricklayerTableMap">
+        select
+       id,
+        original_table_name,
+        remark,
+        source_device,
+        source_data_base,
+        create_by,
+        update_by,
+        create_date,
+        update_date,
+        '1'as blank_
+        from bricklayer_table
+        where 1=1
+        and id = #{id}
+
+    </select>
+
+
+    <delete id="deleteBricklayerTable" parameterType="cn.anicert.model.d_o.BricklayerTableDO">
+        delete
+        from bricklayer_table
+        where 1=1
+        and id  = #{id}
+        
+    </delete>
+
+    <delete id="deleteBricklayerTableBatch" parameterType="java.util.List">
+        delete
+        from bricklayer_table
+        where 1=1
+        and id in
+        <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateBricklayerTable" parameterType="cn.anicert.model.d_o.BricklayerTableDO">
+        update bricklayer_table
+        set
+        <if test="originalTableName!=null  and originalTableName!=''">
+            original_table_name = #{ originalTableName},
+        </if>
+        <if test="remark!=null  and remark!=''">
+            remark = #{ remark},
+        </if>
+        <if test="sourceDevice!=null  and sourceDevice!=''">
+            source_device = #{ sourceDevice},
+        </if>
+        <if test="sourceDataBase!=null  and sourceDataBase!=''">
+            source_data_base = #{ sourceDataBase},
+        </if>
+        <if test="createBy!=null  and createBy!=''">
+            create_by = #{ createBy},
+        </if>
+        <if test="updateBy!=null  and updateBy!=''">
+            update_by = #{ updateBy},
+        </if>
+        <if test="createDate!=null ">
+            create_date = #{ createDate},
+        </if>
+        <if test="updateDate!=null ">
+            update_date = #{ updateDate},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>
