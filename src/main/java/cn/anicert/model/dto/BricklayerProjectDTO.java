@@ -80,6 +80,7 @@ public  BricklayerProjectDO toBricklayerProjectDO(){
         bricklayerProjectVO.setProjectDescription(getProjectDescription());
         bricklayerProjectVO.setProjectName(getProjectName());
         bricklayerProjectVO.setUpdateBy(getUpdateBy());
+        bricklayerProjectVO.setTree(getTree());
         bricklayerProjectVO.setUpdateDate(getUpdateDate());
         return bricklayerProjectVO;
 

@@ -28,7 +28,6 @@ public class BricklayerTableServiceImpl implements BricklayerTableServiceI {
     private final BricklayerColumnDao bricklayerColumnDao;
 
 
-
     @Override
     public BricklayerTableDTO saveBricklayerTable(BricklayerTableDTO bricklayerTableDTO) {
         BricklayerTableDO bricklayerTableDO = bricklayerTableDTO.toBricklayerTableDO();
@@ -73,7 +72,7 @@ public class BricklayerTableServiceImpl implements BricklayerTableServiceI {
     @Override
     public IPage<BricklayerTableDTO> listBricklayerTablePage(BricklayerTableDTO bricklayerTableDTO) {
         BricklayerTableDO bricklayerTableDO = bricklayerTableDTO.toBricklayerTableDO();
-        if (bricklayerTableDTO.getOnlyMine()) {
+        if (bricklayerTableDTO.getOnlyMine() != null && bricklayerTableDTO.getOnlyMine()) {
             bricklayerTableDO.setCreateBy(LoginInterceptor.getCurrentName());
         }
         Page page = new Page(bricklayerTableDTO.getCurrent(), bricklayerTableDTO.getSize());

@@ -80,7 +80,7 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
     @Override
     public IPage<BricklayerTemplateDTO> listBricklayerTemplatePage(BricklayerTemplateDTO bricklayerTemplateDTO) {
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
-        if (bricklayerTemplateDTO.getOnlyMine()) {
+        if (bricklayerTemplateDTO.getOnlyMine()!=null&&bricklayerTemplateDTO.getOnlyMine()) {
             bricklayerTemplateDO.setCreateBy(LoginInterceptor.getCurrentName());
         }
         Page page = new Page(bricklayerTemplateDTO.getCurrent(), bricklayerTemplateDTO.getSize());
