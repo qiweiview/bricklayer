@@ -38,6 +38,7 @@
         <if test="do.createBy!=null  and do.createBy!=''">
             and create_by = #{ do.createBy}
         </if>
+        order by create_date desc
     </select>
 
     <select id="listBricklayerTable" parameterType="cn.anicert.model.d_o.BricklayerTableDO"
