@@ -24,7 +24,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         freeSet.add("/bricklayerUser/doLogin");
 
         adminSet.add("bricklayerDb");
-        adminSet.add("bricklayerDictionary");
+        adminSet.add("bricklayerDictionary/save");
+        adminSet.add("bricklayerDictionary/delete");
+        adminSet.add("bricklayerDictionary/batchDelete");
+        adminSet.add("bricklayerDictionary/update");
         adminSet.add("bricklayerUser");
 
 
@@ -57,7 +60,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                     check[0] = servletPath.indexOf(x) != -1;
                 });
                 if (check[0]) {
-                    authError(response);
+                    authError(response, "无接口权限");
                     return false;
                 }
             }
@@ -69,8 +72,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         }
     }
 
-
-    public void authError(HttpServletResponse response) {
+    public void authError(HttpServletResponse response, String error) {
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
@@ -78,15 +80,17 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         PrintWriter out = null;
         try {
             out = response.getWriter();
-            String msg = objectMapper.writeValueAsString(ResponseVo.error("token缺失"));
+            String msg = objectMapper.writeValueAsString(ResponseVo.error(error));
             out.write(msg);
             out.flush();
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-
+    public void authError(HttpServletResponse response) {
+        authError(response, "token缺失");
     }
 
 
