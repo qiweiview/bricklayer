@@ -203,6 +203,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
 
             List<BricklayerColumnDTO> dbColumnModelList = x.getBricklayerColumnDTOList();
+            int[] index = {1};
             dbColumnModelList.forEach(y -> {
                 BricklayerColumnDO bricklayerColumnDO = new BricklayerColumnDO();
                 bricklayerColumnDO.setColumnKey(y.getColumnKey());
@@ -212,6 +213,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                 bricklayerColumnDO.setOriginalColumnName(y.getOriginalColumnName());
                 bricklayerColumnDO.setSimpleColumnType(y.getSimpleColumnType());
                 bricklayerColumnDO.setBelongTableId(bricklayerTableDO.getId());
+                bricklayerColumnDO.setColumnOrder(index[0]++);
                 bricklayerColumnDO.doInit();
                 bricklayerColumnDao.insert(bricklayerColumnDO);
             });

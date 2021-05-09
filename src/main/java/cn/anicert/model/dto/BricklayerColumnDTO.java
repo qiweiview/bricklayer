@@ -2,11 +2,12 @@ package cn.anicert.model.dto;
 
 import cn.anicert.model.d_o.BricklayerColumnDO;
 import cn.anicert.model.vo.BricklayerColumnVO;
+import lombok.Data;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Data
 public class BricklayerColumnDTO {
 
     // page field
@@ -14,69 +15,76 @@ public class BricklayerColumnDTO {
 
     private int size;
 
+    private List<Integer> ids;
+
     /**
-     * 所属模型主键
+     *
      */
-    private  Integer belongTableId;
+    private Integer id;
     /**
-     * 列主键标识
+     * 原始列名
      */
-    private  String columnKey;
+    private String originalColumnName;
+    /**
+     * 简单列类型
+     */
+    private String simpleColumnType;
     /**
      * 列类型（完整）
      */
-    private  String columnType;
+    private String columnType;
     /**
-     * 列注解
+     * 是否主键
      */
-    private  String comment;
+    private String columnKey;
     /**
-     * 自增标识
+     * 是否自增
      */
-    private  String extra;
+    private String extra;
     /**
-     * 主键
+     * 列注释
      */
-    private  Integer id;
+    private String comment;
     /**
-     * 数据库列名
+     * 所属模型
      */
-    private  String originalColumnName;
+    private Integer belongTableId;
     /**
-     * 列类型（简写）
+     * 列排序
      */
-    private  String simpleColumnType;
+    private Integer columnOrder;
 
 
 /*  ------------ data conversion ------------  */
 public  BricklayerColumnDO toBricklayerColumnDO(){
-        BricklayerColumnDO bricklayerColumnDO =new BricklayerColumnDO();
-        bricklayerColumnDO.setBelongTableId(getBelongTableId());
-        bricklayerColumnDO.setColumnKey(getColumnKey());
-        bricklayerColumnDO.setColumnType(getColumnType());
-        bricklayerColumnDO.setComment(getComment());
-        bricklayerColumnDO.setExtra(getExtra());
-        bricklayerColumnDO.setId(getId());
-        bricklayerColumnDO.setOriginalColumnName(getOriginalColumnName());
-        bricklayerColumnDO.setSimpleColumnType(getSimpleColumnType());
-        return bricklayerColumnDO;
+    BricklayerColumnDO bricklayerColumnDO = new BricklayerColumnDO();
+    bricklayerColumnDO.setId(getId());
+    bricklayerColumnDO.setOriginalColumnName(getOriginalColumnName());
+    bricklayerColumnDO.setSimpleColumnType(getSimpleColumnType());
+    bricklayerColumnDO.setColumnType(getColumnType());
+    bricklayerColumnDO.setColumnKey(getColumnKey());
+    bricklayerColumnDO.setExtra(getExtra());
+    bricklayerColumnDO.setComment(getComment());
+    bricklayerColumnDO.setBelongTableId(getBelongTableId());
+    bricklayerColumnDO.setColumnOrder(getColumnOrder());
+    return bricklayerColumnDO;
 
-        }
+}
 
-public  BricklayerColumnVO toBricklayerColumnVO(){
-        BricklayerColumnVO bricklayerColumnVO =new BricklayerColumnVO();
-        bricklayerColumnVO.setBelongTableId(getBelongTableId());
-        bricklayerColumnVO.setColumnKey(getColumnKey());
-        bricklayerColumnVO.setColumnType(getColumnType());
-        bricklayerColumnVO.setComment(getComment());
-        bricklayerColumnVO.setExtra(getExtra());
+    public  BricklayerColumnVO toBricklayerColumnVO(){
+        BricklayerColumnVO bricklayerColumnVO = new BricklayerColumnVO();
         bricklayerColumnVO.setId(getId());
         bricklayerColumnVO.setOriginalColumnName(getOriginalColumnName());
         bricklayerColumnVO.setSimpleColumnType(getSimpleColumnType());
+        bricklayerColumnVO.setColumnType(getColumnType());
+        bricklayerColumnVO.setColumnKey(getColumnKey());
+        bricklayerColumnVO.setExtra(getExtra());
+        bricklayerColumnVO.setComment(getComment());
+        bricklayerColumnVO.setBelongTableId(getBelongTableId());
+        bricklayerColumnVO.setColumnOrder(getColumnOrder());
         return bricklayerColumnVO;
 
-        }
-
+    }
 
 
     public static   List<BricklayerColumnVO>  toBricklayerColumnVOList(List<BricklayerColumnDTO> bricklayerColumnDTOList){
@@ -89,85 +97,4 @@ public  BricklayerColumnVO toBricklayerColumnVO(){
         return collect;
     }
 
-/*  ------------ getter setter ------------  */
-    public int getCurrent(){
-        return current;
-    }
-
-    public void setCurrent(int current){
-        this.current=current;
-    }
-
-    public int getSize(){
-        return size;
-    }
-
-    public void setSize(int size){
-        this.size=size;
-    }
-
-
-    public Integer getBelongTableId(){
-        return belongTableId;
-    }
-
-    public void setBelongTableId(Integer belongTableId){
-        this.belongTableId=belongTableId;
-    }
-
-    public String getColumnKey(){
-        return columnKey;
-    }
-
-    public void setColumnKey(String columnKey){
-        this.columnKey=columnKey;
-    }
-
-    public String getColumnType(){
-        return columnType;
-    }
-
-    public void setColumnType(String columnType){
-        this.columnType=columnType;
-    }
-
-    public String getComment(){
-        return comment;
-    }
-
-    public void setComment(String comment){
-        this.comment=comment;
-    }
-
-    public String getExtra(){
-        return extra;
-    }
-
-    public void setExtra(String extra){
-        this.extra=extra;
-    }
-
-    public Integer getId(){
-        return id;
-    }
-
-    public void setId(Integer id){
-        this.id=id;
-    }
-
-    public String getOriginalColumnName(){
-        return originalColumnName;
-    }
-
-    public void setOriginalColumnName(String originalColumnName){
-        this.originalColumnName=originalColumnName;
-    }
-
-    public String getSimpleColumnType(){
-        return simpleColumnType;
-    }
-
-    public void setSimpleColumnType(String simpleColumnType){
-        this.simpleColumnType=simpleColumnType;
-    }
 }

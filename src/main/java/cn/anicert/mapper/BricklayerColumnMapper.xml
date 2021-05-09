@@ -12,6 +12,8 @@
         <result property="columnKey" column="column_key"/>
         <result property="extra" column="extra"/>
         <result property="comment" column="comment"/>
+        <result property="belongTableId" column="belong_table_id"/>
+        <result property="columnOrder" column="column_order"/>
         <result property="belongTableName" column="belong_table_name"/>
     </resultMap>
 
@@ -19,45 +21,51 @@
     <select id="listBricklayerColumnPage" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
             resultMap="BricklayerColumnMap">
         select
-        id,
+      id,
         original_column_name,
         simple_column_type,
         column_type,
         column_key,
         extra,
         comment,
+        belong_table_id,
+        column_order,
         '1'as blank_
         from bricklayer_column
         where 1=1
-        
+        order by a.column_order
     </select>
 
     <select id="listBricklayerColumn" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
             resultMap="BricklayerColumnMap">
         select
-            id,
-            original_column_name,
-            simple_column_type,
-            column_type,
-            column_key,
-            extra,
-            comment,
-        '1'as blank_
-        from bricklayer_column
-        where 1=1
-        
-    </select>
-
-    <select id="getBricklayerColumnById" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
-            resultMap="BricklayerColumnMap">
-        select
-        id,
+          id,
         original_column_name,
         simple_column_type,
         column_type,
         column_key,
         extra,
         comment,
+        belong_table_id,
+        column_order,
+        '1'as blank_
+        from bricklayer_column
+        where 1=1
+        order by a.column_order
+    </select>
+
+    <select id="getBricklayerColumnById" parameterType="cn.anicert.model.d_o.BricklayerColumnDO"
+            resultMap="BricklayerColumnMap">
+        select
+       id,
+        original_column_name,
+        simple_column_type,
+        column_type,
+        column_key,
+        extra,
+        comment,
+        belong_table_id,
+        column_order,
         '1'as blank_
         from bricklayer_column
         where 1=1
@@ -75,12 +83,15 @@
         column_key,
         extra,
         comment,
+        belong_table_id,
+        column_order,
         '1'as blank_
         from bricklayer_column
         where 1=1
         <if test="belongTableId!=null  and belongTableId!=''">
             and belong_table_id = #{ belongTableId}
         </if>
+        order by column_order
     </select>
 
     <select id="getBricklayerTablesByIds" parameterType="cn.anicert.model.dto.GenerateCodeDTO"
@@ -102,6 +113,7 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+        order by a.column_order
     </select>
     <select id="getBricklayerTableById" parameterType="java.lang.Integer"
             resultMap="BricklayerColumnMap">
@@ -167,6 +179,12 @@
         </if>
         <if test="comment!=null  and comment!=''">
             comment = #{ comment},
+        </if>
+        <if test="belongTableId!=null ">
+            belong_table_id = #{ belongTableId},
+        </if>
+        <if test="columnOrder!=null ">
+            column_order = #{ columnOrder},
         </if>
         id=id
         where 1=1
