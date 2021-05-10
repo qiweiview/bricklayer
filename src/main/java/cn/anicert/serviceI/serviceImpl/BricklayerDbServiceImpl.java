@@ -11,6 +11,7 @@ import cn.anicert.utils.NullToEmptyString;
 import cn.buildSupport.db_adapter.MysqlAbstractDataSourceInstance;
 import cn.buildSupport.java_bean.JavaBeanModel;
 import cn.buildSupport.utils.FreemarkerTemplateBuilder;
+import cn.buildSupport.utils.StringUtils4V;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import freemarker.template.Configuration;
@@ -296,6 +297,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         List<BricklayerDirectDO> bricklayerDirectDOS = bricklayerDirectDao.listBricklayerDirectsByProjectId(bricklayerProjectById.getId());
 
         List<Integer> collect = bricklayerDirectDOS.stream().map(x -> x.getId()).collect(Collectors.toList());
+
         if (collect.size() > 0) {
             List<BricklayerTemplateDO> bricklayerTemplateDOS = bricklayerTemplateDao.listBricklayerTemplateByProjectId(collect);
             Map<String, String> map = new HashMap<>();
@@ -308,6 +310,30 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
             //目录分组
             Map<Integer, List<BricklayerTemplateDO>> directMap = bricklayerTemplateDOS.stream().collect(Collectors.groupingBy(BricklayerTemplateDO::getBelongDirectId));
+
+            Map m = new HashMap();
+            //遍历属性
+            bricklayerDirectDOS.forEach(x -> {
+                List<BricklayerTemplateDO> bricklayerTemplateDOS1 = directMap.get(x.getId());
+                if (bricklayerTemplateDOS1 != null) {
+                    bricklayerTemplateDOS1.forEach(y -> {
+
+                        String templateName = y.getTemplateName();
+                        templateName = templateName.replaceAll("\\.", "_");
+
+                        String sPath = x.getDirectFullPath();
+                        String jPath = StringUtils4V.systemPath2JavaPackagePath(sPath);
+                        if (jPath.startsWith(".")) {
+                            jPath = jPath.substring(1);
+                        }
+                        m.put("s_path_" + templateName, sPath);
+                        m.put("j_path_" + templateName, jPath);
+                    });
+                }
+
+
+            });
+
 
             //遍历目录
             bricklayerDirectDOS.forEach(x -> {
@@ -324,6 +350,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
                                 try {
                                     JavaBeanModel javaBeanModel = new JavaBeanModel();
+                                    javaBeanModel.setContextFilesPathMap(m);
                                     javaBeanModel.handleBasePath(x.getDirectFullPath());
                                     template.process(javaBeanModel, outputStreamWriter);
                                     byte[] bytes = byteArrayOutputStream.toByteArray();
@@ -332,7 +359,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                     zipOutputStream.write(bytes);
                                     zipOutputStream.closeEntry();
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    throw new MessageRuntimeException(e.getMessage());
                                 }
                             } else {
                                 //todo 模型模板
@@ -340,12 +367,13 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                 bricklayerTablesByIds.forEach(z -> {
 
                                     JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
+                                    of.setContextFilesPathMap(m);
                                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
                                     try {
                                         template.process(of, outputStreamWriter);
                                         byte[] bytes = byteArrayOutputStream.toByteArray();
-                                        String name = x.getDirectFullPath() +"/" + of.getClassName() + NullToEmptyString.handle(y.getNameEndString()) + y.getTemplateSuffix();
+                                        String name = x.getDirectFullPath() + "/" + of.getClassName() + NullToEmptyString.handle(y.getNameEndString()) + y.getTemplateSuffix();
                                         zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
                                         zipOutputStream.write(bytes);
                                         zipOutputStream.closeEntry();
@@ -355,7 +383,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                 });
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            throw new MessageRuntimeException(e.getMessage());
                         }
                     });
 
@@ -365,15 +393,17 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         }
 
 
-
         try {
             zipOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
         GenerationVO generationVO = new GenerationVO();
+
         generationVO.setData(zipStream.toByteArray());
-        generationVO.setFileName(bricklayerProjectById.getProjectName()+"_export.zip");
+        generationVO.setFileName(bricklayerProjectById.getProjectName() + "_export.zip");
 
         return generationVO;
     }

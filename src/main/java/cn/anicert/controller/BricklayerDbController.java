@@ -189,6 +189,7 @@ public class BricklayerDbController {
     @RequestMapping("/generateCode")
     public ResponseVo generateCode(@RequestBody GenerateCodeDTO generateCodeDTO, HttpServletResponse httpServletResponse) throws IOException {
         GenerationVO generationVO = bricklayerDbServiceI.generateCode(generateCodeDTO);
+
         return ResponseVo.success(generationVO);
     }
 
