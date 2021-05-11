@@ -45,9 +45,9 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
     public BricklayerTemplateDTO updateBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO) {
         BricklayerTemplateDTO bricklayerTemplateById = getBricklayerTemplateById(bricklayerTemplateDTO);
 
-        if (bricklayerTemplateById.getBaseTemplate()) {
-            //todo 基础模板无法编辑
-            throw new MessageRuntimeException("基础模板无法编辑");
+        if (!LoginInterceptor.isCurrentUser(bricklayerTemplateById.getCreateBy())) {
+            //todo 其他人员模板无法编辑
+            throw new MessageRuntimeException("无法编辑其他用户创建模板");
         }
 
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
@@ -59,9 +59,11 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
     @Override
     public BricklayerTemplateDTO deleteBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO) {
         bricklayerTemplateDTO = getBricklayerTemplateById(bricklayerTemplateDTO);
-        if (bricklayerTemplateDTO.getBaseTemplate()) {
-            //todo 固定模板无法删除
-            throw new MessageRuntimeException("基础模板无法删除");
+
+
+        if (!LoginInterceptor.isCurrentUser(bricklayerTemplateDTO.getCreateBy())) {
+            //todo 其他人员模板无法删除
+            throw new MessageRuntimeException("无法删除其他用户创建模板");
         }
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
         bricklayerTemplateDO.doDelete();

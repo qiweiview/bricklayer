@@ -115,8 +115,7 @@ public class BricklayerTemplateController {
             responseVo.setData(simulatedRenderVO);
             return responseVo;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new MessageRuntimeException("渲染异常");
+            throw new MessageRuntimeException("渲染异常：\n\r" + e.getMessage());
         }
 
 

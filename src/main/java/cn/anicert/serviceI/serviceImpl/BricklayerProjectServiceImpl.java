@@ -10,6 +10,7 @@ import cn.anicert.model.dto.BricklayerProjectDTO;
 import cn.anicert.model.dto.TreeNodeDTO;
 import cn.anicert.serviceI.BricklayerProjectServiceI;
 import cn.anicert.utils.DataNotFoundException;
+import cn.anicert.utils.LoginInterceptor;
 import cn.anicert.utils.MessageRuntimeException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -46,10 +47,12 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     public BricklayerProjectDTO updateBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
         BricklayerProjectDTO bricklayerProjectById = getBricklayerProjectById(bricklayerProjectDTO);
 
-        if (bricklayerProjectById.getFixProject()) {
-            //todo 基础项目无法编辑
-            throw new MessageRuntimeException("基础项目无法编辑");
+
+        if (!LoginInterceptor.isCurrentUser(bricklayerProjectById.getCreateBy())) {
+            //todo 其他人员项目无法编辑无法编辑
+            throw new MessageRuntimeException("无法编辑其他用户创建项目");
         }
+
 
         BricklayerProjectDO bricklayerProjectDO = bricklayerProjectDTO.toBricklayerProjectDO();
         bricklayerProjectDO.doUpdate();
@@ -111,10 +114,12 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     @Override
     public BricklayerProjectDTO deleteBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
         bricklayerProjectDTO = getBricklayerProjectById(bricklayerProjectDTO);
-        if (bricklayerProjectDTO.getFixProject()) {
-            //todo 固定项目无法删除
-            throw new MessageRuntimeException("基础项目无法删除");
+
+        if (!LoginInterceptor.isCurrentUser(bricklayerProjectDTO.getCreateBy())) {
+            //todo 其他人员项目无法编辑无法删除
+            throw new MessageRuntimeException("无法删除其他用户创建项目");
         }
+
         BricklayerProjectDO bricklayerProjectDO = bricklayerProjectDTO.toBricklayerProjectDO();
         bricklayerProjectDO.doDelete();
         bricklayerProjectDao.deleteBricklayerProject(bricklayerProjectDO);

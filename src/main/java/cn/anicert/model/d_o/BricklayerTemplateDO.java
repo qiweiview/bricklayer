@@ -57,14 +57,10 @@ public class BricklayerTemplateDO {
     /**
      * 是否字符串模板
      */
-    @TableField(value = "fixed_template")
-    private Boolean fixedTemplate;
+    @TableField(value = "string_template")
+    private Boolean stringTemplate;
 
-    /**
-     * 基础模板，无法删除
-     */
-    @TableField(value = "base_template")
-    private Boolean baseTemplate;
+
 
     /**
      * 创建者
@@ -121,8 +117,7 @@ public class BricklayerTemplateDO {
         bricklayerTemplateDTO.setRemark(getRemark());
         bricklayerTemplateDTO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateDTO.setNameEndString(getNameEndString());
-        bricklayerTemplateDTO.setFixedTemplate(getFixedTemplate());
-        bricklayerTemplateDTO.setBaseTemplate(getBaseTemplate());
+        bricklayerTemplateDTO.setStringTemplate(getStringTemplate());
         bricklayerTemplateDTO.setCreateBy(getCreateBy());
         bricklayerTemplateDTO.setUpdateBy(getUpdateBy());
         bricklayerTemplateDTO.setCreateDate(getCreateDate());

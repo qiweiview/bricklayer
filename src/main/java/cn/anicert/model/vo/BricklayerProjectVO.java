@@ -18,10 +18,7 @@ public class BricklayerProjectVO {
      * 创建日期
      */
     private  java.sql.Timestamp createDate;
-    /**
-     * 基础项目无法删除
-     */
-    private  Boolean fixProject;
+
     /**
      * 主键
      */

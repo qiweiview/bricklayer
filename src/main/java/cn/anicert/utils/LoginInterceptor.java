@@ -38,6 +38,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         return s == null ? "anonymous" : s;
     }
 
+    public static Boolean isCurrentUser(String name) {
+        String currentName = getCurrentName();
+        if ("anonymous".equals(currentName)) {
+            return false;
+        }
+
+        return currentName.equals(name);
+    }
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String servletPath = request.getServletPath();

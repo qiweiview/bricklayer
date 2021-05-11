@@ -44,11 +44,9 @@ public class BricklayerTemplateDTO {
     /**
      * 是否字符串模板
      */
-    private Boolean fixedTemplate;
-    /**
-     * 基础模板，无法删除
-     */
-    private Boolean baseTemplate;
+    private Boolean stringTemplate;
+
+
     /**
      * 创建者
      */
@@ -79,8 +77,7 @@ public class BricklayerTemplateDTO {
         bricklayerTemplateDO.setRemark(getRemark());
         bricklayerTemplateDO.setTemplateSuffix(getTemplateSuffix());
         bricklayerTemplateDO.setNameEndString(getNameEndString());
-        bricklayerTemplateDO.setFixedTemplate(getFixedTemplate());
-        bricklayerTemplateDO.setBaseTemplate(getBaseTemplate());
+        bricklayerTemplateDO.setStringTemplate(getStringTemplate());
         bricklayerTemplateDO.setCreateBy(getCreateBy());
         bricklayerTemplateDO.setUpdateBy(getUpdateBy());
         bricklayerTemplateDO.setCreateDate(getCreateDate());
@@ -97,8 +94,7 @@ public  BricklayerTemplateVO toBricklayerTemplateVO() {
     bricklayerTemplateVO.setRemark(getRemark());
     bricklayerTemplateVO.setTemplateSuffix(getTemplateSuffix());
     bricklayerTemplateVO.setNameEndString(getNameEndString());
-    bricklayerTemplateVO.setFixedTemplate(getFixedTemplate());
-    bricklayerTemplateVO.setBaseTemplate(getBaseTemplate());
+    bricklayerTemplateVO.setStringTemplate(getStringTemplate());
     bricklayerTemplateVO.setCreateBy(getCreateBy());
     bricklayerTemplateVO.setUpdateBy(getUpdateBy());
     bricklayerTemplateVO.setCreateDate(getCreateDate());

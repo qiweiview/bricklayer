@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Data
 public class JavaBeanModel {
 
-    private Map<String, String> contextFilesPathMap;
+    private Map<String, Object> contextFilesPathMap;
 
     private String className;//转换后表名
 

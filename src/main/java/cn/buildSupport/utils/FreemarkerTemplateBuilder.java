@@ -1,5 +1,6 @@
 package cn.buildSupport.utils;
 
+import cn.anicert.utils.MessageRuntimeException;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -31,7 +32,7 @@ public class FreemarkerTemplateBuilder {
             Template template = cfg.getTemplate(fixName);
             return template;
         } catch (IOException e) {
-            return null;
+            throw new MessageRuntimeException(e.getMessage());
         }
     }
 

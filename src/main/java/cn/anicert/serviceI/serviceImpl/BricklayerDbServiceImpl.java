@@ -311,23 +311,28 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             //目录分组
             Map<Integer, List<BricklayerTemplateDO>> directMap = bricklayerTemplateDOS.stream().collect(Collectors.groupingBy(BricklayerTemplateDO::getBelongDirectId));
 
-            Map m = new HashMap();
-            //遍历属性
+
+            //遍历属性,赋值上下文变量
+            Map contextFilesPathMap = new HashMap();
             bricklayerDirectDOS.forEach(x -> {
                 List<BricklayerTemplateDO> bricklayerTemplateDOS1 = directMap.get(x.getId());
                 if (bricklayerTemplateDOS1 != null) {
                     bricklayerTemplateDOS1.forEach(y -> {
 
                         String templateName = y.getTemplateName();
+                        //替换.为下划线
                         templateName = templateName.replaceAll("\\.", "_");
+                        Map templateMap = new HashMap();
+                        contextFilesPathMap.put(templateName, templateMap);
 
                         String sPath = x.getDirectFullPath();
                         String jPath = StringUtils4V.systemPath2JavaPackagePath(sPath);
                         if (jPath.startsWith(".")) {
                             jPath = jPath.substring(1);
                         }
-                        m.put("s_path_" + templateName, sPath);
-                        m.put("j_path_" + templateName, jPath);
+
+                        templateMap.put("java_path", jPath);
+                        templateMap.put("system_path", sPath);
                     });
                 }
 
@@ -344,13 +349,13 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                         String templateName = y.getTemplateName();
                         try {
                             Template template = configurationByTemplateMap.getTemplate(templateName);
-                            if (y.getFixedTemplate()) {
+                            if (y.getStringTemplate()) {
                                 //todo 字符串模板
                                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
                                 try {
                                     JavaBeanModel javaBeanModel = new JavaBeanModel();
-                                    javaBeanModel.setContextFilesPathMap(m);
+                                    javaBeanModel.setContextFilesPathMap(contextFilesPathMap);
                                     javaBeanModel.handleBasePath(x.getDirectFullPath());
                                     template.process(javaBeanModel, outputStreamWriter);
                                     byte[] bytes = byteArrayOutputStream.toByteArray();
@@ -359,7 +364,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                     zipOutputStream.write(bytes);
                                     zipOutputStream.closeEntry();
                                 } catch (Exception e) {
-                                    throw new MessageRuntimeException(e.getMessage());
+                                    throw new MessageRuntimeException(templateName + " 模板渲染异常：" + e.getMessage());
                                 }
                             } else {
                                 //todo 模型模板
@@ -367,7 +372,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                 bricklayerTablesByIds.forEach(z -> {
 
                                     JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
-                                    of.setContextFilesPathMap(m);
+                                    of.setContextFilesPathMap(contextFilesPathMap);
                                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
                                     try {
@@ -378,7 +383,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                         zipOutputStream.write(bytes);
                                         zipOutputStream.closeEntry();
                                     } catch (Exception e) {
-                                        e.printStackTrace();
+                                        throw new MessageRuntimeException(templateName + " 模板渲染异常：" + e.getMessage());
                                     }
                                 });
                             }

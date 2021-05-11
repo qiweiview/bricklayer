@@ -32,11 +32,9 @@ public class BricklayerTemplateVO {
     /**
      * 是否字符串模板
      */
-    private Boolean fixedTemplate;
-    /**
-     * 基础模板，无法删除
-     */
-    private Boolean baseTemplate;
+    private Boolean stringTemplate;
+
+
     /**
      * 创建者
      */

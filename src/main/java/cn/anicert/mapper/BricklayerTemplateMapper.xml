@@ -11,8 +11,8 @@
         <result property="remark" column="remark"/>
         <result property="templateSuffix" column="template_suffix"/>
         <result property="nameEndString" column="name_end_string"/>
-        <result property="fixedTemplate" column="fixed_template"/>
-        <result property="baseTemplate" column="base_template"/>
+        <result property="stringTemplate" column="string_template"/>
+
         <result property="createBy" column="create_by"/>
         <result property="updateBy" column="update_by"/>
         <result property="createDate" column="create_date"/>
@@ -24,8 +24,7 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
-        IFNULL(fixed_template,false) fixed_template,
-        IFNULL(base_template,false) base_template,
+        IFNULL(string_template,false) string_template,
         name_end_string,
         template_name,
         template_suffix,
@@ -52,8 +51,7 @@
             resultMap="BricklayerTemplateMap">
         select
             id,
-          IFNULL(fixed_template,false) fixed_template,
-        IFNULL(base_template,false) base_template,
+      IFNULL(string_template,false) string_template,
             name_end_string,
             template_name,
             template_suffix,
@@ -73,8 +71,7 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
-      IFNULL(fixed_template,false) fixed_template,
-        IFNULL(base_template,false) base_template,
+      IFNULL(string_template,false) string_template,
         name_end_string,
         template_name,
         template_suffix,
@@ -95,8 +92,7 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
-        IFNULL(fixed_template,false) fixed_template,
-        IFNULL(base_template,false) base_template,
+       IFNULL(string_template,false) string_template,
         name_end_string,
         template_name,
         template_suffix,
@@ -117,8 +113,7 @@
             resultMap="BricklayerTemplateMap">
         SELECT
         b.id,
-        IFNULL(fixed_template,false) fixed_template,
-        IFNULL(base_template,false) base_template,
+        IFNULL(string_template,false) string_template,
         name_end_string,
         b.template_name,
         template_suffix,
@@ -170,11 +165,8 @@
         <if test="nameEndString!=null  and nameEndString!=''">
             name_end_string = #{ nameEndString},
         </if>
-        <if test="fixedTemplate!=null ">
-            fixed_template = #{ fixedTemplate},
-        </if>
-        <if test="baseTemplate!=null ">
-            base_template = #{ baseTemplate},
+        <if test="stringTemplate!=null ">
+            string_template = #{ stringTemplate},
         </if>
         <if test="createBy!=null  and createBy!=''">
             create_by = #{ createBy},
