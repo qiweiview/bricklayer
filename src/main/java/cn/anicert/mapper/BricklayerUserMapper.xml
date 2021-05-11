@@ -7,6 +7,7 @@
     <resultMap type="cn.anicert.model.d_o.BricklayerUserDO" id="BricklayerUserMap">
         <id property="id" column="id"/>
         <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
         <result property="userPassword" column="user_password"/>
         <result property="userRole" column="user_role"/>
     </resultMap>
@@ -17,12 +18,13 @@
         select
         id,
         user_name,
+        nick_name,
         user_role,
         '1'as blank_
         from bricklayer_user
         where 1=1
-        <if test="do.userName!=null  and do.userName!=''">
-            and user_name like concat('%',#{ do.userName},'%')
+        <if test="do.nickName!=null  and do.nickName!=''">
+            and nick_name like concat('%',#{ do.nickName},'%')
         </if>
     </select>
 
@@ -31,6 +33,7 @@
         select
             id,
             user_name,
+            nick_name,
             user_role,
         '1'as blank_
         from bricklayer_user
@@ -43,6 +46,7 @@
         select
         id,
         user_name,
+        nick_name,
         user_role,
         '1'as blank_
         from bricklayer_user
@@ -56,6 +60,7 @@
  select
         id,
         user_password,
+        nick_name,
         user_name,
         user_role,
         '1'as blank_
@@ -78,6 +83,9 @@
         set
         <if test="userName!=null  and userName!=''">
             user_name = #{ userName},
+        </if>
+        <if test="nickName!=null  and nickName!=''">
+            nick_name = #{ nickName},
         </if>
         <if test="userPassword!=null  and userPassword!=''">
             user_password = #{ userPassword},

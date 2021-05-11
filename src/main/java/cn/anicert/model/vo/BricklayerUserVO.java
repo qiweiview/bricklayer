@@ -2,9 +2,11 @@ package cn.anicert.model.vo;
 
 
 import cn.anicert.utils.AESUtils;
+import lombok.Data;
 
 import java.util.Base64;
 
+@Data
 public class BricklayerUserVO {
     /**
      * 主键
@@ -33,6 +35,7 @@ public class BricklayerUserVO {
 
     private String token;
 
+
     public BricklayerUserVO secrete() {
         setId(null);
         setUserPassword(null);
@@ -56,64 +59,9 @@ public class BricklayerUserVO {
 
     }
 
-/*  ------------ data conversion ------------  */
+    /*  ------------ data conversion ------------  */
 
 
-/*  ------------ getter setter ------------  */
+    /*  ------------ getter setter ------------  */
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Integer getId(){
-        return id;
-        }
-
-    public void setId(Integer id){
-    this.id=id;
-    }
-
-    public String getNickName(){
-        return nickName;
-        }
-
-    public void setNickName(String nickName){
-    this.nickName=nickName;
-    }
-
-    public String getRemark(){
-        return remark;
-        }
-
-    public void setRemark(String remark){
-    this.remark=remark;
-    }
-
-    public String getUserName(){
-        return userName;
-        }
-
-    public void setUserName(String userName){
-    this.userName=userName;
-    }
-
-    public String getUserPassword(){
-        return userPassword;
-        }
-
-    public void setUserPassword(String userPassword){
-    this.userPassword=userPassword;
-    }
-
-    public String getUserRole(){
-        return userRole;
-        }
-
-    public void setUserRole(String userRole){
-    this.userRole=userRole;
-    }
 }

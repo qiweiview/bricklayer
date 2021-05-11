@@ -49,7 +49,7 @@ public class BricklayerUserServiceImpl implements BricklayerUserServiceI {
         getBricklayerUserById(bricklayerUserDTO);
         BricklayerUserDO bricklayerUserDO = bricklayerUserDTO.toBricklayerUserDO();
         bricklayerUserDO.doUpdate();
-        bricklayerUserDao.updateById(bricklayerUserDO);
+        bricklayerUserDao.updateBricklayerUser(bricklayerUserDO);
         return bricklayerUserDO.toBricklayerUserDTO();
     }
 
