@@ -23,12 +23,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     static {
         freeSet.add("/bricklayerUser/doLogin");
 
-        adminSet.add("bricklayerDb");
+        adminSet.add("bricklayerDb");//数据库操作
         adminSet.add("bricklayerDictionary/save");
         adminSet.add("bricklayerDictionary/delete");
         adminSet.add("bricklayerDictionary/batchDelete");
         adminSet.add("bricklayerDictionary/update");
-        adminSet.add("bricklayerUser");
+        adminSet.add("bricklayerUser");//用户操作
+        adminSet.add("bricklayerLog");//日志记录操作
 
 
     }
