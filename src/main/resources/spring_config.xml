@@ -34,14 +34,23 @@
     </bean>
 
     <!-- 开启事务注解@Transactional支持 -->
-    <tx:annotation-driven transaction-manager="txManager" />
+    <tx:annotation-driven transaction-manager="txManager"/>
 
 
     <!--事务管理器-->
     <bean id="txManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
     </bean>
+
+
+    <!--日志中心-->
+    <bean id="logCenter" class="cn.anicert.utils.LogCenter">
+    </bean>
+
+    <!--上下文存储类-->
+    <bean id="springContextHolder" class="cn.anicert.utils.SpringContextHolder" lazy-init="false"/>
+
     <!-- sql session -->
     <bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
         <property name="mapperLocations" value="classpath*:/cn/**/*Mapper.xml"/>

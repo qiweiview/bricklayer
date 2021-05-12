@@ -1,5 +1,6 @@
 package cn.anicert.utils;
 
+import cn.anicert.model.dto.BricklayerLogDTO;
 import cn.anicert.model.vo.BricklayerUserVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -51,7 +52,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+
+        BricklayerLogDTO of = BricklayerLogDTO.of(request);
+
+
         String servletPath = request.getServletPath();
+        //本次请求地址
+        of.setRequestUri(servletPath);
         if (freeSet.contains(servletPath)) {
             return true;
         }
@@ -63,8 +71,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 
             BricklayerUserVO bricklayerUserVO = BricklayerUserVO.fromToken(header);
-
+            //本次请求用户
+            of.setUserName(bricklayerUserVO.getUserName());
             String userRole = bricklayerUserVO.getUserRole();
+
+
+            //保存日志
+            LogCenter bean = SpringContextHolder.getBean(LogCenter.class);
+            bean.requestLog(of);
+
+
             if (!"admin".equals(userRole)) {
                 boolean[] check = {false};
                 adminSet.forEach(x -> {

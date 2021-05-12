@@ -94,4 +94,16 @@ public class BricklayerLogServiceImpl implements BricklayerLogServiceI {
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public List<BricklayerLogDTO> getUserCount(BricklayerLogDTO bricklayerLogDTO) {
+        List<BricklayerLogDO> list = bricklayerLogDao.getUserCount(bricklayerLogDTO.getStartDate(), bricklayerLogDTO.getEndDate());
+        return BricklayerLogDO.toBricklayerLogDTOList(list);
+    }
+
+    @Override
+    public List<BricklayerLogDTO> getUriCount(BricklayerLogDTO bricklayerLogDTO) {
+        List<BricklayerLogDO> list = bricklayerLogDao.getUriCount(bricklayerLogDTO.getStartDate(), bricklayerLogDTO.getEndDate());
+        return BricklayerLogDO.toBricklayerLogDTOList(list);
+    }
 }

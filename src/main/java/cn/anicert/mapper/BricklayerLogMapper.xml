@@ -10,8 +10,12 @@
         <result property="updateBy" column="update_by"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
-        <result property="nickName" column="nick_name"/>
-        <result property="accessPath" column="access_path"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="userAgent" column="user_agent"/>
+        <result property="userName" column="user_name"/>
+        <result property="requestUri" column="request_uri"/>
+        <result property="countValue" column="count_value"/>
+
     </resultMap>
 
 
@@ -23,12 +27,17 @@
         update_by,
         create_date,
         update_date,
-        nick_name,
-        access_path,
+        ip_address,
+        user_agent,
+        user_name,
+        request_uri,
         '1'as blank_
         from bricklayer_log
         where 1=1
-
+        <if test="do.userName!=null  and do.userName!=''">
+            and ( user_name like concat('%',#{ do.userName},'%') or request_uri like
+            concat('%',#{ do.userName},'%'))
+        </if>
     </select>
 
     <select id="listBricklayerLog" parameterType="cn.anicert.model.d_o.BricklayerLogDO" resultMap="BricklayerLogMap">
@@ -38,8 +47,10 @@
             update_by,
             create_date,
             update_date,
-            nick_name,
-            access_path,
+            ip_address,
+            user_agent,
+            user_name,
+            request_uri,
         '1'as blank_
         from bricklayer_log
         where 1=1
@@ -55,8 +66,10 @@
         update_by,
         create_date,
         update_date,
-        nick_name,
-        access_path,
+        ip_address,
+        user_agent,
+        user_name,
+        request_uri,
         '1'as blank_
         from bricklayer_log
         where 1=1
@@ -74,13 +87,29 @@
         update_by,
         create_date,
         update_date,
-        nick_name,
-        access_path,
+        ip_address,
+        user_agent,
+        user_name,
+        request_uri,
         '1'as blank_
         from bricklayer_log
         where 1=1
         and id  = #{id}
 
+    </select>
+    <select id="getUserCount" parameterType="java.time.LocalDate" resultMap="BricklayerLogMap">
+        select
+        count(*) count_value,
+        user_name
+        from bricklayer_log
+        group by user_name
+    </select>
+    <select id="getUriCount" parameterType="java.time.LocalDate" resultMap="BricklayerLogMap">
+               select
+        count(*) count_value,
+        request_uri
+        from bricklayer_log
+        group by request_uri
     </select>
 
 
@@ -117,11 +146,17 @@
         <if test="updateDate!=null ">
             update_date = #{ updateDate},
         </if>
-        <if test="nickName!=null  and nickName!=''">
-            nick_name = #{ nickName},
+        <if test="ipAddress!=null  and ipAddress!=''">
+            ip_address = #{ ipAddress},
         </if>
-        <if test="accessPath!=null  and accessPath!=''">
-            access_path = #{ accessPath},
+        <if test="userAgent!=null  and userAgent!=''">
+            user_agent = #{ userAgent},
+        </if>
+        <if test="userName!=null  and userName!=''">
+            user_name = #{ userName},
+        </if>
+        <if test="requestUri!=null  and requestUri!=''">
+            request_uri = #{ requestUri},
         </if>
         id=id
         where 1=1

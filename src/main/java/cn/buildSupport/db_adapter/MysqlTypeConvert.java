@@ -31,7 +31,7 @@ public class MysqlTypeConvert implements TypeConvertI {
         map.put("ID", "java.lang.Long");
         map.put("DATE", "java.sql.Date");
         map.put("TIME", "java.sql.Time");
-        map.put("DATETIME", "java.sql.Timestamp");
+        map.put("DATETIME", "java.time.LocalDateTime");
         map.put("TIMESTAMP", "java.sql.Timestamp");
         map.put("YEAR", "java.sql.Date");
 

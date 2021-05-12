@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 
 @TableName("bricklayer_log")
@@ -19,52 +21,67 @@ public class BricklayerLogDO {
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private java.lang.Integer id;
+    private Integer id;
 
     /**
      * 创建人
      */
     @TableField(value = "create_by")
-    private java.lang.String createBy;
+    private String createBy;
 
     /**
      * 修改人
      */
     @TableField(value = "update_by")
-    private java.lang.String updateBy;
+    private String updateBy;
 
     /**
      * 创建日期
      */
     @TableField(value = "create_date")
-    private java.sql.Timestamp createDate;
+    private LocalDateTime createDate;
 
     /**
      * 修改日期
      */
     @TableField(value = "update_date")
-    private java.sql.Timestamp updateDate;
+    private LocalDateTime updateDate;
+
+    /**
+     * ip
+     */
+    @TableField(value = "ip_address")
+    private String ipAddress;
+
+    /**
+     * 访问设备
+     */
+    @TableField(value = "user_agent")
+    private String userAgent;
 
     /**
      * 用户名
      */
-    @TableField(value = "nick_name")
-    private java.lang.String nickName;
+    @TableField(value = "user_name")
+    private String userName;
 
     /**
      * 访问地址
      */
-    @TableField(value = "access_path")
-    private java.lang.String accessPath;
+    @TableField(value = "request_uri")
+    private String requestUri;
+
+    @TableField(exist = false)
+    private Long countValue;
 
     /*  ------------ init value ------------  */
     public void doInit() {
         //setDelFlag(false);
-        //setCreateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+        setCreateDate(LocalDateTime.now());
     }
 
     public void doUpdate() {
-        //setUpdateTime(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+        setUpdateDate(LocalDateTime.now());
     }
 
     public void doDelete() {
@@ -79,10 +96,13 @@ public class BricklayerLogDO {
         bricklayerLogDTO.setId(getId());
         bricklayerLogDTO.setCreateBy(getCreateBy());
         bricklayerLogDTO.setUpdateBy(getUpdateBy());
+        bricklayerLogDTO.setCountValue(getCountValue());
         bricklayerLogDTO.setCreateDate(getCreateDate());
         bricklayerLogDTO.setUpdateDate(getUpdateDate());
-        bricklayerLogDTO.setNickName(getNickName());
-        bricklayerLogDTO.setAccessPath(getAccessPath());
+        bricklayerLogDTO.setIpAddress(getIpAddress());
+        bricklayerLogDTO.setUserAgent(getUserAgent());
+        bricklayerLogDTO.setUserName(getUserName());
+        bricklayerLogDTO.setRequestUri(getRequestUri());
         return bricklayerLogDTO;
 
     }

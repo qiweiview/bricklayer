@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -26,4 +27,8 @@ public interface BricklayerLogDao extends BaseMapper<BricklayerLogDO> {
     void deleteBricklayerLogBatch(@Param("ids") List<Integer> ids);
 
     List<BricklayerLogDO> listBricklayerLogByIds(@Param("ids") List<Integer> ids);
+
+    List<BricklayerLogDO> getUriCount(@Param("startDateTime") LocalDate startDateTime, @Param("endDateTime") LocalDate endDateTime);
+
+    List<BricklayerLogDO> getUserCount(@Param("startDateTime") LocalDate startDateTime, @Param("endDateTime") LocalDate endDateTime);
 }

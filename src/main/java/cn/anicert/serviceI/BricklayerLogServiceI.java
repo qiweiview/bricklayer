@@ -23,4 +23,9 @@ public interface BricklayerLogServiceI {
     void deleteBricklayerLogBatch(BricklayerLogDTO bricklayerLogDTO);
 
     List<BricklayerLogDTO> listBricklayerLogByIds(BricklayerLogDTO bricklayerLogDTO);
+
+    List<BricklayerLogDTO> getUserCount(BricklayerLogDTO bricklayerLogDTO);
+
+    List<BricklayerLogDTO> getUriCount(BricklayerLogDTO bricklayerLogDTO);
+
 }

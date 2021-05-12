@@ -3,7 +3,11 @@ package cn.anicert.model.dto;
 import cn.anicert.model.d_o.BricklayerLogDO;
 import cn.anicert.model.vo.BricklayerLogVO;
 import lombok.Data;
+import org.springframework.http.HttpHeaders;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,34 +24,97 @@ public class BricklayerLogDTO {
     /**
      * 主键
      */
-    private java.lang.Integer id;
+    private Integer id;
     /**
      * 创建人
      */
-    private java.lang.String createBy;
+    private String createBy;
     /**
      * 修改人
      */
-    private java.lang.String updateBy;
+    private String updateBy;
     /**
      * 创建日期
      */
-    private java.sql.Timestamp createDate;
+    private LocalDateTime createDate;
     /**
      * 修改日期
      */
-    private java.sql.Timestamp updateDate;
+    private LocalDateTime updateDate;
+    /**
+     * ip
+     */
+    private String ipAddress;
+    /**
+     * 访问设备
+     */
+    private String userAgent;
     /**
      * 用户名
      */
-    private java.lang.String nickName;
+    private String userName;
     /**
      * 访问地址
      */
-    private java.lang.String accessPath;
+    private String requestUri;
+
+    private LocalDate startDate;
+
+
+    private LocalDate endDate;
+
+    private String startDateStr;
+
+
+    private String endDateStr;
+
+
+    private Long countValue;
+
+
+    public void str2Date() {
+        if (null == getStartDateStr() || "".equals(getStartDateStr())) {
+            setStartDate(LocalDate.now());
+        } else {
+            LocalDate start = LocalDate.parse(getStartDateStr());
+            setStartDate(start);
+        }
+
+        if (null == getEndDateStr() || "".equals(getEndDateStr())) {
+            setEndDate(LocalDate.now().plusDays(1));
+        } else {
+            LocalDate end = LocalDate.parse(getEndDateStr());
+            setEndDate(end);
+        }
+
+        if (getEndDate().isEqual(getStartDate())) {
+            LocalDate localDate = getEndDate().plusDays(1);
+            setEndDate(localDate);
+        }
+    }
 
 
     /*  ------------ data conversion ------------  */
+
+    public static BricklayerLogDTO of(HttpServletRequest request) {
+        BricklayerLogDTO bricklayerLogDTO = new BricklayerLogDTO();
+
+
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+        bricklayerLogDTO.setIpAddress(ipAddress);
+
+        String userAgent = request.getHeader(HttpHeaders.USER_AGENT);
+        bricklayerLogDTO.setUserAgent(userAgent);
+
+
+        return bricklayerLogDTO;
+
+    }
+
+
     public BricklayerLogDO toBricklayerLogDO() {
         BricklayerLogDO bricklayerLogDO = new BricklayerLogDO();
         bricklayerLogDO.setId(getId());
@@ -55,8 +122,11 @@ public class BricklayerLogDTO {
         bricklayerLogDO.setUpdateBy(getUpdateBy());
         bricklayerLogDO.setCreateDate(getCreateDate());
         bricklayerLogDO.setUpdateDate(getUpdateDate());
-        bricklayerLogDO.setNickName(getNickName());
-        bricklayerLogDO.setAccessPath(getAccessPath());
+        bricklayerLogDO.setCountValue(getCountValue());
+        bricklayerLogDO.setIpAddress(getIpAddress());
+        bricklayerLogDO.setUserAgent(getUserAgent());
+        bricklayerLogDO.setUserName(getUserName());
+        bricklayerLogDO.setRequestUri(getRequestUri());
         return bricklayerLogDO;
 
     }
@@ -67,9 +137,12 @@ public class BricklayerLogDTO {
         bricklayerLogVO.setCreateBy(getCreateBy());
         bricklayerLogVO.setUpdateBy(getUpdateBy());
         bricklayerLogVO.setCreateDate(getCreateDate());
+        bricklayerLogVO.setCountValue(getCountValue());
         bricklayerLogVO.setUpdateDate(getUpdateDate());
-        bricklayerLogVO.setNickName(getNickName());
-        bricklayerLogVO.setAccessPath(getAccessPath());
+        bricklayerLogVO.setIpAddress(getIpAddress());
+        bricklayerLogVO.setUserAgent(getUserAgent());
+        bricklayerLogVO.setUserName(getUserName());
+        bricklayerLogVO.setRequestUri(getRequestUri());
         return bricklayerLogVO;
 
     }

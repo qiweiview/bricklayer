@@ -2,6 +2,7 @@ package cn.anicert.controller;
 
 import cn.anicert.model.dto.BricklayerLogDTO;
 import cn.anicert.model.eo.BricklayerLogEO;
+import cn.anicert.model.vo.BricklayerLogBigScreenVO;
 import cn.anicert.model.vo.BricklayerLogVO;
 import cn.anicert.serviceI.BricklayerLogServiceI;
 import cn.anicert.utils.ResponseVo;
@@ -71,6 +72,25 @@ public class BricklayerLogController {
         IPage<BricklayerLogVO> rs = new Page(bricklayerLogDTOIPage.getCurrent(), bricklayerLogDTOIPage.getSize(), bricklayerLogDTOIPage.getTotal());
         rs.setRecords(BricklayerLogDTO.toBricklayerLogVOList(bricklayerLogDTOIPage.getRecords()));
         responseVo.setData(rs);
+        return responseVo;
+    }
+
+
+    /**
+     * 分页查询BricklayerLog
+     */
+    @RequestMapping("/bigScreenData")
+    public ResponseVo<BricklayerLogVO> bigScreenData(@RequestBody(required = false) BricklayerLogDTO bricklayerLogDTO) {
+
+        bricklayerLogDTO.str2Date();
+        ResponseVo responseVo = new ResponseVo();
+        List<BricklayerLogDTO> userCount = bricklayerLogServiceI.getUserCount(bricklayerLogDTO);
+        List<BricklayerLogDTO> uriCount = bricklayerLogServiceI.getUriCount(bricklayerLogDTO);
+
+        BricklayerLogBigScreenVO bricklayerLogBigScreenVO = new BricklayerLogBigScreenVO();
+        bricklayerLogBigScreenVO.setUserCount(userCount);
+        bricklayerLogBigScreenVO.setUriCount(uriCount);
+        responseVo.setData(bricklayerLogBigScreenVO);
         return responseVo;
     }
 

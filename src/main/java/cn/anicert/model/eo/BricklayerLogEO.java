@@ -12,19 +12,19 @@ public class BricklayerLogEO {
      * 主键
      */
     @ColumnDescription(columnName = "主键")
-    private java.lang.Integer id;
+    private Integer id;
 
     /**
      * 创建人
      */
     @ColumnDescription(columnName = "创建人")
-    private java.lang.String createBy;
+    private String createBy;
 
     /**
      * 修改人
      */
     @ColumnDescription(columnName = "修改人")
-    private java.lang.String updateBy;
+    private String updateBy;
 
     /**
      * 创建日期
@@ -39,16 +39,28 @@ public class BricklayerLogEO {
     private java.sql.Timestamp updateDate;
 
     /**
+     * ip
+     */
+    @ColumnDescription(columnName = "ip")
+    private String ipAddress;
+
+    /**
+     * 访问设备
+     */
+    @ColumnDescription(columnName = "访问设备")
+    private String userAgent;
+
+    /**
      * 用户名
      */
     @ColumnDescription(columnName = "用户名")
-    private java.lang.String nickName;
+    private String userName;
 
     /**
      * 访问地址
      */
-    @ColumnDescription(columnName = "访问地址")
-    private java.lang.String accessPath;
+    @ColumnDescription(columnName = "访问时间")
+    private String requestUri;
 
 
 }
