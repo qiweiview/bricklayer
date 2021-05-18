@@ -112,7 +112,7 @@
     <select id="listBricklayerTemplateByProjectId" parameterType="java.util.List"
             resultMap="BricklayerTemplateMap">
         SELECT
-        b.id,
+        a.template_id id,
         IFNULL(string_template,false) string_template,
         name_end_string,
         b.template_name,

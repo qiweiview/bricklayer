@@ -1,6 +1,5 @@
-package cn.buildSupport.utils;
+package cn.anicert.utils;
 
-import cn.anicert.utils.MessageRuntimeException;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;

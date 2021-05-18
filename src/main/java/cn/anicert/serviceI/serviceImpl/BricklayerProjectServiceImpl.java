@@ -99,7 +99,16 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                     parseTreeNodeDTO(x, projectId, bricklayerDirectDO.getId(), bricklayerDirectDO.getDirectFullPath());
                 });
             }
-        } else {
+        }
+        if ("document".equals(type)) {
+            BricklayerDirectTemplateRelationDO bricklayerDirectTemplateRelationDO = new BricklayerDirectTemplateRelationDO();
+            bricklayerDirectTemplateRelationDO.setTemplateId(templateId);
+            bricklayerDirectTemplateRelationDO.setBelongDirectId(parentId);
+            bricklayerDirectTemplateRelationDO.setTemplateName(treeNodeDTO.getLabel());
+            bricklayerDirectTemplateRelationDao.insert(bricklayerDirectTemplateRelationDO);
+        }
+
+        if ("file".equals(type)) {
             BricklayerDirectTemplateRelationDO bricklayerDirectTemplateRelationDO = new BricklayerDirectTemplateRelationDO();
             bricklayerDirectTemplateRelationDO.setTemplateId(templateId);
             bricklayerDirectTemplateRelationDO.setBelongDirectId(parentId);
@@ -201,7 +210,11 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                     TreeNodeDTO treeNodeDTO = new TreeNodeDTO();
                     treeNodeDTO.setLabel(z.getTemplateName());
                     treeNodeDTO.setTemplateId(z.getTemplateId());
-                    treeNodeDTO.setType("file");
+                    if (z.getTemplateId() < 0) {
+                        treeNodeDTO.setType("document");
+                    } else {
+                        treeNodeDTO.setType("file");
+                    }
                     treeNodeDTO.setLevel("son");
                     v.addChild(treeNodeDTO);
                 });

@@ -1,8 +1,8 @@
-package cn.buildSupport.java_bean;
+package cn.build_support.java_bean;
 
 import cn.anicert.model.dto.BricklayerColumnDTO;
-import cn.buildSupport.db_adapter.TypeConverter;
-import cn.buildSupport.utils.StringUtils4V;
+import cn.anicert.utils.StringUtils4V;
+import cn.build_support.db_adapter.TypeConverter;
 import lombok.Data;
 
 /**

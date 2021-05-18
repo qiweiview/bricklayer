@@ -112,6 +112,12 @@
             <version>4.1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.deepoove</groupId>
+            <artifactId>poi-tl</artifactId>
+            <version>1.10.0-beta</version>
+        </dependency>
+
     </dependencies>
     <build>
         <resources>
@@ -124,8 +130,8 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>*.xml</include>
-                    <include>template/**/*.ftl</include>
                     <include>*.properties</include>
+                    <include>template/**/*.docx</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>

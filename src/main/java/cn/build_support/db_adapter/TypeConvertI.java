@@ -1,4 +1,4 @@
-package cn.buildSupport.db_adapter;
+package cn.build_support.db_adapter;
 
 public interface TypeConvertI {
     public String covert(String dbType);

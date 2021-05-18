@@ -1,9 +1,9 @@
-package cn.buildSupport.db_adapter;
+package cn.build_support.db_adapter;
 
 
 import cn.anicert.model.dto.BricklayerColumnDTO;
 import cn.anicert.model.dto.BricklayerTableDTO;
-import cn.buildSupport.utils.JDBCResultUtils;
+import cn.anicert.utils.JDBCResultUtils;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package cn.buildSupport.utils;
+package cn.anicert.utils;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

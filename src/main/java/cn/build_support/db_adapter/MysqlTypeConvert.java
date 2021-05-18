@@ -1,12 +1,44 @@
-package cn.buildSupport.db_adapter;
+package cn.build_support.db_adapter;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MysqlTypeConvert implements TypeConvertI {
     private static final Map<String, String> map = new HashMap<>();
 
+    public static final Map<String, Object> default_value = new HashMap<>();
+
+
     static {
+        Date date = new Date();
+        long time = date.getTime();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String format = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalTime localTime = LocalTime.now();
+        Time time1 = Time.valueOf(localTime);
+        default_value.put("java.lang.byte[]", new byte[0]);
+        default_value.put("java.lang.Float", 666.66f);
+        default_value.put("java.sql.Time", time1);
+        default_value.put("java.lang.Double", 666.66d);
+        default_value.put("java.sql.Timestamp", Timestamp.valueOf(localDateTime));
+        default_value.put("java.time.LocalDateTime", format);
+        default_value.put("java.lang.Integer", 666);
+        default_value.put("java.sql.Date", new java.sql.Date(time));
+        default_value.put("java.math.BigDecimal", BigDecimal.valueOf(666l));
+        default_value.put("java.lang.Long", 666l);
+        default_value.put("java.lang.Boolean", true);
+        default_value.put("java.math.BigInteger", BigInteger.valueOf(666l));
+        default_value.put("java.lang.String", "hello world");
+
+
         map.put("SET", "java.lang.String");
         map.put("ENUM", "java.lang.String");
         map.put("MEDIUMTEXT", "java.lang.String");
@@ -38,11 +70,20 @@ public class MysqlTypeConvert implements TypeConvertI {
 
     }
 
+    public static Object getDefaultValue(String typeString) {
+        Object o = default_value.get(typeString);
+        if (o == null) {
+            o = "";
+        }
+        return o;
+
+    }
+
     @Override
     public String covert(String dbType) {
         String s = map.get(dbType.toUpperCase());
-        if (s==null){
-            throw new RuntimeException("can not found the java type for the "+dbType);
+        if (s == null) {
+            throw new RuntimeException("can not found the java type for the " + dbType);
         }
         return s;
     }

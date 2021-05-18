@@ -57,7 +57,7 @@
         belong_direct_id,
         a.id,
         template_id,
-        b.template_name,
+        IFNULL(a.template_name,b.template_name) template_name,
         '1' AS blank_
         FROM
         bricklayer_direct_template_relation a

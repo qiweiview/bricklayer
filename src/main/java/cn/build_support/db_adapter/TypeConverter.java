@@ -1,4 +1,4 @@
-package cn.buildSupport.db_adapter;
+package cn.build_support.db_adapter;
 
 public class TypeConverter {
     private static TypeConvertI typeConvertI;
