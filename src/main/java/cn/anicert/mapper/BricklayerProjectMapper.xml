@@ -33,6 +33,9 @@
         <if test="do.projectName!=null  and do.projectName!=''">
             and project_name like concat('%',#{ do.projectName},'%')
         </if>
+        <if test="do.createBy!=null  and do.createBy!=''">
+            and create_by = #{ do.createBy}
+        </if>
     </select>
 
     <select id="listBricklayerProject" parameterType="cn.anicert.model.d_o.BricklayerProjectDO"

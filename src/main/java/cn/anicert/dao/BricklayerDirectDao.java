@@ -31,4 +31,5 @@ public interface BricklayerDirectDao extends BaseMapper<BricklayerDirectDO>{
 
     void deleteByDirectsByProjectId(@Param("id") Integer id);
 
+
 }

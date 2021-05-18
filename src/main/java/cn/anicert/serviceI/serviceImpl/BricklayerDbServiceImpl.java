@@ -298,7 +298,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
         if (collect.size() > 0) {
             //get template by direct
-            List<BricklayerTemplateDO> bricklayerTemplateDOS = bricklayerTemplateDao.listBricklayerTemplateByProjectId(collect);
+            List<BricklayerTemplateDO> bricklayerTemplateDOS = bricklayerTemplateDao.listBricklayerTemplatesByDirectIds(collect);
             Map<String, String> map = new HashMap<>();
             bricklayerTemplateDOS.forEach(x -> {
                 if (x.getId() > 0) {

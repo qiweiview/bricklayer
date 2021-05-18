@@ -21,4 +21,6 @@ public interface BricklayerProjectServiceI {
     public BricklayerProjectDTO getBricklayerProjectById(BricklayerProjectDTO bricklayerProjectDTO);
 
     public BricklayerProjectDTO getBricklayerProjectByIdWithTree(BricklayerProjectDTO bricklayerProjectDTO);
+
+    void copyBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO);
 }

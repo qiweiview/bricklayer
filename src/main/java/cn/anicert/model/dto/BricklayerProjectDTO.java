@@ -45,24 +45,26 @@ public class BricklayerProjectDTO {
     /**
      * 修改人
      */
-    private  String updateBy;
+    private String updateBy;
     /**
      * 修改日期
      */
-    private  java.sql.Timestamp updateDate;
+    private java.sql.Timestamp updateDate;
 
 
     private TreeNodeDTO tree;
 
+    private Boolean onlyMine;
+
     /*  ------------ data conversion ------------  */
-public  BricklayerProjectDO toBricklayerProjectDO(){
-    BricklayerProjectDO bricklayerProjectDO =new BricklayerProjectDO();
-    bricklayerProjectDO.setContextPath(getContextPath());
-    bricklayerProjectDO.setCreateBy(getCreateBy());
-    bricklayerProjectDO.setCreateDate(getCreateDate());
-    bricklayerProjectDO.setId(getId());
-    bricklayerProjectDO.setProjectDescription(getProjectDescription());
-    bricklayerProjectDO.setProjectName(getProjectName());
+    public BricklayerProjectDO toBricklayerProjectDO() {
+        BricklayerProjectDO bricklayerProjectDO = new BricklayerProjectDO();
+        bricklayerProjectDO.setContextPath(getContextPath());
+        bricklayerProjectDO.setCreateBy(getCreateBy());
+        bricklayerProjectDO.setCreateDate(getCreateDate());
+        bricklayerProjectDO.setId(getId());
+        bricklayerProjectDO.setProjectDescription(getProjectDescription());
+        bricklayerProjectDO.setProjectName(getProjectName());
     bricklayerProjectDO.setUpdateBy(getUpdateBy());
     bricklayerProjectDO.setUpdateDate(getUpdateDate());
     return bricklayerProjectDO;

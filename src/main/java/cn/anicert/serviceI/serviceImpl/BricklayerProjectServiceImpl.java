@@ -3,9 +3,11 @@ package cn.anicert.serviceI.serviceImpl;
 import cn.anicert.dao.BricklayerDirectDao;
 import cn.anicert.dao.BricklayerDirectTemplateRelationDao;
 import cn.anicert.dao.BricklayerProjectDao;
+import cn.anicert.dao.BricklayerTemplateDao;
 import cn.anicert.model.d_o.BricklayerDirectDO;
 import cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO;
 import cn.anicert.model.d_o.BricklayerProjectDO;
+import cn.anicert.model.d_o.BricklayerTemplateDO;
 import cn.anicert.model.dto.BricklayerProjectDTO;
 import cn.anicert.model.dto.TreeNodeDTO;
 import cn.anicert.serviceI.BricklayerProjectServiceI;
@@ -34,12 +36,55 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
     private final BricklayerDirectTemplateRelationDao bricklayerDirectTemplateRelationDao;
 
+    private final BricklayerTemplateDao bricklayerTemplateDao;
+
     @Override
     public BricklayerProjectDTO saveBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
         BricklayerProjectDO bricklayerProjectDO = bricklayerProjectDTO.toBricklayerProjectDO();
         bricklayerProjectDO.doInit();
         bricklayerProjectDao.insert(bricklayerProjectDO);
         return bricklayerProjectDO.toBricklayerProjectDTO();
+    }
+
+
+    @Override
+    public void copyBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
+
+        //保存项目
+        BricklayerProjectDTO saveBricklayerProject = saveBricklayerProject(bricklayerProjectDTO);
+
+
+        //查询目录
+        List<BricklayerDirectDO> bricklayerDirectDOS = bricklayerDirectDao.listBricklayerDirectsByProjectId(bricklayerProjectDTO.getId());
+
+        Map<Integer, Integer> map = new HashMap<>();
+
+        bricklayerDirectDOS.forEach(x -> {
+            Integer oldId = x.getId();
+            x.setId(null);
+            x.doInit();
+            bricklayerDirectDao.insert(x);
+            Integer newId = x.getId();
+            map.put(oldId, newId);
+        });
+
+        //转换id
+        List<Integer> collect = bricklayerDirectDOS.stream().map(x -> x.getId()).collect(Collectors.toList());
+
+
+        //查询模板
+        List<BricklayerTemplateDO> bricklayerTemplateDOS = bricklayerTemplateDao.listBricklayerTemplatesByDirectIds(collect);
+
+
+        //分组模板
+        Map<Integer, List<BricklayerTemplateDO>> collect1 = bricklayerTemplateDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongDirectId()));
+
+        collect1.forEach((k, v) -> {
+            v.forEach(x -> {
+
+            });
+        });
+
     }
 
     @Transactional
@@ -149,6 +194,9 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     @Override
     public IPage<BricklayerProjectDTO> listBricklayerProjectPage(BricklayerProjectDTO bricklayerProjectDTO) {
         BricklayerProjectDO bricklayerProjectDO = bricklayerProjectDTO.toBricklayerProjectDO();
+        if (bricklayerProjectDTO.getOnlyMine() != null && bricklayerProjectDTO.getOnlyMine()) {
+            bricklayerProjectDO.setCreateBy(LoginInterceptor.getCurrentName());
+        }
         Page page = new Page(bricklayerProjectDTO.getCurrent(), bricklayerProjectDTO.getSize());
         IPage<BricklayerProjectDO> pageResult = bricklayerProjectDao.listBricklayerProjectPage(page, bricklayerProjectDO);
         List<BricklayerProjectDO> records = pageResult.getRecords();
@@ -231,6 +279,7 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
         bricklayerProjectById.setTree(root[0]);
         return bricklayerProjectById;
     }
+
 
     @Override
     public BricklayerProjectDTO getBricklayerProjectById(BricklayerProjectDTO bricklayerProjectDTO) {

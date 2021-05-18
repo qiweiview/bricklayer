@@ -109,7 +109,7 @@
         order by template_name
     </select>
 
-    <select id="listBricklayerTemplateByProjectId" parameterType="java.util.List"
+    <select id="listBricklayerTemplatesByDirectIds" parameterType="java.util.List"
             resultMap="BricklayerTemplateMap">
         SELECT
         a.template_id id,

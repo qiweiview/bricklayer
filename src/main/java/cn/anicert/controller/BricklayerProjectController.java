@@ -46,6 +46,17 @@ public class BricklayerProjectController {
     }
 
     /**
+     * 更新BricklayerProject
+     */
+    @RequestMapping("/copy")
+    public ResponseVo<BricklayerProjectVO> copyBricklayerProject(@RequestBody(required = false) BricklayerProjectDTO bricklayerProjectDTO) {
+        ResponseVo responseVo = new ResponseVo();
+        bricklayerProjectServiceI.copyBricklayerProject(bricklayerProjectDTO);
+        return responseVo;
+    }
+
+
+    /**
      * 删除BricklayerProject
      */
     @RequestMapping("/delete")
