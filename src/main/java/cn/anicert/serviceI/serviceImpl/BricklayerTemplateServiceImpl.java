@@ -1,6 +1,8 @@
 package cn.anicert.serviceI.serviceImpl;
 
+import cn.anicert.dao.BricklayerDirectTemplateRelationDao;
 import cn.anicert.dao.BricklayerTemplateDao;
+import cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO;
 import cn.anicert.model.d_o.BricklayerTemplateDO;
 import cn.anicert.model.dto.BricklayerTemplateDTO;
 import cn.anicert.serviceI.BricklayerTemplateServiceI;
@@ -25,6 +27,7 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
 
     private final BricklayerTemplateDao bricklayerTemplateDao;
 
+    private final BricklayerDirectTemplateRelationDao bricklayerDirectTemplateRelationDao;
 
     @Override
     public BricklayerTemplateDTO saveBricklayerTemplate(BricklayerTemplateDTO bricklayerTemplateDTO) {
@@ -65,6 +68,13 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
             //todo 其他人员模板无法删除
             throw new MessageRuntimeException("无法删除其他用户创建模板");
         }
+
+        List<BricklayerDirectTemplateRelationDO> list = bricklayerDirectTemplateRelationDao.listBricklayerDirectTemplateRelationByTemplateId(bricklayerTemplateDTO.getId());
+        if (list.size() > 0) {
+            //todo 其他人员模板无法删除
+            throw new MessageRuntimeException("该模板已被项目使用,请先移除项目中模板引用");
+        }
+
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
         bricklayerTemplateDO.doDelete();
         bricklayerTemplateDao.deleteBricklayerTemplate(bricklayerTemplateDO);
@@ -82,7 +92,7 @@ public class BricklayerTemplateServiceImpl implements BricklayerTemplateServiceI
     @Override
     public IPage<BricklayerTemplateDTO> listBricklayerTemplatePage(BricklayerTemplateDTO bricklayerTemplateDTO) {
         BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
-        if (bricklayerTemplateDTO.getOnlyMine()!=null&&bricklayerTemplateDTO.getOnlyMine()) {
+        if (bricklayerTemplateDTO.getOnlyMine() != null && bricklayerTemplateDTO.getOnlyMine()) {
             bricklayerTemplateDO.setCreateBy(LoginInterceptor.getCurrentName());
         }
         Page page = new Page(bricklayerTemplateDTO.getCurrent(), bricklayerTemplateDTO.getSize());

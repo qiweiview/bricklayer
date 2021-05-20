@@ -47,42 +47,142 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     }
 
 
+    private TreeNodeDTO directListToTree(List<BricklayerDirectDO> bricklayerDirectDOS) {
+        Map<Integer, TreeNodeDTO> map = new HashMap<>();
+
+        TreeNodeDTO[] root = {new TreeNodeDTO()};
+        bricklayerDirectDOS.forEach(x -> {
+            Integer id = x.getId();
+            TreeNodeDTO treeNodeDTO = map.get(id);
+            if (treeNodeDTO == null) {
+                treeNodeDTO = new TreeNodeDTO();
+                treeNodeDTO.setId(id);
+                map.put(id, treeNodeDTO);
+            }
+            treeNodeDTO.setLabel(x.getDirectName());
+            treeNodeDTO.setType("direct");
+            Integer parentDirectId = x.getParentDirectId();
+            if (-1 == parentDirectId) {
+                treeNodeDTO.setLevel("root");
+                root[0] = treeNodeDTO;
+            } else {
+                treeNodeDTO.setLevel("son");
+            }
+
+            TreeNodeDTO parent = map.get(parentDirectId);
+            if (parent == null) {
+                parent = new TreeNodeDTO();
+                parent.setId(parentDirectId);
+                map.put(parentDirectId, parent);
+            }
+            parent.addChild(treeNodeDTO);
+
+        });
+        return root[0];
+    }
+
+    private void insertDirectByTree(TreeNodeDTO treeNodeDTO, Map<Integer, Integer> directMap, Integer projectId, Integer parentId) {
+        Integer oldId = treeNodeDTO.getId();
+        BricklayerDirectDO bricklayerDirectDO = new BricklayerDirectDO();
+        bricklayerDirectDO.setBelongProjectId(projectId);
+        bricklayerDirectDO.setDirectName(treeNodeDTO.getLabel());
+        bricklayerDirectDO.setParentDirectId(parentId);
+        bricklayerDirectDO.doInit();
+        bricklayerDirectDO.setBelongProjectId(projectId);
+        bricklayerDirectDao.insert(bricklayerDirectDO);
+        Integer newId = bricklayerDirectDO.getId();
+        directMap.put(oldId, newId);
+        List<TreeNodeDTO> children = treeNodeDTO.getChildren();
+        children.forEach(x -> {
+            insertDirectByTree(x, directMap, projectId, newId);
+        });
+
+
+    }
+
+    @Transactional
     @Override
     public void copyBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
 
         //保存项目
         BricklayerProjectDTO saveBricklayerProject = saveBricklayerProject(bricklayerProjectDTO);
 
-
         //查询目录
         List<BricklayerDirectDO> bricklayerDirectDOS = bricklayerDirectDao.listBricklayerDirectsByProjectId(bricklayerProjectDTO.getId());
 
-        Map<Integer, Integer> map = new HashMap<>();
-
-        bricklayerDirectDOS.forEach(x -> {
-            Integer oldId = x.getId();
-            x.setId(null);
-            x.doInit();
-            bricklayerDirectDao.insert(x);
-            Integer newId = x.getId();
-            map.put(oldId, newId);
-        });
 
         //转换id
-        List<Integer> collect = bricklayerDirectDOS.stream().map(x -> x.getId()).collect(Collectors.toList());
+        List<Integer> collect = bricklayerDirectDOS.stream().map(x -> {
+            //todo
+            return x.getId();
+        }).collect(Collectors.toList());
 
+        //目录模板关系
+        List<BricklayerDirectTemplateRelationDO> bricklayerDirectTemplateRelationDOS = bricklayerDirectTemplateRelationDao.listBricklayerDirectTemplateRelationByDirectIds(collect);
 
         //查询模板
         List<BricklayerTemplateDO> bricklayerTemplateDOS = bricklayerTemplateDao.listBricklayerTemplatesByDirectIds(collect);
+
+        TreeNodeDTO integerTreeNodeDTOMap = directListToTree(bricklayerDirectDOS);
+
+        Map<Integer, Integer> directMap = new HashMap<>();
+
+
+        //保存目录
+        insertDirectByTree(integerTreeNodeDTOMap, directMap, saveBricklayerProject.getId(), -1);
+
+
+//        //保存目录
+//        bricklayerDirectDOS.forEach(x -> {
+//            Integer oldId = x.getId();
+//            x.setId(null);
+//            x.doInit();
+//            x.setBelongProjectId(saveBricklayerProject.getId());
+//            bricklayerDirectDao.insert(x);
+//            Integer newId = x.getId();
+//            directMap.put(oldId, newId);
+//        });
 
 
         //分组模板
         Map<Integer, List<BricklayerTemplateDO>> collect1 = bricklayerTemplateDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongDirectId()));
 
-        collect1.forEach((k, v) -> {
-            v.forEach(x -> {
 
+        Map<Integer, Integer> templateMap = new HashMap<>();
+
+        //保存模板
+        collect1.forEach((k, v) -> {
+            Integer newId = directMap.get(k);
+            v.forEach(x -> {
+                Integer oldTemplateId = x.getId();
+                x.setBelongDirectId(newId);
+                x.doInit();
+                x.setId(null);
+                bricklayerTemplateDao.insert(x);
+                Integer newTemplateId = x.getId();
+                templateMap.put(oldTemplateId, newTemplateId);
             });
+        });
+
+
+        //保存新的文件夹模板关系
+        bricklayerDirectTemplateRelationDOS.forEach(x -> {
+            Integer templateId = x.getTemplateId();
+            if (templateId != null) {
+                templateId = templateMap.get(templateId);
+            }
+
+
+            Integer belongDirectId = x.getBelongDirectId();
+            belongDirectId = directMap.get(belongDirectId);
+
+            x.doInit();
+            x.setTemplateId(templateId);
+            x.setBelongDirectId(belongDirectId);
+            x.setId(null);
+            bricklayerDirectTemplateRelationDao.insert(x);
+
+
         });
 
     }
@@ -95,7 +195,7 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
         if (!LoginInterceptor.isCurrentUser(bricklayerProjectById.getCreateBy())) {
             //todo 其他人员项目无法编辑无法编辑
-            throw new MessageRuntimeException("无法编辑其他用户创建项目");
+            throw new MessageRuntimeException("无法编辑其他用户创建项目,可点击\"复制\"，复制项目至当前用户");
         }
 
 
@@ -113,10 +213,20 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
         //全录
         TreeNodeDTO tree = bricklayerProjectDTO.getTree();
+
+        //解析保存树
         parseTreeNodeDTO(tree, bricklayerProjectDTO.getId(), -1, "");
         return bricklayerProjectDO.toBricklayerProjectDTO();
     }
 
+    /**
+     * 解析保存树
+     *
+     * @param treeNodeDTO
+     * @param projectId
+     * @param parentId
+     * @param parentPath
+     */
     public void parseTreeNodeDTO(TreeNodeDTO treeNodeDTO, Integer projectId, Integer parentId, String parentPath) {
         String label = treeNodeDTO.getLabel();
         Integer templateId = treeNodeDTO.getTemplateId();
@@ -178,8 +288,15 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
         bricklayerProjectDO.doDelete();
         bricklayerProjectDao.deleteBricklayerProject(bricklayerProjectDO);
 
+
+        //删除相关目录模板关系
+        bricklayerDirectTemplateRelationDao.deleteDirectTemplateRelationByProjectId(bricklayerProjectDO.getId());
+
+
         //删除相关目录
         bricklayerDirectDao.deleteByDirectsByProjectId(bricklayerProjectDO.getId());
+
+
         return bricklayerProjectDO.toBricklayerProjectDTO();
     }
 
@@ -216,7 +333,7 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
         collect.add(-999);
 
-        List<BricklayerDirectTemplateRelationDO> bricklayerDirectTemplateRelationDOS = bricklayerDirectTemplateRelationDao.getByDirectIds(collect);
+        List<BricklayerDirectTemplateRelationDO> bricklayerDirectTemplateRelationDOS = bricklayerDirectTemplateRelationDao.listBricklayerDirectTemplateRelationByDirectIds(collect);
 
         Map<Integer, List<BricklayerDirectTemplateRelationDO>> collect1 = bricklayerDirectTemplateRelationDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongDirectId()));
 

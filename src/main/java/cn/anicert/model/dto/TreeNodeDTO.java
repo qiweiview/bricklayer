@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class TreeNodeDTO {
+    private Integer id;
 
     private String type;
 

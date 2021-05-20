@@ -52,7 +52,8 @@
 
     </select>
 
-    <select id="getByDirectIds" resultType="cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO">
+    <select id="listBricklayerDirectTemplateRelationByDirectIds"
+            resultType="cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO">
         SELECT
         belong_direct_id,
         a.id,
@@ -67,6 +68,15 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+    </select>
+
+
+    <select id="listBricklayerDirectTemplateRelationByTemplateId"
+            resultType="cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO">
+         select *
+        from bricklayer_direct_template_relation
+          where 1=1
+        and template_id  = #{id}
     </select>
 
 
@@ -90,6 +100,14 @@
         </foreach>
     </delete>
 
+    <delete id="deleteDirectTemplateRelationByProjectId" parameterType="java.lang.Integer">
+DELETE
+FROM
+	bricklayer_direct_template_relation
+WHERE
+	belong_direct_id IN ( SELECT id FROM bricklayer_direct WHERE belong_project_id = #{id})
+    </delete>
+
 
     <update id="updateBricklayerDirectTemplateRelation"
             parameterType="cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO">
@@ -103,7 +121,7 @@
         </if>
         id=id
         where 1=1
-        and id  = #{id}
+        and id = #{id}
 
     </update>
 

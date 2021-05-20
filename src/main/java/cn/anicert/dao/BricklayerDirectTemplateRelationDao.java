@@ -26,6 +26,10 @@ public interface BricklayerDirectTemplateRelationDao extends BaseMapper<Bricklay
 
     void deleteByDirectIds(@Param("ids") List<Integer> collect);
 
-    List<BricklayerDirectTemplateRelationDO> getByDirectIds(@Param("ids") List<Integer> collect);
+    List<BricklayerDirectTemplateRelationDO> listBricklayerDirectTemplateRelationByDirectIds(@Param("ids") List<Integer> collect);
+
+    List<BricklayerDirectTemplateRelationDO> listBricklayerDirectTemplateRelationByTemplateId(@Param("id") Integer id);
+
+    void deleteDirectTemplateRelationByProjectId(@Param("id") Integer id);
 
 }
