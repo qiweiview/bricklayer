@@ -102,6 +102,7 @@
         count(*) count_value,
         user_name
         from bricklayer_log
+        where create_date>=#{startDateTime} and #{endDateTime}>=create_date
         group by user_name
     </select>
     <select id="getUriCount" parameterType="java.time.LocalDate" resultMap="BricklayerLogMap">
@@ -109,6 +110,7 @@
         count(*) count_value,
         request_uri
         from bricklayer_log
+        where create_date>=#{startDateTime} and #{endDateTime}>=create_date
         group by request_uri
     </select>
 

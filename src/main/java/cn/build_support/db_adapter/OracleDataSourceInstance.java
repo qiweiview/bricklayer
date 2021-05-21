@@ -3,18 +3,16 @@ package cn.build_support.db_adapter;
 
 import cn.anicert.model.dto.BricklayerColumnDTO;
 import cn.anicert.model.dto.BricklayerTableDTO;
-import cn.anicert.utils.JDBCResultUtils;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance {
+public class OracleDataSourceInstance extends AbstractDataSourceInstance {
 
 
-    public MysqlAbstractDataSourceInstance(String dbUrl, String userName, String passWord) {
+    public OracleDataSourceInstance(String dbUrl, String userName, String passWord) {
         this.dbUrl = dbUrl;
         this.userName = userName;
         this.passWord = passWord;
@@ -23,7 +21,7 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
 
     @Override
     public String getDriverClassName() {
-        String s = "com.mysql.cj.jdbc.Driver";
+        String s = "oracle.jdbc.driver.OracleDriver";
         try {
             Class.forName(s);
         } catch (ClassNotFoundException e) {
@@ -34,25 +32,15 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
 
     @Override
     public List<String> getDatabases() {
-        List<Map> maps = doQuery("show databases;");
+        List<Map> maps = doQuery("SELECT USERNAME FROM ALL_USERS ORDER BY USERNAME");
         List<String> collect = maps.stream().map(x -> {
             //todo 获取名称
-            String dbName = "mysql";
-            Object DBName = x.get("DBName");
-            if (DBName != null) {
-                dbName = DBName.toString();
+            String dbName = "SYS";
+            Object USERNAME = x.get("USERNAME");
+            if (USERNAME != null) {
+                dbName = USERNAME.toString();
             }
 
-            Object Database = x.get("Database");
-            if (Database != null) {
-                dbName = Database.toString();
-            }
-
-
-            Object SCHEMA_NAME = x.get("SCHEMA_NAME");
-            if (SCHEMA_NAME != null) {
-                dbName = SCHEMA_NAME.toString();
-            }
 
             return dbName;
         }).collect(Collectors.toList());
@@ -60,70 +48,21 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
     }
 
     @Override
-    public List<String> getTables(String dbName) {
-        List<Map> maps = doQuery("SELECT TABLE_NAME  \n" +
-                "FROM INFORMATION_SCHEMA.TABLES \n" +
-                "WHERE TABLE_SCHEMA = ? order by TABLE_NAME", dbName);
-        List<String> collect = maps.stream().map(x -> x.get("TABLE_NAME").toString()).collect(Collectors.toList());
-        return collect;
-    }
-
-    @Override
-    public Connection getConnection() {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(dbUrl, userName, passWord);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new RuntimeException("connect to datasource fail");
-        }
-        return conn;
-    }
-
-    /**
-     * 注入风险需要修复
-     *
-     * @param sql
-     * @return
-     */
-    public List<Map> doQuery(String sql, Object... objects) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            preparedStatement = conn.prepareStatement(sql);
-            //数据拼接
-            for (int i = 0; i < objects.length; i++) {
-                preparedStatement.setObject(i + 1, objects[i]);
-            }
-            resultSet = preparedStatement.executeQuery();
-            List<Map> maps = JDBCResultUtils.parseResult(resultSet);
-
-            return maps;
-        } catch (Exception se) {
-            throw new RuntimeException(se);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException sqlException) {
-                throw new RuntimeException("close fail");
-            }
-
-        }
-    }
-
-    @Override
     public List<BricklayerTableDTO> getDBTableModelsByDataSource(String dbName) {
-        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ?", dbName);
+        List<Map> maps = doQuery("SELECT\n" +
+                "\ta.COLUMN_NAME,\n" +
+                "\ta.DATA_TYPE,\n" +
+                "\tNVL( b.comments, '1' ) \n" +
+                "FROM\n" +
+                "\tuser_tab_columns a,\n" +
+                "\tuser_col_comments b \n" +
+                "WHERE\n" +
+                "\t1 = 1 \n" +
+                "\tAND a.table_Name = b.table_Name \n" +
+                "\tAND a.COLUMN_NAME = b.COLUMN_NAME \n" +
+                "\tAND a.table_Name IN ( SELECT table_name FROM all_tables WHERE owner = ? ) \n" +
+                "ORDER BY\n" +
+                "\tcolumn_name", dbName);
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
             return x.get("TABLE_NAME");
         }));
@@ -139,10 +78,10 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
                 //todo 列
                 BricklayerColumnDTO dbColumnModel = new BricklayerColumnDTO();
                 dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
-                dbColumnModel.setColumnType(z.getOrDefault("COLUMN_TYPE", "").toString());
                 dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
                 dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
                 dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
+                dbColumnModel.setColumnType(z.getOrDefault("DATA_TYPE", "").toString());
                 dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
 
                 if (targetColumn.contains(dbColumnModel.getOriginalColumnName()) || (targetColumn.size() == 1 && targetColumn.contains("*"))) {
@@ -154,13 +93,29 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
             }
         });
         return dbTableModels;
+    }
 
-
+    @Override
+    public List<BricklayerTableDTO> getDBTableModelsByTables(List<String> tables) {
+        return null;
     }
 
     @Override
     public BricklayerTableDTO getDBTableModelByName(String taleName) {
-        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE table_name = ?", taleName);
+        List<Map> maps = doQuery("SELECT\n" +
+                "\ta.COLUMN_NAME COLUMN_NAME ,\n" +
+                "\ta.DATA_TYPE DATA_TYPE,\n" +
+                "\tNVL(b.comments , '-')  as COLUMN_COMMENT \n" +
+                "FROM\n" +
+                "\tuser_tab_columns a,\n" +
+                "\tuser_col_comments b \n" +
+                "WHERE\n" +
+                "\t1 = 1 \n" +
+                "\tAND a.table_Name = b.table_Name \n" +
+                "\tAND a.COLUMN_NAME = b.COLUMN_NAME \n" +
+                "\tAND a.table_Name = ? \n" +
+                "ORDER BY\n" +
+                "\tcolumn_name", taleName);
         //todo 表分组
         BricklayerTableDTO dbTableModel = new BricklayerTableDTO();
         List<BricklayerColumnDTO> dbColumnModelList = new ArrayList();
@@ -174,13 +129,24 @@ public class MysqlAbstractDataSourceInstance extends AbstractDataSourceInstance 
             dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
             dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
             dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
-            dbColumnModel.setColumnType(z.getOrDefault("COLUMN_TYPE", "").toString());
+            dbColumnModel.setColumnType(z.getOrDefault("DATA_TYPE", "").toString());
             dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
             dbColumnModelList.add(dbColumnModel);
 
         });
         return dbTableModel;
+    }
 
+    @Override
+    public List<String> getTables(String dbName) {
+        List<Map> maps = doQuery("SELECT\n" +
+                "\ttable_name \n" +
+                "FROM\n" +
+                "\tall_tables \n" +
+                "WHERE\n" +
+                "\towner=? order by TABLE_NAME", dbName);
+        List<String> collect = maps.stream().map(x -> x.get("TABLE_NAME").toString()).collect(Collectors.toList());
+        return collect;
     }
 
 

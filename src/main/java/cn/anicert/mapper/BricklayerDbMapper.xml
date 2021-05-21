@@ -12,6 +12,7 @@
         <result property="dbPort" column="db_port"/>
         <result property="dbType" column="db_type"/>
         <result property="dbUser" column="db_user"/>
+        <result property="serviceName" column="service_name"/>
     </resultMap>
 
 
@@ -20,6 +21,7 @@
         select
         db_driver_class,
         db_ip,
+        service_name,
         db_port,
         db_type,
         db_user,
@@ -36,6 +38,7 @@
         select
             db_driver_class,
             db_ip,
+            service_name,
             db_password,
             db_port,
             db_type,
@@ -52,6 +55,7 @@
         select
         db_driver_class,
         db_ip,
+        service_name,
         db_password,
         db_port,
         db_type,
@@ -69,6 +73,7 @@
         db_driver_class,
         db_ip,
         db_password,
+        service_name,
         db_port,
         db_type,
         db_user,
@@ -93,6 +98,9 @@
         </if>
         <if test="dbIp!=null  and dbIp!=''">
             db_ip = #{ dbIp},
+        </if>
+        <if test="serviceName!=null  and serviceName!=''">
+            service_name = #{ serviceName},
         </if>
         <if test="dbPassword!=null  and dbPassword!=''">
             db_password = #{ dbPassword},

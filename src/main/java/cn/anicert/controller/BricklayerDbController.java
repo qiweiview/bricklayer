@@ -165,7 +165,7 @@ public class BricklayerDbController {
     }
 
     /**
-     * 创建单个模型
+     * 创建批量模型
      *
      * @param bricklayerTableDTO
      * @return

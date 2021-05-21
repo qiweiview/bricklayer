@@ -6,7 +6,9 @@ import cn.anicert.model.dto.*;
 import cn.anicert.model.vo.GenerationVO;
 import cn.anicert.serviceI.BricklayerDbServiceI;
 import cn.anicert.utils.*;
-import cn.build_support.db_adapter.MysqlAbstractDataSourceInstance;
+import cn.build_support.db_adapter.AbstractDataSourceInstance;
+import cn.build_support.db_adapter.MysqlDataSourceInstance;
+import cn.build_support.db_adapter.OracleDataSourceInstance;
 import cn.build_support.java_bean.JavaBeanModel;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -120,8 +122,8 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             throw new MessageRuntimeException("can not found the datasource");
         }
 
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
-        List<String> databases = mysqlAbstractDataSourceInstance.getDatabases();
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        List<String> databases = mysqlDataSourceInstance.getDatabases();
         return databases;
     }
 
@@ -136,20 +138,32 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             throw new MessageRuntimeException("can not found the datasource");
         }
 
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
-        BricklayerTableDTO dbTableModel = mysqlAbstractDataSourceInstance.getDBTableModelByName(tableDetailDTO.getTableName());
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        BricklayerTableDTO dbTableModel = mysqlDataSourceInstance.getDBTableModelByName(tableDetailDTO.getTableName());
 
         return dbTableModel;
     }
 
-    public MysqlAbstractDataSourceInstance getMysqlAbstractDataSourceInstanceByBricklayerDbDO(BricklayerDbDO bricklayerDbDO) {
+    public AbstractDataSourceInstance getMysqlAbstractDataSourceInstanceByBricklayerDbDO(BricklayerDbDO bricklayerDbDO) {
 
+        if ("mysql".equals(bricklayerDbDO.getDbType())) {
+            String dbName = "mysql";
+            String connectionPath = "jdbc:mysql://" + bricklayerDbDO.getDbIp() + ":" + bricklayerDbDO.getDbPort() + "/" + dbName + "?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
+            MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(), bricklayerDbDO.getDbPassword());
 
-        String dbName = "mysql";
-        String connectionPath = "jdbc:mysql://" + bricklayerDbDO.getDbIp() + ":" + bricklayerDbDO.getDbPort() + "/" + dbName + "?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = new MysqlAbstractDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(), bricklayerDbDO.getDbPassword());
+            return mysqlDataSourceInstance;
+        }
 
-        return mysqlAbstractDataSourceInstance;
+        if ("oracle".equals(bricklayerDbDO.getDbType())) {
+
+            String connectionPath = "jdbc:oracle:thin:@" + bricklayerDbDO.getDbIp() + ":" + bricklayerDbDO.getDbPort() + ":" + bricklayerDbDO.getServiceName();
+            OracleDataSourceInstance mysqlDataSourceInstance = new OracleDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(), bricklayerDbDO.getDbPassword());
+
+            return mysqlDataSourceInstance;
+        }
+
+        throw new MessageRuntimeException("不支持数据库类型" + bricklayerDbDO.getDbType());
+
     }
 
     @Transactional
@@ -182,12 +196,12 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             throw new MessageRuntimeException("can not found the datasource");
         }
 
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
         bricklayerTableDTO.getSelectedTables().forEach(x -> {
-            mysqlAbstractDataSourceInstance.addTargetTableName(x);
+            mysqlDataSourceInstance.addTargetTableName(x);
         });
 
-        List<BricklayerTableDTO> dbTableModels = mysqlAbstractDataSourceInstance.getDBTableModelsByDataSource(bricklayerTableDTO.getSourceDataBase());
+        List<BricklayerTableDTO> dbTableModels = mysqlDataSourceInstance.getDBTableModelsByDataSource(bricklayerTableDTO.getSourceDataBase());
 
         dbTableModels.stream().forEach(x -> {
             BricklayerTableDO bricklayerTableDO = new BricklayerTableDO();
@@ -228,8 +242,8 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         if (bricklayerDbById == null) {
             throw new MessageRuntimeException("can not found the datasource");
         }
-        MysqlAbstractDataSourceInstance mysqlAbstractDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
-        List<String> tables = mysqlAbstractDataSourceInstance.getTables(tableDetailDTO.getDataSourceName());
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        List<String> tables = mysqlDataSourceInstance.getTables(tableDetailDTO.getDataSourceName());
         return tables;
     }
 
