@@ -139,7 +139,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         }
 
         AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
-        BricklayerTableDTO dbTableModel = mysqlDataSourceInstance.getDBTableModelByName(tableDetailDTO.getTableName());
+        BricklayerTableDTO dbTableModel = mysqlDataSourceInstance.getDBTableModelByName(tableDetailDTO.getDataSourceName(), tableDetailDTO.getTableName());
 
         return dbTableModel;
     }
@@ -197,11 +197,9 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         }
 
         AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
-        bricklayerTableDTO.getSelectedTables().forEach(x -> {
-            mysqlDataSourceInstance.addTargetTableName(x);
-        });
 
-        List<BricklayerTableDTO> dbTableModels = mysqlDataSourceInstance.getDBTableModelsByDataSource(bricklayerTableDTO.getSourceDataBase());
+
+        List<BricklayerTableDTO> dbTableModels = mysqlDataSourceInstance.getDBTableModelsByTables(bricklayerTableDTO.getDataSourceName(), bricklayerTableDTO.getSelectedTables());
 
         dbTableModels.stream().forEach(x -> {
             BricklayerTableDO bricklayerTableDO = new BricklayerTableDO();

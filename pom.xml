@@ -85,8 +85,9 @@
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc14</artifactId>
-            <version>10.2.0.5.0</version>
+            <version>10.2.0.1.0</version>
         </dependency>
+
 
         <!-- **********数据库驱动********** -->
 
@@ -132,6 +133,21 @@
         </dependency>
 
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <build>
         <resources>
             <resource>

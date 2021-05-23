@@ -68,24 +68,27 @@ public class MysqlDataSourceInstance extends AbstractDataSourceInstance {
 
 
 
-
-
     @Override
-    public List<BricklayerTableDTO> getDBTableModelsByDataSource(String dbName) {
-        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ?", dbName);
+    public List<BricklayerTableDTO> getDBTableModelsByTables(String dataSourceName, List<String> tables) {
+        String tablesStr = tables.stream().map(x -> {
+            return "'" + x + "'";
+        }).collect(Collectors.joining(","));
+        List<Map> maps = doQuery("SELECT extra,c, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE  table_schema =? table_name in (" + tablesStr + ") ", dataSourceName);
+
+        //todo 表分组
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
             return x.get("TABLE_NAME");
         }));
+
         List<BricklayerTableDTO> dbTableModels = new ArrayList<>();
         table_name.forEach((k, v) -> {
-            //todo 表分组
+            //todo 循环表
             BricklayerTableDTO dbTableModel = new BricklayerTableDTO();
             List<BricklayerColumnDTO> dbColumnModelList = new ArrayList();
             dbTableModel.setOriginalTableName(k.toString());
             dbTableModel.setBricklayerColumnDTOList(dbColumnModelList);
             v.forEach(z -> {
-
-                //todo 列
+                //todo 循环列
                 BricklayerColumnDTO dbColumnModel = new BricklayerColumnDTO();
                 dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
                 dbColumnModel.setColumnType(z.getOrDefault("COLUMN_TYPE", "").toString());
@@ -94,48 +97,14 @@ public class MysqlDataSourceInstance extends AbstractDataSourceInstance {
                 dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
                 dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
 
-                if (targetColumn.contains(dbColumnModel.getOriginalColumnName()) || (targetColumn.size() == 1 && targetColumn.contains("*"))) {
-                    dbColumnModelList.add(dbColumnModel);
-                }
+                dbColumnModelList.add(dbColumnModel);
             });
-            if (targetTable.contains(dbTableModel.getOriginalTableName()) || (targetTable.size() == 1 && targetTable.contains("*"))) {
-                dbTableModels.add(dbTableModel);
-            }
+            dbTableModels.add(dbTableModel);
         });
         return dbTableModels;
-
-
     }
 
-    @Override
-    public List<BricklayerTableDTO> getDBTableModelsByTables(List<String> tables) {
-        return null;
-    }
 
-    @Override
-    public BricklayerTableDTO getDBTableModelByName(String taleName) {
-        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE table_name = ?", taleName);
-        //todo 表分组
-        BricklayerTableDTO dbTableModel = new BricklayerTableDTO();
-        List<BricklayerColumnDTO> dbColumnModelList = new ArrayList();
-        dbTableModel.setOriginalTableName(taleName);
-        dbTableModel.setBricklayerColumnDTOList(dbColumnModelList);
-        maps.forEach(z -> {
-
-            //todo 列
-            BricklayerColumnDTO dbColumnModel = new BricklayerColumnDTO();
-            dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
-            dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
-            dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
-            dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
-            dbColumnModel.setColumnType(z.getOrDefault("COLUMN_TYPE", "").toString());
-            dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
-            dbColumnModelList.add(dbColumnModel);
-
-        });
-        return dbTableModel;
-
-    }
 
 
 }

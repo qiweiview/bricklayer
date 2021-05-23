@@ -2,48 +2,67 @@ package cn.build_support.db_adapter;
 
 import cn.anicert.model.dto.BricklayerTableDTO;
 import cn.anicert.utils.JDBCResultUtils;
+import cn.anicert.utils.MessageRuntimeException;
 
 import java.sql.*;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AbstractDataSourceInstance {
-     String jdbcDriver ;
-     String dbUrl;
-     String userName;
-     String passWord;
-     Set<String> targetTable = new HashSet<>();
-     Set<String> targetColumn = new HashSet<>();
+    String jdbcDriver;
+    String dbUrl;
+    String userName;
+    String passWord;
+
 
     public AbstractDataSourceInstance() {
         jdbcDriver = getDriverClassName();
-        targetTable.add("*");
-        targetColumn.add("*");
     }
 
 
-
-
+    /**
+     * 获取驱动类
+     *
+     * @return
+     */
     public abstract String getDriverClassName();
 
-    public void addTargetTableName(String tableName) {
-        targetTable.add(tableName);
-    }
-
-    public void addTargetColumn(String tableColumn) {
-        targetColumn.add(tableColumn);
-    }
-
+    /**
+     * 获取数据库
+     *
+     * @return
+     */
     public abstract List<String> getDatabases();
 
-    public abstract List<BricklayerTableDTO> getDBTableModelsByDataSource(String dbName);
 
-    public abstract List<BricklayerTableDTO> getDBTableModelsByTables(List<String> tables);
+    /**
+     * 通过标名集合获取多个表模型
+     *
+     * @param tables
+     * @return
+     */
+    public abstract List<BricklayerTableDTO> getDBTableModelsByTables(String dataSourceName, List<String> tables);
 
-    public abstract BricklayerTableDTO getDBTableModelByName(String taleName);
 
+    public BricklayerTableDTO getDBTableModelByName(String dataSourceName, String taleName) {
+        List<String> collect = Stream.of(new String[]{taleName}).collect(Collectors.toList());
+        List<BricklayerTableDTO> dbTableModelsByTables = getDBTableModelsByTables(dataSourceName, collect);
+        if (dbTableModelsByTables.size() < 1) {
+            throw new MessageRuntimeException("无法找到匹配数据");
+        }
+        return dbTableModelsByTables.get(0);
+
+    }
+
+
+    /**
+     * 通过数据库名称获取表名集合
+     *
+     * @param dbName
+     * @return
+     */
     public abstract List<String> getTables(String dbName);
 
 
@@ -72,8 +91,10 @@ public abstract class AbstractDataSourceInstance {
             conn = getConnection();
             preparedStatement = conn.prepareStatement(sql);
             //数据拼接
-            for (int i = 0; i < objects.length; i++) {
-                preparedStatement.setObject(i + 1, objects[i]);
+            if (objects != null) {
+                for (int i = 0; i < objects.length; i++) {
+                    preparedStatement.setObject(i + 1, objects[i]);
+                }
             }
             resultSet = preparedStatement.executeQuery();
             List<Map> maps = JDBCResultUtils.parseResult(resultSet);

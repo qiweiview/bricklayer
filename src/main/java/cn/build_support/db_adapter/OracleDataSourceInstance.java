@@ -47,95 +47,45 @@ public class OracleDataSourceInstance extends AbstractDataSourceInstance {
         return collect;
     }
 
+
     @Override
-    public List<BricklayerTableDTO> getDBTableModelsByDataSource(String dbName) {
-        List<Map> maps = doQuery("SELECT\n" +
-                "\ta.COLUMN_NAME,\n" +
-                "\ta.DATA_TYPE,\n" +
-                "\tNVL( b.comments, '1' ) \n" +
-                "FROM\n" +
-                "\tuser_tab_columns a,\n" +
-                "\tuser_col_comments b \n" +
-                "WHERE\n" +
-                "\t1 = 1 \n" +
-                "\tAND a.table_Name = b.table_Name \n" +
-                "\tAND a.COLUMN_NAME = b.COLUMN_NAME \n" +
-                "\tAND a.table_Name IN ( SELECT table_name FROM all_tables WHERE owner = ? ) \n" +
-                "ORDER BY\n" +
-                "\tcolumn_name", dbName);
+    public List<BricklayerTableDTO> getDBTableModelsByTables(String dataSourceName, List<String> tables) {
+        String tablesStr = tables.stream().map(x -> {
+            return "'" + x + "'";
+        }).collect(Collectors.joining(","));
+        List<Map> maps = doQuery("SELECT a.* , decode(b.COLUMN_NAME, NULL, '-', 'primary') AS COLUMN_KEY FROM ( SELECT a.table_Name, a.COLUMN_NAME AS COLUMN_NAME, a.DATA_TYPE AS DATA_TYPE , NVL(b.comments, '-') AS COLUMN_COMMENT FROM user_tab_columns a, user_col_comments b WHERE 1 = 1 AND a.table_Name = b.table_Name AND a.COLUMN_NAME = b.COLUMN_NAME AND a.table_Name IN (" + tablesStr + ") ) a LEFT JOIN ( SELECT a.column_name FROM user_cons_columns a, user_constraints b WHERE a.constraint_name = b.constraint_name AND b.constraint_type = 'P' AND a.table_name in " + tablesStr + " ) b ON a.COLUMN_NAME = b.COLUMN_NAME", null);
+
+        //todo 表分组
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
             return x.get("TABLE_NAME");
         }));
+
         List<BricklayerTableDTO> dbTableModels = new ArrayList<>();
         table_name.forEach((k, v) -> {
-            //todo 表分组
+            //todo 循环表
             BricklayerTableDTO dbTableModel = new BricklayerTableDTO();
             List<BricklayerColumnDTO> dbColumnModelList = new ArrayList();
             dbTableModel.setOriginalTableName(k.toString());
             dbTableModel.setBricklayerColumnDTOList(dbColumnModelList);
             v.forEach(z -> {
-
-                //todo 列
+                //todo 循环列
                 BricklayerColumnDTO dbColumnModel = new BricklayerColumnDTO();
-                dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
+                //oracle 没有自增
+                //dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
+
+                dbColumnModel.setColumnType(z.getOrDefault("DATA_TYPE", "").toString());
                 dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
                 dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
                 dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
-                dbColumnModel.setColumnType(z.getOrDefault("DATA_TYPE", "").toString());
                 dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
 
-                if (targetColumn.contains(dbColumnModel.getOriginalColumnName()) || (targetColumn.size() == 1 && targetColumn.contains("*"))) {
-                    dbColumnModelList.add(dbColumnModel);
-                }
+                dbColumnModelList.add(dbColumnModel);
             });
-            if (targetTable.contains(dbTableModel.getOriginalTableName()) || (targetTable.size() == 1 && targetTable.contains("*"))) {
-                dbTableModels.add(dbTableModel);
-            }
+            dbTableModels.add(dbTableModel);
         });
         return dbTableModels;
     }
 
-    @Override
-    public List<BricklayerTableDTO> getDBTableModelsByTables(List<String> tables) {
-        return null;
-    }
-
-    @Override
-    public BricklayerTableDTO getDBTableModelByName(String taleName) {
-        List<Map> maps = doQuery("SELECT\n" +
-                "\ta.COLUMN_NAME COLUMN_NAME ,\n" +
-                "\ta.DATA_TYPE DATA_TYPE,\n" +
-                "\tNVL(b.comments , '-')  as COLUMN_COMMENT \n" +
-                "FROM\n" +
-                "\tuser_tab_columns a,\n" +
-                "\tuser_col_comments b \n" +
-                "WHERE\n" +
-                "\t1 = 1 \n" +
-                "\tAND a.table_Name = b.table_Name \n" +
-                "\tAND a.COLUMN_NAME = b.COLUMN_NAME \n" +
-                "\tAND a.table_Name = ? \n" +
-                "ORDER BY\n" +
-                "\tcolumn_name", taleName);
-        //todo 表分组
-        BricklayerTableDTO dbTableModel = new BricklayerTableDTO();
-        List<BricklayerColumnDTO> dbColumnModelList = new ArrayList();
-        dbTableModel.setOriginalTableName(taleName);
-        dbTableModel.setBricklayerColumnDTOList(dbColumnModelList);
-        maps.forEach(z -> {
-
-            //todo 列
-            BricklayerColumnDTO dbColumnModel = new BricklayerColumnDTO();
-            dbColumnModel.setExtra(z.getOrDefault("EXTRA", "").toString());
-            dbColumnModel.setColumnKey(z.getOrDefault("COLUMN_KEY", "").toString());
-            dbColumnModel.setOriginalColumnName(z.getOrDefault("COLUMN_NAME", "").toString());
-            dbColumnModel.setSimpleColumnType(z.getOrDefault("DATA_TYPE", "").toString());
-            dbColumnModel.setColumnType(z.getOrDefault("DATA_TYPE", "").toString());
-            dbColumnModel.setComment(z.getOrDefault("COLUMN_COMMENT", "").toString());
-            dbColumnModelList.add(dbColumnModel);
-
-        });
-        return dbTableModel;
-    }
 
     @Override
     public List<String> getTables(String dbName) {

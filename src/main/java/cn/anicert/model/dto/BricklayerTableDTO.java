@@ -72,6 +72,8 @@ public class BricklayerTableDTO {
 
     private Boolean onlyMine;
 
+    private String dataSourceName;
+
 
     /*  ------------ data conversion ------------  */
     public BricklayerTableDO toBricklayerTableDO() {
