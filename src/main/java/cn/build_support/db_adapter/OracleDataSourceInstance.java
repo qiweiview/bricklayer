@@ -53,7 +53,7 @@ public class OracleDataSourceInstance extends AbstractDataSourceInstance {
         String tablesStr = tables.stream().map(x -> {
             return "'" + x + "'";
         }).collect(Collectors.joining(","));
-        List<Map> maps = doQuery("SELECT a.* , decode(b.COLUMN_NAME, NULL, '-', 'primary') AS COLUMN_KEY FROM ( SELECT a.table_Name, a.COLUMN_NAME AS COLUMN_NAME, a.DATA_TYPE AS DATA_TYPE , NVL(b.comments, '-') AS COLUMN_COMMENT FROM user_tab_columns a, user_col_comments b WHERE 1 = 1 AND a.table_Name = b.table_Name AND a.COLUMN_NAME = b.COLUMN_NAME AND a.table_Name IN (" + tablesStr + ") ) a LEFT JOIN ( SELECT a.column_name FROM user_cons_columns a, user_constraints b WHERE a.constraint_name = b.constraint_name AND b.constraint_type = 'P' AND a.table_name in " + tablesStr + " ) b ON a.COLUMN_NAME = b.COLUMN_NAME", null);
+        List<Map> maps = doQuery("SELECT a.* , decode(b.COLUMN_NAME, NULL, '-', 'primary') AS COLUMN_KEY FROM ( SELECT a.table_Name, a.COLUMN_NAME AS COLUMN_NAME, a.DATA_TYPE AS DATA_TYPE , NVL(b.comments, '-') AS COLUMN_COMMENT FROM user_tab_columns a, user_col_comments b WHERE 1 = 1 AND a.table_Name = b.table_Name AND a.COLUMN_NAME = b.COLUMN_NAME AND a.table_Name IN (" + tablesStr + ") ) a LEFT JOIN ( SELECT a.column_name FROM user_cons_columns a, user_constraints b WHERE a.constraint_name = b.constraint_name AND b.constraint_type = 'P' AND a.table_name in (" + tablesStr + " )) b ON a.COLUMN_NAME = b.COLUMN_NAME", null);
 
         //todo 表分组
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
