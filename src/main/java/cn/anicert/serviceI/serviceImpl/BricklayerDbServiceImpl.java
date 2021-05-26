@@ -199,7 +199,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
 
 
-        List<BricklayerTableDTO> dbTableModels = mysqlDataSourceInstance.getDBTableModelsByTables(bricklayerTableDTO.getDataSourceName(), bricklayerTableDTO.getSelectedTables());
+        List<BricklayerTableDTO> dbTableModels = mysqlDataSourceInstance.getDBTableModelsByTables(bricklayerTableDTO.getSourceDataBase(), bricklayerTableDTO.getSelectedTables());
 
         dbTableModels.stream().forEach(x -> {
             BricklayerTableDO bricklayerTableDO = new BricklayerTableDO();

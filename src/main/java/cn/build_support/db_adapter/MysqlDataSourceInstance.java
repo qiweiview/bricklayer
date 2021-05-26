@@ -73,7 +73,7 @@ public class MysqlDataSourceInstance extends AbstractDataSourceInstance {
         String tablesStr = tables.stream().map(x -> {
             return "'" + x + "'";
         }).collect(Collectors.joining(","));
-        List<Map> maps = doQuery("SELECT extra,c, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE  table_schema =? table_name in (" + tablesStr + ") ", dataSourceName);
+        List<Map> maps = doQuery("SELECT extra,table_name, column_name, is_nullable, data_type, column_comment , column_type ,column_key FROM information_schema.COLUMNS WHERE  table_schema =? and table_name in (" + tablesStr + ") ", dataSourceName);
 
         //todo 表分组
         Map<Object, List<Map>> table_name = maps.stream().collect(Collectors.groupingBy(x -> {
