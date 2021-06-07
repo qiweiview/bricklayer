@@ -25,6 +25,8 @@ public class JavaBeanModel {
 
     private String primaryName;
 
+    private String primaryNameHump;
+
     private String basePath;
 
     private String contextPath;
@@ -46,6 +48,7 @@ public class JavaBeanModel {
             if (javaFiledModel.isPrimaryKey()) {
                 //todo 取第一个主键
                 javaBeanModel.setPrimaryName(javaFiledModel.getOriginalColumnName());
+                javaBeanModel.setPrimaryNameHump(javaFiledModel.getBeanName());
                 continue;
             }
         }
