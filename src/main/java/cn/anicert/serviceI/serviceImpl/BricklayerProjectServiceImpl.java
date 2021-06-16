@@ -17,11 +17,13 @@ import cn.anicert.utils.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -520,10 +522,125 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
         return generationVO;
     }
 
+
+    public static void main(String[] args) throws
+            Exception {
+
+        byte[] bytes = FileUtils.readFileToByteArray(new File("C:\\Users\\刘启威\\Desktop\\template_export.bricklayer.exp"));
+
+
+        Map<String, TreeNodeDTO> treeNodeDTOMap = new HashMap();
+        BricklayerProjectDO bricklayerProjectDO = null;
+
+        TreeNodeDTO root = new TreeNodeDTO();
+        root.setLabel("/");
+        root.setType("root");
+
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        ZipInputStream zipStream = new ZipInputStream(byteArrayInputStream);
+        ZipEntry entry = null;
+        try {
+            while ((entry = zipStream.getNextEntry()) != null) {
+
+                String name = entry.getName();
+                if (entry.isDirectory()) {
+                    //todo 目录
+                    name = name.substring(1, name.length() - 1);
+
+                    String[] split = name.trim().split("/");
+                    if (split.length > 0) {
+                        String son = split[split.length - 1];
+                        if ("".equals(son)) {
+                            continue;
+                        }
+
+                        TreeNodeDTO sonNode = new TreeNodeDTO();
+                        sonNode.setType("direct");
+                        sonNode.setLabel(son);
+                        treeNodeDTOMap.put(son, sonNode);
+
+                        if (split.length > 1) {
+                            String father = split[split.length - 2];
+                            TreeNodeDTO fatherNode = treeNodeDTOMap.get(father);
+                            if (fatherNode == null) {
+                                fatherNode = new TreeNodeDTO();
+                                fatherNode.setType("direct");
+                                fatherNode.setLabel(father);
+
+                                treeNodeDTOMap.put(father, fatherNode);
+                            }
+                            fatherNode.addChild(sonNode);
+
+                        } else if (split.length == 1) {
+                            root.addChild(sonNode);
+                            treeNodeDTOMap.put(son, sonNode);
+                        }
+                    }
+
+
+                } else {
+                    //todo 文件
+
+                    byte[] mb10 = new byte[5 * 1024 * 1024];
+                    int read = zipStream.read(mb10);
+
+                    String content = "";
+                    if (read != -1) {
+                        byte[] readResult = Arrays.copyOfRange(mb10, 0, read);
+                        content = new String(readResult);
+                    }
+
+                    if ("project_info.json".equals(name)) {
+                        bricklayerProjectDO = JacksonUtils.str2obj(content, BricklayerProjectDO.class);
+                        System.out.println(bricklayerProjectDO);
+                        continue;
+                    }
+
+                    String[] split = name.split("/");
+                    if (split.length > 1) {
+                        String fileName = split[split.length - 1];
+                        String belongDirect = split[split.length - 2];
+                        TreeNodeDTO treeNodeDTO = treeNodeDTOMap.get(belongDirect);
+                        if (treeNodeDTO != null) {
+
+
+                            TreeNodeDTO fileTemplate = new TreeNodeDTO();
+                            fileTemplate.setLabel(fileName);
+                            fileTemplate.setType("file");
+                            //单文件5mb读取
+
+                            treeNodeDTO.addChild(fileTemplate);
+                        }
+
+                    }
+                }
+
+
+            }
+            zipStream.close();
+        } catch (Exception e) {
+            throw new RuntimeException("to zip fail cause:" + e.getMessage());
+        }
+
+        System.out.println(JacksonUtils.obj2Str(root));
+
+
+//        bricklayerProjectDO.doInit();
+//        //重新生成主键
+//        bricklayerProjectDO.setId(null);
+//        bricklayerProjectDao.insert(bricklayerProjectDO);
+//
+//        //解析保存树
+//        parseTreeNodeDTO(tree, bricklayerProjectDO.getId(), -1, "");
+
+    }
+
     @Transactional
     @Override
     public void importProject(byte[] bytes) {
 
+        Map<String, TreeNodeDTO> treeNodeDTOMap = new HashMap();
         TreeNodeDTO tree = new TreeNodeDTO();
         BricklayerProjectDO bricklayerProjectDO = null;
 
@@ -537,18 +654,25 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                 String name = entry.getName();
                 if (entry.isDirectory()) {
                     //todo 目录
-                    System.out.println("dir: " + name);
+                    name = name.substring(0, name.length() - 1);
+                    String[] split = name.split("/");
+                    for (int i = 0; i < split.length; i++) {
+
+                    }
+
                 } else {
                     //todo 文件
 
-                    //单文件1mb读取
-                    byte[] mb10 = new byte[10 * 1024 * 1024];
-                    int read = zipStream.read(mb10);
+                    //单文件5mb读取
+//                    byte[] mb10 = new byte[5 * 1024 * 1024];
+//                    int read = zipStream.read(mb10);
+//
+//                    if (read != -1) {
+//                        byte[] readResult = Arrays.copyOfRange(mb10, 0, read);
+//                        System.out.println("file: \n" + new String(readResult));
+//                    }
 
-                    if (read != -1) {
-                        byte[] readResult = Arrays.copyOfRange(mb10, 0, read);
-                        System.out.println("file: \n" + new String(readResult));
-                    }
+                    System.out.println("file: " + name);
                 }
 
 
