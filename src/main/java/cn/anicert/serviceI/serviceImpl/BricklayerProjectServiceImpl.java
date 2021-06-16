@@ -9,21 +9,29 @@ import cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO;
 import cn.anicert.model.d_o.BricklayerProjectDO;
 import cn.anicert.model.d_o.BricklayerTemplateDO;
 import cn.anicert.model.dto.BricklayerProjectDTO;
+import cn.anicert.model.dto.GenerateCodeDTO;
 import cn.anicert.model.dto.TreeNodeDTO;
+import cn.anicert.model.vo.GenerationVO;
 import cn.anicert.serviceI.BricklayerProjectServiceI;
-import cn.anicert.utils.DataNotFoundException;
-import cn.anicert.utils.LoginInterceptor;
-import cn.anicert.utils.MessageRuntimeException;
+import cn.anicert.utils.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 
 @Service
@@ -186,6 +194,7 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
         });
 
     }
+
 
     @Transactional
     @Override
@@ -408,6 +417,159 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
 
         return bricklayerProjectDO.toBricklayerProjectDTO();
+    }
+
+
+    @Override
+    public GenerationVO exportProject(GenerateCodeDTO generateCodeDTO) {
+
+
+        ByteArrayOutputStream zipStream = new ByteArrayOutputStream();
+        //ZipOutputStream类：完成文件或文件夹的压缩
+        ZipOutputStream zipOutputStream = new ZipOutputStream(zipStream);
+
+
+        BricklayerProjectDO bricklayerProjectDO = new BricklayerProjectDO();
+        bricklayerProjectDO.setId(generateCodeDTO.getProjectId());
+        BricklayerProjectDO bricklayerProjectById = bricklayerProjectDao.getBricklayerProjectById(bricklayerProjectDO);
+
+        if (bricklayerProjectById == null) {
+            throw new MessageRuntimeException("not found data");
+        }
+
+
+        //get directs by project id
+        List<BricklayerDirectDO> bricklayerDirectDOS = bricklayerDirectDao.listBricklayerDirectsByProjectId(bricklayerProjectById.getId());
+
+        List<Integer> collect = bricklayerDirectDOS.stream().map(x -> x.getId()).collect(Collectors.toList());
+
+        if (collect.size() > 0) {
+            //get template by direct
+            List<BricklayerTemplateDO> bricklayerTemplateDOS = bricklayerTemplateDao.listBricklayerTemplatesByDirectIds(collect);
+
+
+            //目录分组
+            Map<Integer, List<BricklayerTemplateDO>> directMap = bricklayerTemplateDOS.stream().collect(Collectors.groupingBy(BricklayerTemplateDO::getBelongDirectId));
+
+
+            //写目录
+            bricklayerDirectDOS.forEach(x -> {
+                try {
+                    zipOutputStream.putNextEntry(new ZipEntry(x.getDirectFullPath() + "/"));
+                    zipOutputStream.closeEntry();
+                } catch (IOException e) {
+                    throw new MessageRuntimeException("export template fail cause:" + e.getMessage());
+                }
+            });
+
+            //写文件
+            bricklayerDirectDOS.forEach(x -> {
+                List<BricklayerTemplateDO> bricklayerTemplateDOS1 = directMap.get(x.getId());
+                if (bricklayerTemplateDOS1 != null) {
+
+                    //循环模板
+                    bricklayerTemplateDOS1.forEach(y -> {
+                        String name = x.getDirectFullPath() + "/" + y.getTemplateName();
+                        try {
+                            zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+                            zipOutputStream.write(y.getTemplateContent().getBytes());
+                            zipOutputStream.closeEntry();
+                        } catch (IOException e) {
+                            throw new MessageRuntimeException("export template fail cause:" + e.getMessage());
+                        }
+
+                    });
+
+                }
+
+            });
+        }
+
+
+        try {
+            zipOutputStream.putNextEntry(new ZipEntry("project_info.json"));
+            String s = JacksonUtils.obj2Str(bricklayerProjectById);
+            zipOutputStream.write(s.getBytes());
+            zipOutputStream.closeEntry();
+
+
+            LocalDateTime now = LocalDateTime.now();
+            zipOutputStream.putNextEntry(new ZipEntry("description.md"));
+            String description = "bricklayer项目版本号：" + VersionTag.VERSION + "\n\r" +
+                    "导出用户：" + LoginInterceptor.getCurrentName() + "\n\r" +
+                    "导出日期：" + now + "\n\r";
+            zipOutputStream.write(description.getBytes());
+            zipOutputStream.closeEntry();
+        } catch (IOException e) {
+            throw new MessageRuntimeException("export template fail cause:" + e.getMessage());
+        }
+
+
+        try {
+            zipOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        GenerationVO generationVO = new GenerationVO();
+
+        generationVO.setData(zipStream.toByteArray());
+        generationVO.setFileName("template_export.bricklayer.exp");
+
+        return generationVO;
+    }
+
+    @Transactional
+    @Override
+    public void importProject(byte[] bytes) {
+
+        TreeNodeDTO tree = new TreeNodeDTO();
+        BricklayerProjectDO bricklayerProjectDO = null;
+
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        ZipInputStream zipStream = new ZipInputStream(byteArrayInputStream);
+        ZipEntry entry = null;
+        try {
+            while ((entry = zipStream.getNextEntry()) != null) {
+
+                String name = entry.getName();
+                if (entry.isDirectory()) {
+                    //todo 目录
+                    System.out.println("dir: " + name);
+                } else {
+                    //todo 文件
+
+                    //单文件1mb读取
+                    byte[] mb10 = new byte[10 * 1024 * 1024];
+                    int read = zipStream.read(mb10);
+
+                    if (read != -1) {
+                        byte[] readResult = Arrays.copyOfRange(mb10, 0, read);
+                        System.out.println("file: \n" + new String(readResult));
+                    }
+                }
+
+
+            }
+            zipStream.close();
+        } catch (Exception e) {
+            throw new RuntimeException("to zip fail cause:" + e.getMessage());
+        }
+
+        if (bricklayerProjectDO == null) {
+            throw new RuntimeException("can not found description file");
+        }
+
+//        bricklayerProjectDO.doInit();
+//        //重新生成主键
+//        bricklayerProjectDO.setId(null);
+//        bricklayerProjectDao.insert(bricklayerProjectDO);
+//
+//        //解析保存树
+//        parseTreeNodeDTO(tree, bricklayerProjectDO.getId(), -1, "");
+
     }
 
 }

@@ -52,6 +52,8 @@ public class BricklayerTemplateVO {
      */
     private java.sql.Timestamp updateDate;
 
+    private Integer relationNum;
+
 
     /*  ------------ data conversion ------------  */
 

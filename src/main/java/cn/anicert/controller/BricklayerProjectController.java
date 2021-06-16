@@ -1,15 +1,22 @@
 package cn.anicert.controller;
 
 import cn.anicert.model.dto.BricklayerProjectDTO;
+import cn.anicert.model.dto.GenerateCodeDTO;
 import cn.anicert.model.vo.BricklayerProjectVO;
+import cn.anicert.model.vo.GenerationVO;
 import cn.anicert.serviceI.BricklayerProjectServiceI;
+import cn.anicert.utils.MessageRuntimeException;
 import cn.anicert.utils.ResponseVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @RestController
@@ -92,6 +99,40 @@ public class BricklayerProjectController {
         BricklayerProjectVO bricklayerProjectVO = bricklayerProjectDTO.toBricklayerProjectVO();
         responseVo.setData(bricklayerProjectVO);
         return responseVo;
+    }
+
+
+    /**
+     * 导出
+     *
+     * @param generateCodeDTO
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/exportProject")
+    public ResponseVo exportProject(@RequestBody GenerateCodeDTO generateCodeDTO) throws IOException {
+        GenerationVO generationVO = bricklayerProjectServiceI.exportProject(generateCodeDTO);
+        return ResponseVo.success(generationVO);
+    }
+
+
+    /**
+     * 导出
+     *
+     * @param multipartFile
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("importProject")
+    public ResponseVo importProject(@RequestParam(value = "file", required = false) MultipartFile multipartFile) {
+        try {
+            byte[] bytes = multipartFile.getBytes();
+            bricklayerProjectServiceI.importProject(bytes);
+        } catch (IOException e) {
+            throw new MessageRuntimeException("read import fail cause:" + e.getMessage());
+        }
+
+        return ResponseVo.success("导入成功");
     }
 
 

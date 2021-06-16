@@ -1,12 +1,15 @@
 package cn.anicert.serviceI;
 
 import cn.anicert.model.dto.BricklayerProjectDTO;
+import cn.anicert.model.dto.GenerateCodeDTO;
+import cn.anicert.model.vo.GenerationVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 
 
 public interface BricklayerProjectServiceI {
+
 
     public BricklayerProjectDTO saveBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO);
 
@@ -23,4 +26,9 @@ public interface BricklayerProjectServiceI {
     public BricklayerProjectDTO getBricklayerProjectByIdWithTree(BricklayerProjectDTO bricklayerProjectDTO);
 
     void copyBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO);
+
+    GenerationVO exportProject(GenerateCodeDTO generateCodeDTO);
+
+    void importProject(byte[] bytes);
+
 }

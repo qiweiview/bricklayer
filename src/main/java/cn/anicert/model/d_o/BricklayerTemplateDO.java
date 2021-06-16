@@ -89,6 +89,11 @@ public class BricklayerTemplateDO {
     @TableField(value = "belong_direct_id", exist = false)
     private Integer belongDirectId;
 
+
+    @TableField(value = "relation_num", exist = false)
+    private Integer relationNum;
+
+
     /*  ------------ init value ------------  */
     public void doInit() {
         //setDelFlag(false);
@@ -122,6 +127,7 @@ public class BricklayerTemplateDO {
         bricklayerTemplateDTO.setUpdateBy(getUpdateBy());
         bricklayerTemplateDTO.setCreateDate(getCreateDate());
         bricklayerTemplateDTO.setUpdateDate(getUpdateDate());
+        bricklayerTemplateDTO.setRelationNum(getRelationNum());
         return bricklayerTemplateDTO;
 
     }

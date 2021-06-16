@@ -26,11 +26,20 @@
          <servlet-class>
              org.springframework.web.servlet.DispatcherServlet
          </servlet-class>
+
+
          <init-param>
              <param-name>contextConfigLocation</param-name>
              <param-value>classpath:spring_mvc_config.xml</param-value>
          </init-param>
+
          <load-on-startup>1</load-on-startup>
+
+         <!--允许文件上传-->
+         <multipart-config>
+             <!-- 20*1024*1024 -->
+             <max-file-size>20971520</max-file-size>
+         </multipart-config>
      </servlet>
 
      <servlet-mapping>

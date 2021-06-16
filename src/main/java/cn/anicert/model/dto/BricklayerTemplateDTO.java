@@ -76,6 +76,8 @@ public class BricklayerTemplateDTO {
 
     private Boolean onlyMine;
 
+    private Integer relationNum;
+
 
     /*  ------------ data conversion ------------  */
     public BricklayerTemplateDO toBricklayerTemplateDO() {
@@ -91,6 +93,7 @@ public class BricklayerTemplateDTO {
         bricklayerTemplateDO.setUpdateBy(getUpdateBy());
         bricklayerTemplateDO.setCreateDate(getCreateDate());
         bricklayerTemplateDO.setUpdateDate(getUpdateDate());
+        bricklayerTemplateDO.setRelationNum(getRelationNum());
         return bricklayerTemplateDO;
 
     }
@@ -108,6 +111,7 @@ public  BricklayerTemplateVO toBricklayerTemplateVO() {
     bricklayerTemplateVO.setUpdateBy(getUpdateBy());
     bricklayerTemplateVO.setCreateDate(getCreateDate());
     bricklayerTemplateVO.setUpdateDate(getUpdateDate());
+    bricklayerTemplateVO.setRelationNum(getRelationNum());
     return bricklayerTemplateVO;
 
 }

@@ -17,6 +17,7 @@
         <result property="updateBy" column="update_by"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
+        <result property="relationNum" column="relation_num"/>
     </resultMap>
 
 
@@ -24,6 +25,7 @@
             resultMap="BricklayerTemplateMap">
         select
         id,
+        ( SELECT count( * ) FROM bricklayer_direct_template_relation WHERE template_id = a.id ) relation_num,
         IFNULL(string_template,false) string_template,
         name_end_string,
         template_name,
@@ -35,7 +37,7 @@
         create_date,
         update_date,
         '1'as blank_
-        from bricklayer_template
+        from bricklayer_template a
         where 1=1
         <if test="do.templateName!=null  and do.templateName!=''">
             and ( template_name like concat('%',#{ do.templateName},'%') or remark like
