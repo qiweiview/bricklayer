@@ -30,4 +30,5 @@ public interface BricklayerTemplateDao extends BaseMapper<BricklayerTemplateDO> 
     List<BricklayerTemplateDO> listBricklayerTemplatesByDirectIds(@Param("ids") List<Integer> ids);
 
 
+    void deleteBricklayerTableBatch(@Param("ids") List<Integer> ids, @Param("createBy") String currentName);
 }

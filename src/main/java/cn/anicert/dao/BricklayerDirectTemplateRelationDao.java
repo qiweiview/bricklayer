@@ -32,4 +32,5 @@ public interface BricklayerDirectTemplateRelationDao extends BaseMapper<Bricklay
 
     void deleteDirectTemplateRelationByProjectId(@Param("id") Integer id);
 
+    void deleteBricklayerTableBatch(@Param("ids") List<Integer> ids, @Param("createBy") String currentName);
 }

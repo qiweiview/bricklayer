@@ -50,6 +50,8 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
     private final BricklayerTemplateDao bricklayerTemplateDao;
 
+    private final BricklayerDirectTemplateRelationDao bricklayerDirectTemplateRelationDao;
+
 
     @Override
     public BricklayerDbDTO saveBricklayerDb(BricklayerDbDTO bricklayerDbDTO) {
@@ -451,6 +453,16 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
         generationVO.setFileName(bricklayerProjectById.getProjectName() + "_export.zip");
 
         return generationVO;
+    }
+
+    @Transactional
+    @Override
+    public void deleteBricklayerTableBatch(BricklayerTemplateDTO bricklayerTemplateDTO) {
+
+        //仅删除当前用户
+        String currentName = LoginInterceptor.getCurrentName();
+        bricklayerTemplateDao.deleteBricklayerTableBatch(bricklayerTemplateDTO.getIds(), currentName);
+        bricklayerDirectTemplateRelationDao.deleteBricklayerTableBatch(bricklayerTemplateDTO.getIds(), currentName);
     }
 
 

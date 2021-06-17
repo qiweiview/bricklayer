@@ -1,10 +1,7 @@
 package cn.anicert.serviceI;
 
 
-import cn.anicert.model.dto.BricklayerDbDTO;
-import cn.anicert.model.dto.BricklayerTableDTO;
-import cn.anicert.model.dto.GenerateCodeDTO;
-import cn.anicert.model.dto.TableDetailDTO;
+import cn.anicert.model.dto.*;
 import cn.anicert.model.vo.GenerationVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -15,7 +12,6 @@ import java.util.List;
 * create by view
 */
 public interface BricklayerDbServiceI {
-
 
     public BricklayerDbDTO saveBricklayerDb(BricklayerDbDTO bricklayerDbDTO);
 
@@ -47,4 +43,5 @@ public interface BricklayerDbServiceI {
 
     GenerationVO generateCode(GenerateCodeDTO generateCodeDTO);
 
+    void deleteBricklayerTableBatch(BricklayerTemplateDTO bricklayerTemplateDTO);
 }

@@ -8,24 +8,21 @@ import cn.anicert.model.d_o.BricklayerDirectDO;
 import cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO;
 import cn.anicert.model.d_o.BricklayerProjectDO;
 import cn.anicert.model.d_o.BricklayerTemplateDO;
-import cn.anicert.model.dto.BricklayerProjectDTO;
-import cn.anicert.model.dto.GenerateCodeDTO;
-import cn.anicert.model.dto.TreeNodeDTO;
+import cn.anicert.model.dto.*;
 import cn.anicert.model.vo.GenerationVO;
 import cn.anicert.serviceI.BricklayerProjectServiceI;
 import cn.anicert.utils.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -471,14 +468,32 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
                     //循环模板
                     bricklayerTemplateDOS1.forEach(y -> {
+
+
                         String name = x.getDirectFullPath() + "/" + y.getTemplateName();
                         try {
                             zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
                             zipOutputStream.write(y.getTemplateContent().getBytes());
                             zipOutputStream.closeEntry();
+
+                            zipOutputStream.putNextEntry(new ZipEntry(name.substring(1) + ".description"));
+
+                            BricklayerTemplateDO bricklayerTemplateDO = new BricklayerTemplateDO();
+                            bricklayerTemplateDO.setTemplateSuffix(y.getTemplateSuffix());
+                            bricklayerTemplateDO.setStringTemplate(y.getStringTemplate());
+                            bricklayerTemplateDO.setTemplateSuffix(y.getTemplateSuffix());
+                            bricklayerTemplateDO.setNameEndString(y.getNameEndString());
+                            bricklayerTemplateDO.setTemplateName(y.getTemplateName());
+                            bricklayerTemplateDO.setRemark(y.getRemark());
+
+                            zipOutputStream.write(JacksonUtils.obj2Str(bricklayerTemplateDO).getBytes());
+                            zipOutputStream.closeEntry();
+
+
                         } catch (IOException e) {
                             throw new MessageRuntimeException("export template fail cause:" + e.getMessage());
                         }
+
 
                     });
 
@@ -495,11 +510,11 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
             zipOutputStream.closeEntry();
 
 
-            LocalDateTime now = LocalDateTime.now();
+
             zipOutputStream.putNextEntry(new ZipEntry("description.md"));
             String description = "bricklayer项目版本号：" + VersionTag.VERSION + "\n\r" +
                     "导出用户：" + LoginInterceptor.getCurrentName() + "\n\r" +
-                    "导出日期：" + now + "\n\r";
+                    "导出日期：" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "\n\r";
             zipOutputStream.write(description.getBytes());
             zipOutputStream.closeEntry();
         } catch (IOException e) {
@@ -523,19 +538,18 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     }
 
 
-    public static void main(String[] args) throws
-            Exception {
+    @Transactional
+    @Override
+    public void importProject(byte[] bytes) {
 
-        byte[] bytes = FileUtils.readFileToByteArray(new File("C:\\Users\\刘启威\\Desktop\\template_export.bricklayer.exp"));
-
-
+        Map<String, TreeNodeDTOBind> descriptionMap = new HashMap();
         Map<String, TreeNodeDTO> treeNodeDTOMap = new HashMap();
         BricklayerProjectDO bricklayerProjectDO = null;
 
         TreeNodeDTO root = new TreeNodeDTO();
         root.setLabel("/");
-        root.setType("root");
-
+        root.setType("direct");
+        root.setLevel("root");
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         ZipInputStream zipStream = new ZipInputStream(byteArrayInputStream);
@@ -556,6 +570,7 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                         }
 
                         TreeNodeDTO sonNode = new TreeNodeDTO();
+                        sonNode.setLevel("son");
                         sonNode.setType("direct");
                         sonNode.setLabel(son);
                         treeNodeDTOMap.put(son, sonNode);
@@ -566,6 +581,7 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                             if (fatherNode == null) {
                                 fatherNode = new TreeNodeDTO();
                                 fatherNode.setType("direct");
+                                sonNode.setLevel("son");
                                 fatherNode.setLabel(father);
 
                                 treeNodeDTOMap.put(father, fatherNode);
@@ -582,18 +598,45 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                 } else {
                     //todo 文件
 
-                    byte[] mb10 = new byte[5 * 1024 * 1024];
-                    int read = zipStream.read(mb10);
+                    String suffix = name.substring(name.lastIndexOf("."));
+                    if (!(".ftl".equals(suffix) || ".json".equals(suffix) || ".md".equals(suffix) || ".description".equals(suffix))) {
+                        //todo 非模板跳过
+                        continue;
+                    }
+
+                    byte[] mb1 = new byte[1 * 1024 * 1024];
+                    int read = zipStream.read(mb1);
 
                     String content = "";
                     if (read != -1) {
-                        byte[] readResult = Arrays.copyOfRange(mb10, 0, read);
+                        byte[] readResult = Arrays.copyOfRange(mb1, 0, read);
                         content = new String(readResult);
                     }
 
+                    if (".description".equals(suffix)) {
+                        BricklayerTemplateDTO bricklayerTemplateDTO = JacksonUtils.str2obj(content, BricklayerTemplateDTO.class);
+                        String templateName = bricklayerTemplateDTO.getTemplateName();
+                        TreeNodeDTOBind treeNodeDTOBind1 = descriptionMap.get(templateName);
+
+                        if (treeNodeDTOBind1 == null) {
+                            TreeNodeDTOBind treeNodeDTOBind = new TreeNodeDTOBind();
+                            treeNodeDTOBind.setBricklayerTemplateDTO(bricklayerTemplateDTO);
+                            descriptionMap.put(templateName, treeNodeDTOBind);
+                        } else {
+                            BricklayerTemplateDTO bricklayerTemplateDTO1 = treeNodeDTOBind1.getBricklayerTemplateDTO();
+                            bricklayerTemplateDTO1.setTemplateSuffix(bricklayerTemplateDTO.getTemplateSuffix());
+                            bricklayerTemplateDTO1.setStringTemplate(bricklayerTemplateDTO.getStringTemplate());
+                            bricklayerTemplateDTO1.setTemplateSuffix(bricklayerTemplateDTO.getTemplateSuffix());
+                            bricklayerTemplateDTO1.setNameEndString(bricklayerTemplateDTO.getNameEndString());
+                            bricklayerTemplateDTO1.setRemark(bricklayerTemplateDTO.getRemark());
+
+                        }
+                        continue;
+                    }
+
+
                     if ("project_info.json".equals(name)) {
                         bricklayerProjectDO = JacksonUtils.str2obj(content, BricklayerProjectDO.class);
-                        System.out.println(bricklayerProjectDO);
                         continue;
                     }
 
@@ -604,11 +647,33 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                         TreeNodeDTO treeNodeDTO = treeNodeDTOMap.get(belongDirect);
                         if (treeNodeDTO != null) {
 
+                            TreeNodeDTOBind treeNodeDTOBind = new TreeNodeDTOBind();
+
 
                             TreeNodeDTO fileTemplate = new TreeNodeDTO();
+                            fileTemplate.setLevel("son");
                             fileTemplate.setLabel(fileName);
                             fileTemplate.setType("file");
-                            //单文件5mb读取
+
+                            treeNodeDTOBind.setTreeNodeDTO(fileTemplate);
+
+                            BricklayerTemplateDTO bricklayerTemplateDTO = new BricklayerTemplateDTO();
+                            bricklayerTemplateDTO.setTemplateName(fileName);
+                            bricklayerTemplateDTO.setTemplateContent(content);
+
+
+                            treeNodeDTOBind.setBricklayerTemplateDTO(bricklayerTemplateDTO);
+                            TreeNodeDTOBind treeNodeDTOBind1 = descriptionMap.get(fileName);
+
+                            if (treeNodeDTOBind1 != null) {
+                                BricklayerTemplateDTO old = treeNodeDTOBind1.getBricklayerTemplateDTO();
+                                bricklayerTemplateDTO.setTemplateSuffix(old.getTemplateSuffix());
+                                bricklayerTemplateDTO.setStringTemplate(old.getStringTemplate());
+                                bricklayerTemplateDTO.setTemplateSuffix(old.getTemplateSuffix());
+                                bricklayerTemplateDTO.setNameEndString(old.getNameEndString());
+                                bricklayerTemplateDTO.setRemark(old.getRemark());
+                            }
+                            descriptionMap.put(fileName, treeNodeDTOBind);
 
                             treeNodeDTO.addChild(fileTemplate);
                         }
@@ -620,79 +685,33 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
             }
             zipStream.close();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("to zip fail cause:" + e.getMessage());
         }
 
-        System.out.println(JacksonUtils.obj2Str(root));
+        descriptionMap.forEach((k, v) -> {
+            BricklayerTemplateDTO bricklayerTemplateDTO = v.getBricklayerTemplateDTO();
+            BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
+            bricklayerTemplateDO.doInit();
 
+            bricklayerTemplateDao.insert(bricklayerTemplateDO);
+            TreeNodeDTO treeNodeDTO = v.getTreeNodeDTO();
+            treeNodeDTO.setTemplateId(bricklayerTemplateDO.getId());
 
-//        bricklayerProjectDO.doInit();
-//        //重新生成主键
-//        bricklayerProjectDO.setId(null);
-//        bricklayerProjectDao.insert(bricklayerProjectDO);
-//
-//        //解析保存树
-//        parseTreeNodeDTO(tree, bricklayerProjectDO.getId(), -1, "");
+        });
 
-    }
-
-    @Transactional
-    @Override
-    public void importProject(byte[] bytes) {
-
-        Map<String, TreeNodeDTO> treeNodeDTOMap = new HashMap();
-        TreeNodeDTO tree = new TreeNodeDTO();
-        BricklayerProjectDO bricklayerProjectDO = null;
-
-
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        ZipInputStream zipStream = new ZipInputStream(byteArrayInputStream);
-        ZipEntry entry = null;
-        try {
-            while ((entry = zipStream.getNextEntry()) != null) {
-
-                String name = entry.getName();
-                if (entry.isDirectory()) {
-                    //todo 目录
-                    name = name.substring(0, name.length() - 1);
-                    String[] split = name.split("/");
-                    for (int i = 0; i < split.length; i++) {
-
-                    }
-
-                } else {
-                    //todo 文件
-
-                    //单文件5mb读取
-//                    byte[] mb10 = new byte[5 * 1024 * 1024];
-//                    int read = zipStream.read(mb10);
-//
-//                    if (read != -1) {
-//                        byte[] readResult = Arrays.copyOfRange(mb10, 0, read);
-//                        System.out.println("file: \n" + new String(readResult));
-//                    }
-
-                    System.out.println("file: " + name);
-                }
-
-
-            }
-            zipStream.close();
-        } catch (Exception e) {
-            throw new RuntimeException("to zip fail cause:" + e.getMessage());
-        }
 
         if (bricklayerProjectDO == null) {
             throw new RuntimeException("can not found description file");
         }
 
-//        bricklayerProjectDO.doInit();
+        bricklayerProjectDO.doInit();
 //        //重新生成主键
-//        bricklayerProjectDO.setId(null);
-//        bricklayerProjectDao.insert(bricklayerProjectDO);
+        bricklayerProjectDO.setId(null);
+        bricklayerProjectDao.insert(bricklayerProjectDO);
 //
 //        //解析保存树
-//        parseTreeNodeDTO(tree, bricklayerProjectDO.getId(), -1, "");
+        parseTreeNodeDTO(root, bricklayerProjectDO.getId(), -1, "");
 
     }
 

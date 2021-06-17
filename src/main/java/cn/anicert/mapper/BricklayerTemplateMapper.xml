@@ -140,6 +140,18 @@
     </select>
 
 
+    <delete id="deleteBricklayerTableBatch" parameterType="cn.anicert.model.d_o.BricklayerTemplateDO">
+        delete
+        from bricklayer_template
+        where 1=1
+        and id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and create_by=#{createBy}
+    </delete>
+
+
     <delete id="deleteBricklayerTemplate" parameterType="cn.anicert.model.d_o.BricklayerTemplateDO">
         delete
         from bricklayer_template

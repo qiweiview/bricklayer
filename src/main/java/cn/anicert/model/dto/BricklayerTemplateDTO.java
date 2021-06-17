@@ -2,12 +2,14 @@ package cn.anicert.model.dto;
 
 import cn.anicert.model.d_o.BricklayerTemplateDO;
 import cn.anicert.model.vo.BricklayerTemplateVO;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BricklayerTemplateDTO {
 
     // page field

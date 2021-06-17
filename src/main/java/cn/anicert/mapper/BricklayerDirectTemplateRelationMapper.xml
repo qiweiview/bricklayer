@@ -100,6 +100,18 @@
         </foreach>
     </delete>
 
+
+    <delete id="deleteBricklayerTableBatch" parameterType="java.lang.Integer">
+        DELETE
+        FROM
+        bricklayer_direct_template_relation
+        WHERE
+        template_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
     <delete id="deleteDirectTemplateRelationByProjectId" parameterType="java.lang.Integer">
 DELETE
 FROM

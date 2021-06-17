@@ -3,6 +3,7 @@ package cn.anicert.controller;
 import cn.anicert.model.dto.BricklayerTableDTO;
 import cn.anicert.model.dto.BricklayerTemplateDTO;
 import cn.anicert.model.dto.SimulatedRenderDTO;
+import cn.anicert.model.vo.BricklayerTableVO;
 import cn.anicert.model.vo.BricklayerTemplateVO;
 import cn.anicert.model.vo.SimulatedRenderVO;
 import cn.anicert.serviceI.BricklayerDbServiceI;
@@ -121,7 +122,16 @@ public class BricklayerTemplateController {
 
     }
 
-
+    /**
+     * 批量删除BricklayerTable
+     */
+    @RequestMapping("/deleteBatch")
+    public ResponseVo<BricklayerTableVO> deleteBricklayerTableBatch(@RequestBody(required = false) BricklayerTemplateDTO bricklayerTemplateDTO) {
+        ResponseVo responseVo = new ResponseVo();
+        bricklayerDbServiceI.deleteBricklayerTableBatch(bricklayerTemplateDTO);
+        responseVo.setMsg("操作成功（自动跳过非当前用户创建的模板）");
+        return responseVo;
+    }
 
 
 }
