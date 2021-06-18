@@ -329,34 +329,34 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
 
             //遍历属性,赋值上下文变量
-            Map contextFilesPathMap = new HashMap();
-            bricklayerDirectDOS.forEach(x -> {
-                List<BricklayerTemplateDO> bricklayerTemplateDOS1 = directMap.get(x.getId());
-                if (bricklayerTemplateDOS1 != null) {
-                    bricklayerTemplateDOS1.forEach(y -> {
-                        if (y.getId() > 0) {
-                            //todo 大于0模板文件     小于0的是word接口模板
-
-                            String templateName = y.getTemplateName();
-                            //替换.为下划线
-                            templateName = templateName.replaceAll("\\.", "_");
-                            Map templateMap = new HashMap();
-                            contextFilesPathMap.put(templateName, templateMap);
-
-                            String sPath = x.getDirectFullPath();
-                            String jPath = StringUtils4V.systemPath2JavaPackagePath(sPath);
-                            if (jPath.startsWith(".")) {
-                                jPath = jPath.substring(1);
-                            }
-
-                            templateMap.put("java_path", jPath);
-                            templateMap.put("system_path", sPath);
-                        }
-                    });
-                }
-
-
-            });
+//            Map contextFilesPathMap = new HashMap();
+//            bricklayerDirectDOS.forEach(x -> {
+//                List<BricklayerTemplateDO> bricklayerTemplateDOS1 = directMap.get(x.getId());
+//                if (bricklayerTemplateDOS1 != null) {
+//                    bricklayerTemplateDOS1.forEach(y -> {
+//                        if (y.getId() > 0) {
+//                            //todo 大于0模板文件     小于0的是word接口模板
+//
+//                            String templateName = y.getTemplateName();
+//                            //替换.为下划线
+//                            templateName = templateName.replaceAll("\\.", "_");
+//                            Map templateMap = new HashMap();
+//                            contextFilesPathMap.put(templateName, templateMap);
+//
+//                            String sPath = x.getDirectFullPath();
+//                            String jPath = StringUtils4V.systemPath2JavaPackagePath(sPath);
+//                            if (jPath.startsWith(".")) {
+//                                jPath = jPath.substring(1);
+//                            }
+//
+//                            templateMap.put("java_path", jPath);
+//                            templateMap.put("system_path", sPath);
+//                        }
+//                    });
+//                }
+//
+//
+//            });
 
 
             //遍历目录
@@ -367,19 +367,21 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                     bricklayerTemplateDOS1.forEach(y -> {
                         Integer id = y.getId();
                         if (id < 0) {
+                            //todo 文档部分
                             //循环数据模型
-                            bricklayerTablesByIds.forEach(z -> {
-                                JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
-                                try {
-                                    byte[] data = PoiTLCache.getDocumentFile(of);
-                                    String name = x.getDirectFullPath() + "/" + of.getClassName() + "_document.docx";
-                                    zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
-                                    zipOutputStream.write(data);
-                                    zipOutputStream.closeEntry();
-                                } catch (Exception e) {
-                                    throw new MessageRuntimeException("文档生成异常：" + e.getMessage());
-                                }
-                            });
+                            //废弃
+//                            bricklayerTablesByIds.forEach(z -> {
+//                                JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
+//                                try {
+//                                    byte[] data = PoiTLCache.getDocumentFile(of);
+//                                    String name = x.getDirectFullPath() + "/" + of.getClassName() + "_document.docx";
+//                                    zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+//                                    zipOutputStream.write(data);
+//                                    zipOutputStream.closeEntry();
+//                                } catch (Exception e) {
+//                                    throw new MessageRuntimeException("文档生成异常：" + e.getMessage());
+//                                }
+//                            });
                         } else {
                             String templateName = y.getTemplateName();
                             try {
@@ -390,7 +392,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
                                     try {
                                         JavaBeanModel javaBeanModel = new JavaBeanModel();
-                                        javaBeanModel.setContextFilesPathMap(contextFilesPathMap);
+                                        //javaBeanModel.setContextFilesPathMap(contextFilesPathMap);
                                         javaBeanModel.handleBasePath(x.getDirectFullPath());
                                         template.process(javaBeanModel, outputStreamWriter);
                                         byte[] bytes = byteArrayOutputStream.toByteArray();
@@ -407,7 +409,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                                     bricklayerTablesByIds.forEach(z -> {
 
                                         JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
-                                        of.setContextFilesPathMap(contextFilesPathMap);
+                                        // of.setContextFilesPathMap(contextFilesPathMap);
 
 
                                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
