@@ -17,6 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 废弃
+ */
+@Deprecated
 public class PoiTLCache {
     private static XWPFTemplate compile;
 
