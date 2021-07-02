@@ -1,7 +1,7 @@
 package cn.anicert.model.d_o;
 
+import cn.anicert.config.LoginInterceptor;
 import cn.anicert.model.dto.BricklayerTemplateDTO;
-import cn.anicert.utils.LoginInterceptor;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

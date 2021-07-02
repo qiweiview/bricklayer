@@ -1,11 +1,15 @@
-package cn.anicert.serviceI.serviceImpl;
+package cn.anicert.serviceI.Impl;
 
+import cn.anicert.config.LoginInterceptor;
 import cn.anicert.dao.*;
 import cn.anicert.model.d_o.*;
 import cn.anicert.model.dto.*;
 import cn.anicert.model.vo.GenerationVO;
 import cn.anicert.serviceI.BricklayerDbServiceI;
-import cn.anicert.utils.*;
+import cn.anicert.utils.DataNotFoundException;
+import cn.anicert.utils.FreemarkerTemplateBuilder;
+import cn.anicert.utils.MessageRuntimeException;
+import cn.anicert.utils.NullToEmptyString;
 import cn.build_support.db_adapter.AbstractDataSourceInstance;
 import cn.build_support.db_adapter.MysqlDataSourceInstance;
 import cn.build_support.db_adapter.OracleDataSourceInstance;
@@ -52,6 +56,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
 
     private final BricklayerDirectTemplateRelationDao bricklayerDirectTemplateRelationDao;
 
+    private final BricklayerProjectGlobalVariableDao bricklayerProjectGlobalVariableDao;
 
     @Override
     public BricklayerDbDTO saveBricklayerDb(BricklayerDbDTO bricklayerDbDTO) {
@@ -304,6 +309,10 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             throw new MessageRuntimeException("not found data");
         }
 
+        //全局变量
+        List<BricklayerProjectGlobalVariableDO> bricklayerProjectGlobalVariableDOS = bricklayerProjectGlobalVariableDao.listByProjectId(bricklayerProjectById.getId());
+        Map<String, String> globalVariableMap = bricklayerProjectGlobalVariableDOS.stream().collect(Collectors.toMap(x -> x.getVariableKey(), x -> x.getVariableValue()));
+
 
         //get directs by project id
         List<BricklayerDirectDO> bricklayerDirectDOS = bricklayerDirectDao.listBricklayerDirectsByProjectId(bricklayerProjectById.getId());
@@ -316,7 +325,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             Map<String, String> map = new HashMap<>();
             bricklayerTemplateDOS.forEach(x -> {
                 if (x.getId() > 0) {
-                    //todo 大于0模板文件     小于0的是word接口模板
+                    //todo 大于0模板文件
                     map.put(x.getTemplateName(), x.getTemplateContent());
                 }
             });
@@ -328,35 +337,7 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
             Map<Integer, List<BricklayerTemplateDO>> directMap = bricklayerTemplateDOS.stream().collect(Collectors.groupingBy(BricklayerTemplateDO::getBelongDirectId));
 
 
-            //遍历属性,赋值上下文变量
-//            Map contextFilesPathMap = new HashMap();
-//            bricklayerDirectDOS.forEach(x -> {
-//                List<BricklayerTemplateDO> bricklayerTemplateDOS1 = directMap.get(x.getId());
-//                if (bricklayerTemplateDOS1 != null) {
-//                    bricklayerTemplateDOS1.forEach(y -> {
-//                        if (y.getId() > 0) {
-//                            //todo 大于0模板文件     小于0的是word接口模板
-//
-//                            String templateName = y.getTemplateName();
-//                            //替换.为下划线
-//                            templateName = templateName.replaceAll("\\.", "_");
-//                            Map templateMap = new HashMap();
-//                            contextFilesPathMap.put(templateName, templateMap);
-//
-//                            String sPath = x.getDirectFullPath();
-//                            String jPath = StringUtils4V.systemPath2JavaPackagePath(sPath);
-//                            if (jPath.startsWith(".")) {
-//                                jPath = jPath.substring(1);
-//                            }
-//
-//                            templateMap.put("java_path", jPath);
-//                            templateMap.put("system_path", sPath);
-//                        }
-//                    });
-//                }
-//
-//
-//            });
+
 
 
             //遍历目录
@@ -365,75 +346,58 @@ public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
                 if (bricklayerTemplateDOS1 != null) {
                     //循环模板
                     bricklayerTemplateDOS1.forEach(y -> {
-                        Integer id = y.getId();
-                        if (id < 0) {
-                            //todo 文档部分
-                            //循环数据模型
-                            //废弃
-//                            bricklayerTablesByIds.forEach(z -> {
-//                                JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
-//                                try {
-//                                    byte[] data = PoiTLCache.getDocumentFile(of);
-//                                    String name = x.getDirectFullPath() + "/" + of.getClassName() + "_document.docx";
-//                                    zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
-//                                    zipOutputStream.write(data);
-//                                    zipOutputStream.closeEntry();
-//                                } catch (Exception e) {
-//                                    throw new MessageRuntimeException("文档生成异常：" + e.getMessage());
-//                                }
-//                            });
-                        } else {
-                            String templateName = y.getTemplateName();
-                            try {
-                                Template template = configurationByTemplateMap.getTemplate(templateName);
-                                if (y.getStringTemplate()) {
-                                    //todo 字符串模板
+
+                        String templateName = y.getTemplateName();
+                        try {
+                            Template template = configurationByTemplateMap.getTemplate(templateName);
+                            if (y.getStringTemplate()) {
+                                //todo 字符串模板
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+                                try {
+                                    JavaBeanModel javaBeanModel = new JavaBeanModel();
+                                    javaBeanModel.setGlobal(globalVariableMap);
+                                    javaBeanModel.handleBasePath(x.getDirectFullPath());
+                                    template.process(javaBeanModel, outputStreamWriter);
+                                    byte[] bytes = byteArrayOutputStream.toByteArray();
+                                    String name = x.getDirectFullPath() + "/" + y.getNameEndString() + y.getTemplateSuffix();
+                                    zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+                                    zipOutputStream.write(bytes);
+                                    zipOutputStream.closeEntry();
+                                } catch (Exception e) {
+                                    throw new MessageRuntimeException(templateName + " 模板渲染异常：" + e.getMessage());
+                                }
+                            } else {
+                                //todo 模型模板
+                                //循环数据模型
+                                bricklayerTablesByIds.forEach(z -> {
+
+                                    JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
+                                    of.setGlobal(globalVariableMap);
+
+
                                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
                                     try {
-                                        JavaBeanModel javaBeanModel = new JavaBeanModel();
-                                        //javaBeanModel.setContextFilesPathMap(contextFilesPathMap);
-                                        javaBeanModel.handleBasePath(x.getDirectFullPath());
-                                        template.process(javaBeanModel, outputStreamWriter);
-                                        byte[] bytes = byteArrayOutputStream.toByteArray();
-                                        String name = x.getDirectFullPath() + "/" + y.getNameEndString() + y.getTemplateSuffix();
+                                        //todo template
+                                        String name = x.getDirectFullPath() + "/" + of.getClassName() + NullToEmptyString.handle(y.getNameEndString()) + y.getTemplateSuffix();
+                                        template.process(of, outputStreamWriter);
+                                        byte[] data = byteArrayOutputStream.toByteArray();
+
                                         zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
-                                        zipOutputStream.write(bytes);
+                                        zipOutputStream.write(data);
                                         zipOutputStream.closeEntry();
                                     } catch (Exception e) {
                                         throw new MessageRuntimeException(templateName + " 模板渲染异常：" + e.getMessage());
                                     }
-                                } else {
-                                    //todo 模型模板
-                                    //循环数据模型
-                                    bricklayerTablesByIds.forEach(z -> {
-
-                                        JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
-                                        // of.setContextFilesPathMap(contextFilesPathMap);
 
 
-                                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                                        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
-                                        try {
-                                            //todo template
-                                            String name = x.getDirectFullPath() + "/" + of.getClassName() + NullToEmptyString.handle(y.getNameEndString()) + y.getTemplateSuffix();
-                                            template.process(of, outputStreamWriter);
-                                            byte[] data = byteArrayOutputStream.toByteArray();
-
-                                            zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
-                                            zipOutputStream.write(data);
-                                            zipOutputStream.closeEntry();
-                                        } catch (Exception e) {
-                                            throw new MessageRuntimeException(templateName + " 模板渲染异常：" + e.getMessage());
-                                        }
-
-
-                                    });
-                                }
-                            } catch (IOException e) {
-                                throw new MessageRuntimeException(e.getMessage());
+                                });
                             }
+                        } catch (IOException e) {
+                            throw new MessageRuntimeException(e.getMessage());
                         }
+
                     });
 
                 }

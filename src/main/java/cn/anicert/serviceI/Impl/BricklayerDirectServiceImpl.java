@@ -1,4 +1,4 @@
-package cn.anicert.serviceI.serviceImpl;
+package cn.anicert.serviceI.Impl;
 
 import cn.anicert.dao.BricklayerDirectDao;
 import cn.anicert.model.d_o.BricklayerDirectDO;

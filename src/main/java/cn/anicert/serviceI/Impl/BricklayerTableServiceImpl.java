@@ -1,5 +1,6 @@
-package cn.anicert.serviceI.serviceImpl;
+package cn.anicert.serviceI.Impl;
 
+import cn.anicert.config.LoginInterceptor;
 import cn.anicert.dao.BricklayerColumnDao;
 import cn.anicert.dao.BricklayerTableDao;
 import cn.anicert.model.d_o.BricklayerColumnDO;
@@ -7,7 +8,6 @@ import cn.anicert.model.d_o.BricklayerTableDO;
 import cn.anicert.model.dto.BricklayerTableDTO;
 import cn.anicert.serviceI.BricklayerTableServiceI;
 import cn.anicert.utils.DataNotFoundException;
-import cn.anicert.utils.LoginInterceptor;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;

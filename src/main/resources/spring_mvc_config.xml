@@ -18,7 +18,7 @@
 
     <!--配置拦截器-->
     <mvc:interceptors>
-        <bean class="cn.anicert.utils.LoginInterceptor"></bean>
+        <bean class="cn.anicert.config.LoginInterceptor"></bean>
     </mvc:interceptors>
 
     <!--参数解析-->

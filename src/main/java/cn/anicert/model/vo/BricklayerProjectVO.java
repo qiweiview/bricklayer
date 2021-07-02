@@ -4,12 +4,14 @@ package cn.anicert.model.vo;
 import cn.anicert.model.dto.TreeNodeDTO;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class BricklayerProjectVO {
     /**
      * 前端访问前缀
      */
-    private  String contextPath;
+    private String contextPath;
     /**
      * 创建人
      */
@@ -34,17 +36,19 @@ public class BricklayerProjectVO {
     /**
      * 修改人
      */
-    private  String updateBy;
+    private String updateBy;
     /**
      * 修改日期
      */
-    private  java.sql.Timestamp updateDate;
+    private java.sql.Timestamp updateDate;
 
     private TreeNodeDTO tree;
 
-/*  ------------ data conversion ------------  */
+    private List<BricklayerProjectGlobalVariableVO> globalVariables;
+
+    /*  ------------ data conversion ------------  */
 
 
-/*  ------------ getter setter ------------  */
+    /*  ------------ getter setter ------------  */
 
 }

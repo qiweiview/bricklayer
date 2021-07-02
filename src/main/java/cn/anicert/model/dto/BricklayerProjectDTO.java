@@ -4,6 +4,7 @@ import cn.anicert.model.d_o.BricklayerProjectDO;
 import cn.anicert.model.vo.BricklayerProjectVO;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,8 @@ public class BricklayerProjectDTO {
 
     private Boolean onlyMine;
 
+    private List<BricklayerProjectGlobalVariableDTO> globalVariables;
+
     /*  ------------ data conversion ------------  */
     public BricklayerProjectDO toBricklayerProjectDO() {
         BricklayerProjectDO bricklayerProjectDO = new BricklayerProjectDO();
@@ -83,6 +86,12 @@ public class BricklayerProjectDTO {
         bricklayerProjectVO.setUpdateBy(getUpdateBy());
         bricklayerProjectVO.setTree(getTree());
         bricklayerProjectVO.setUpdateDate(getUpdateDate());
+
+        List<BricklayerProjectGlobalVariableDTO> globalVariables = getGlobalVariables();
+        if (globalVariables == null) {
+            globalVariables = new ArrayList<>();
+        }
+        bricklayerProjectVO.setGlobalVariables(BricklayerProjectGlobalVariableDTO.toBricklayerProjectGlobalVariableVOList(globalVariables));
         return bricklayerProjectVO;
 
     }

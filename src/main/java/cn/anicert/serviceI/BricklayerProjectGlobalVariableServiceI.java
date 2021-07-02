@@ -1,0 +1,26 @@
+package cn.anicert.serviceI;
+
+import cn.anicert.model.dto.BricklayerProjectGlobalVariableDTO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
+import java.util.List;
+
+
+public interface BricklayerProjectGlobalVariableServiceI {
+
+    public BricklayerProjectGlobalVariableDTO saveBricklayerProjectGlobalVariable(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+
+    public BricklayerProjectGlobalVariableDTO updateBricklayerProjectGlobalVariable(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+
+    public BricklayerProjectGlobalVariableDTO deleteBricklayerProjectGlobalVariable(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+
+    public IPage<BricklayerProjectGlobalVariableDTO> listBricklayerProjectGlobalVariablePage(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+
+    public List<BricklayerProjectGlobalVariableDTO> listBricklayerProjectGlobalVariable(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+
+    public BricklayerProjectGlobalVariableDTO getBricklayerProjectGlobalVariableById(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+
+    void deleteBricklayerProjectGlobalVariableBatch(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+
+    List<BricklayerProjectGlobalVariableDTO> listBricklayerProjectGlobalVariableByIds(BricklayerProjectGlobalVariableDTO bricklayerProjectGlobalVariableDTO);
+}

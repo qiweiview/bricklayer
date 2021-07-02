@@ -1,7 +1,10 @@
-package cn.anicert.utils;
+package cn.anicert.config;
 
 import cn.anicert.model.dto.BricklayerLogDTO;
 import cn.anicert.model.vo.BricklayerUserVO;
+import cn.anicert.utils.LogCenter;
+import cn.anicert.utils.ResponseVo;
+import cn.anicert.utils.SpringContextHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -22,6 +25,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private static Set<String> adminSet = new HashSet<>();
 
     static {
+        freeSet.add("/version/getVersion");
         freeSet.add("/bricklayerUser/doLogin");
 
         adminSet.add("bricklayerDb");//数据库操作

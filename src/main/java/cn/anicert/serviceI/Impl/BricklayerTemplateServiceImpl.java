@@ -1,5 +1,6 @@
-package cn.anicert.serviceI.serviceImpl;
+package cn.anicert.serviceI.Impl;
 
+import cn.anicert.config.LoginInterceptor;
 import cn.anicert.dao.BricklayerDirectTemplateRelationDao;
 import cn.anicert.dao.BricklayerTemplateDao;
 import cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO;
@@ -7,7 +8,6 @@ import cn.anicert.model.d_o.BricklayerTemplateDO;
 import cn.anicert.model.dto.BricklayerTemplateDTO;
 import cn.anicert.serviceI.BricklayerTemplateServiceI;
 import cn.anicert.utils.DataNotFoundException;
-import cn.anicert.utils.LoginInterceptor;
 import cn.anicert.utils.MessageRuntimeException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

@@ -1,20 +1,19 @@
-package cn.anicert.serviceI.serviceImpl;
+package cn.anicert.serviceI.Impl;
 
-import cn.anicert.dao.BricklayerDirectDao;
-import cn.anicert.dao.BricklayerDirectTemplateRelationDao;
-import cn.anicert.dao.BricklayerProjectDao;
-import cn.anicert.dao.BricklayerTemplateDao;
-import cn.anicert.model.d_o.BricklayerDirectDO;
-import cn.anicert.model.d_o.BricklayerDirectTemplateRelationDO;
-import cn.anicert.model.d_o.BricklayerProjectDO;
-import cn.anicert.model.d_o.BricklayerTemplateDO;
+import cn.anicert.config.LoginInterceptor;
+import cn.anicert.dao.*;
+import cn.anicert.model.d_o.*;
 import cn.anicert.model.dto.*;
 import cn.anicert.model.vo.GenerationVO;
 import cn.anicert.serviceI.BricklayerProjectServiceI;
-import cn.anicert.utils.*;
+import cn.anicert.utils.DataNotFoundException;
+import cn.anicert.utils.JacksonUtils;
+import cn.anicert.utils.MessageRuntimeException;
+import cn.anicert.utils.VersionTag;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +42,8 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
     private final BricklayerDirectTemplateRelationDao bricklayerDirectTemplateRelationDao;
 
     private final BricklayerTemplateDao bricklayerTemplateDao;
+
+    private final BricklayerProjectGlobalVariableDao bricklayerProjectGlobalVariableDao;
 
     @Override
     public BricklayerProjectDTO saveBricklayerProject(BricklayerProjectDTO bricklayerProjectDTO) {
@@ -203,13 +203,16 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
         if (!LoginInterceptor.isCurrentUser(bricklayerProjectById.getCreateBy())) {
             //todo 其他人员项目无法编辑无法编辑
-            throw new MessageRuntimeException("无法编辑其他用户创建项目,可点击\"复制\"，复制项目至当前用户");
+            throw new MessageRuntimeException("无法编辑其他用户创建项目");
         }
 
 
+        /* -----项目基础信息部分---- */
         BricklayerProjectDO bricklayerProjectDO = bricklayerProjectDTO.toBricklayerProjectDO();
         bricklayerProjectDO.doUpdate();
         bricklayerProjectDao.updateById(bricklayerProjectDO);
+
+        /* ----- 目录文件部分 ---- */
 
         //全删
         List<BricklayerDirectDO> bricklayerDirectDOS = bricklayerDirectDao.listBricklayerDirectsByProjectId(bricklayerProjectDO.getId());
@@ -222,8 +225,23 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
         //全录
         TreeNodeDTO tree = bricklayerProjectDTO.getTree();
 
+
         //解析保存树
         parseTreeNodeDTO(tree, bricklayerProjectDTO.getId(), -1, "");
+
+        /* ----- 全局变量部分 ---- */
+        //全刪全局变量
+        bricklayerProjectGlobalVariableDao.deleteByProjectId(bricklayerProjectDO.getId());
+
+        //全录全局变量
+        List<BricklayerProjectGlobalVariableDTO> globalVariables = bricklayerProjectDTO.getGlobalVariables();
+        globalVariables.forEach(x -> {
+            BricklayerProjectGlobalVariableDO bricklayerProjectGlobalVariableDO = x.toBricklayerProjectGlobalVariableDO();
+            bricklayerProjectGlobalVariableDO.setBelongProject(bricklayerProjectDO.getId());
+            bricklayerProjectGlobalVariableDO.doInit();
+            bricklayerProjectGlobalVariableDao.insert(bricklayerProjectGlobalVariableDO);
+        });
+
         return bricklayerProjectDO.toBricklayerProjectDTO();
     }
 
@@ -402,6 +420,10 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
         }
 
         bricklayerProjectById.setTree(root[0]);
+
+        List<BricklayerProjectGlobalVariableDO> bricklayerProjectGlobalVariableDOS = bricklayerProjectGlobalVariableDao.listByProjectId(bricklayerProjectById.getId());
+        List<BricklayerProjectGlobalVariableDTO> bricklayerProjectGlobalVariableDTOS = BricklayerProjectGlobalVariableDO.toBricklayerProjectGlobalVariableDTOList(bricklayerProjectGlobalVariableDOS);
+        bricklayerProjectById.setGlobalVariables(bricklayerProjectGlobalVariableDTOS);
         return bricklayerProjectById;
     }
 
@@ -510,7 +532,6 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
             zipOutputStream.closeEntry();
 
 
-
             zipOutputStream.putNextEntry(new ZipEntry("description.md"));
             String description = "bricklayer项目版本号：" + VersionTag.VERSION + "\n\r" +
                     "导出用户：" + LoginInterceptor.getCurrentName() + "\n\r" +
@@ -604,14 +625,8 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                         continue;
                     }
 
-                    byte[] mb1 = new byte[1 * 1024 * 1024];
-                    int read = zipStream.read(mb1);
 
-                    String content = "";
-                    if (read != -1) {
-                        byte[] readResult = Arrays.copyOfRange(mb1, 0, read);
-                        content = new String(readResult);
-                    }
+                    String content = IOUtils.toString(zipStream, "utf-8");
 
                     if (".description".equals(suffix)) {
                         BricklayerTemplateDTO bricklayerTemplateDTO = JacksonUtils.str2obj(content, BricklayerTemplateDTO.class);
