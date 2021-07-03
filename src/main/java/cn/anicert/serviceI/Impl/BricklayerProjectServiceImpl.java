@@ -322,6 +322,9 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
         //删除相关目录
         bricklayerDirectDao.deleteByDirectsByProjectId(bricklayerProjectDO.getId());
 
+        //删除
+        // 全局变量
+        bricklayerProjectGlobalVariableDao.deleteByProjectId(bricklayerProjectDO.getId());
 
         return bricklayerProjectDO.toBricklayerProjectDTO();
     }
@@ -493,12 +496,18 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 
 
                         String name = x.getDirectFullPath() + "/" + y.getTemplateName();
+                        String replaceFirst = name.substring(1);
                         try {
-                            zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+                            String fileName = name.substring(1);
+                            if (!replaceFirst.endsWith(".ftl")) {
+                                fileName = replaceFirst + ".ftl";
+                            }
+
+                            zipOutputStream.putNextEntry(new ZipEntry(fileName));
                             zipOutputStream.write(y.getTemplateContent().getBytes());
                             zipOutputStream.closeEntry();
 
-                            zipOutputStream.putNextEntry(new ZipEntry(name.substring(1) + ".description"));
+                            zipOutputStream.putNextEntry(new ZipEntry(replaceFirst + ".description"));
 
                             BricklayerTemplateDO bricklayerTemplateDO = new BricklayerTemplateDO();
                             bricklayerTemplateDO.setTemplateSuffix(y.getTemplateSuffix());
@@ -524,6 +533,10 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
             });
         }
 
+
+        //全局变量
+        List<BricklayerProjectGlobalVariableDO> bricklayerProjectGlobalVariableDOS = bricklayerProjectGlobalVariableDao.listByProjectId(bricklayerProjectById.getId());
+        bricklayerProjectById.setGlobalVariables(bricklayerProjectGlobalVariableDOS);
 
         try {
             zipOutputStream.putNextEntry(new ZipEntry("project_info.json"));
@@ -619,7 +632,14 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
                 } else {
                     //todo 文件
 
-                    String suffix = name.substring(name.lastIndexOf("."));
+                    int i = name.lastIndexOf(".");
+
+                    if (i == -1) {
+                        continue;
+                    }
+
+
+                    String suffix = name.substring(i);
                     if (!(".ftl".equals(suffix) || ".json".equals(suffix) || ".md".equals(suffix) || ".description".equals(suffix))) {
                         //todo 非模板跳过
                         continue;
@@ -701,17 +721,21 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
             zipStream.close();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("to zip fail cause:" + e.getMessage());
+            throw new RuntimeException("to zip fail cause:" + e);
         }
 
+        //回填模板编号
         descriptionMap.forEach((k, v) -> {
-            BricklayerTemplateDTO bricklayerTemplateDTO = v.getBricklayerTemplateDTO();
-            BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
-            bricklayerTemplateDO.doInit();
 
-            bricklayerTemplateDao.insert(bricklayerTemplateDO);
             TreeNodeDTO treeNodeDTO = v.getTreeNodeDTO();
-            treeNodeDTO.setTemplateId(bricklayerTemplateDO.getId());
+            if (treeNodeDTO != null) {
+                BricklayerTemplateDTO bricklayerTemplateDTO = v.getBricklayerTemplateDTO();
+                BricklayerTemplateDO bricklayerTemplateDO = bricklayerTemplateDTO.toBricklayerTemplateDO();
+                bricklayerTemplateDO.doInit();
+                bricklayerTemplateDao.insert(bricklayerTemplateDO);
+                treeNodeDTO.setTemplateId(bricklayerTemplateDO.getId());
+            }
+
 
         });
 
@@ -724,6 +748,16 @@ public class BricklayerProjectServiceImpl implements BricklayerProjectServiceI {
 //        //重新生成主键
         bricklayerProjectDO.setId(null);
         bricklayerProjectDao.insert(bricklayerProjectDO);
+
+        Integer id = bricklayerProjectDO.getId();
+        List<BricklayerProjectGlobalVariableDO> globalVariables = bricklayerProjectDO.getGlobalVariables();
+        globalVariables.forEach(x -> {
+            x.doInit();
+            x.setId(null);
+            x.setBelongProject(id);
+            bricklayerProjectGlobalVariableDao.insert(x);
+        });
+
 //
 //        //解析保存树
         parseTreeNodeDTO(root, bricklayerProjectDO.getId(), -1, "");

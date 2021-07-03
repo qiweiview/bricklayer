@@ -67,6 +67,9 @@ public class BricklayerProjectDO {
     @TableField(value = "update_date")
     private Timestamp updateDate;
 
+    @TableField(exist = false)
+    private List<BricklayerProjectGlobalVariableDO> globalVariables;
+
     /*  ------------ init value ------------  */
     public void doInit() {
         //setDelFlag(false);
