@@ -1,0 +1,435 @@
+package cn.bricklayer.serviceI.Impl;
+
+import cn.bricklayer.config.LoginInterceptor;
+import cn.bricklayer.dao.*;
+import cn.bricklayer.model.d_o.*;
+import cn.bricklayer.model.dto.*;
+import cn.bricklayer.model.vo.GenerationVO;
+import cn.bricklayer.serviceI.BricklayerDbServiceI;
+import cn.bricklayer.utils.DataNotFoundException;
+import cn.bricklayer.utils.FreemarkerTemplateBuilder;
+import cn.bricklayer.utils.MessageRuntimeException;
+import cn.bricklayer.utils.NullToEmptyString;
+import cn.build_support.db_adapter.AbstractDataSourceInstance;
+import cn.build_support.db_adapter.MysqlDataSourceInstance;
+import cn.build_support.db_adapter.OracleDataSourceInstance;
+import cn.build_support.java_bean.JavaBeanModel;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+/**
+ * create by view
+ */
+
+@Service
+@RequiredArgsConstructor
+public class BricklayerDbServiceImpl implements BricklayerDbServiceI {
+
+    private final BricklayerColumnDao bricklayerColumnDao;
+
+    private final BricklayerTableDao bricklayerTableDao;
+
+    private final BricklayerDbDao bricklayerDbDao;
+
+    private final BricklayerProjectDao bricklayerProjectDao;
+
+    private final BricklayerDirectDao bricklayerDirectDao;
+
+    private final BricklayerTemplateDao bricklayerTemplateDao;
+
+    private final BricklayerDirectTemplateRelationDao bricklayerDirectTemplateRelationDao;
+
+    private final BricklayerProjectGlobalVariableDao bricklayerProjectGlobalVariableDao;
+
+    @Override
+    public BricklayerDbDTO saveBricklayerDb(BricklayerDbDTO bricklayerDbDTO) {
+        BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
+        bricklayerDbDO.doInit();
+        bricklayerDbDao.insert(bricklayerDbDO);
+        return bricklayerDbDO.toBricklayerDbDTO();
+    }
+
+    @Override
+    public BricklayerDbDTO updateBricklayerDb(BricklayerDbDTO bricklayerDbDTO) {
+        getBricklayerDbById(bricklayerDbDTO);
+        BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
+        bricklayerDbDO.doUpdate();
+        bricklayerDbDao.updateById(bricklayerDbDO);
+        return bricklayerDbDO.toBricklayerDbDTO();
+    }
+
+    @Override
+    public BricklayerDbDTO deleteBricklayerDb(BricklayerDbDTO bricklayerDbDTO) {
+        bricklayerDbDTO = getBricklayerDbById(bricklayerDbDTO);
+        BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
+        bricklayerDbDO.doDelete();
+        bricklayerDbDao.deleteBricklayerDb(bricklayerDbDO);
+        return bricklayerDbDO.toBricklayerDbDTO();
+    }
+
+    @Override
+    public List<BricklayerDbDTO> listBricklayerDb(BricklayerDbDTO bricklayerDbDTO) {
+        BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
+        List<BricklayerDbDO> records = bricklayerDbDao.listBricklayerDb(bricklayerDbDO);
+        List<BricklayerDbDTO> list = BricklayerDbDO.toBricklayerDbDTOList(records);
+        return list;
+    }
+
+    @Override
+    public IPage<BricklayerDbDTO> listBricklayerDbPage(BricklayerDbDTO bricklayerDbDTO) {
+        BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
+        Page page = new Page(bricklayerDbDTO.getCurrent(), bricklayerDbDTO.getSize());
+        IPage<BricklayerDbDO> pageResult = bricklayerDbDao.listBricklayerDbPage(page, bricklayerDbDO);
+        List<BricklayerDbDO> records = pageResult.getRecords();
+        List<BricklayerDbDTO> list = BricklayerDbDO.toBricklayerDbDTOList(records);
+        IPage<BricklayerDbDTO> rs = new Page(pageResult.getCurrent(), pageResult.getSize(), pageResult.getTotal());
+        rs.setRecords(list);
+        return rs;
+    }
+
+    @Override
+    public BricklayerDbDTO getBricklayerDbById(BricklayerDbDTO bricklayerDbDTO) {
+        BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
+        bricklayerDbDO = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbDO == null) {
+            throw new DataNotFoundException();
+        }
+        return bricklayerDbDO.toBricklayerDbDTO();
+    }
+
+    @Override
+    public List<BricklayerDbDTO> listBricklayerDbAll() {
+        List<BricklayerDbDO> list = bricklayerDbDao.listBricklayerDbAll();
+        List<BricklayerDbDTO> bricklayerDbDTOS = BricklayerDbDO.toBricklayerDbDTOList(list);
+        return bricklayerDbDTOS;
+    }
+
+    @Override
+    public List<String> getDataSourceList(BricklayerDbDTO bricklayerDbDTO) {
+        BricklayerDbDO bricklayerDbDO = bricklayerDbDTO.toBricklayerDbDO();
+        BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbById == null) {
+            throw new MessageRuntimeException("can not found the datasource");
+        }
+
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        List<String> databases = mysqlDataSourceInstance.getDatabases();
+        return databases;
+    }
+
+
+    @Override
+    public BricklayerTableDTO getTableDetail(TableDetailDTO tableDetailDTO) {
+
+        BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
+        bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
+        BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbById == null) {
+            throw new MessageRuntimeException("can not found the datasource");
+        }
+
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        BricklayerTableDTO dbTableModel = mysqlDataSourceInstance.getDBTableModelByName(tableDetailDTO.getDataSourceName(), tableDetailDTO.getTableName());
+
+        return dbTableModel;
+    }
+
+    public AbstractDataSourceInstance getMysqlAbstractDataSourceInstanceByBricklayerDbDO(BricklayerDbDO bricklayerDbDO) {
+
+        if ("mysql".equals(bricklayerDbDO.getDbType())) {
+            String dbName = "mysql";
+            String connectionPath = "jdbc:mysql://" + bricklayerDbDO.getDbIp() + ":" + bricklayerDbDO.getDbPort() + "/" + dbName + "?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true";
+            MysqlDataSourceInstance mysqlDataSourceInstance = new MysqlDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(), bricklayerDbDO.getDbPassword());
+
+            return mysqlDataSourceInstance;
+        }
+
+        if ("oracle".equals(bricklayerDbDO.getDbType())) {
+
+            String connectionPath = "jdbc:oracle:thin:@" + bricklayerDbDO.getDbIp() + ":" + bricklayerDbDO.getDbPort() + ":" + bricklayerDbDO.getServiceName();
+            OracleDataSourceInstance mysqlDataSourceInstance = new OracleDataSourceInstance(connectionPath, bricklayerDbDO.getDbUser(), bricklayerDbDO.getDbPassword());
+
+            return mysqlDataSourceInstance;
+        }
+
+        throw new MessageRuntimeException("不支持数据库类型" + bricklayerDbDO.getDbType());
+
+    }
+
+    @Transactional
+    @Override
+    public void saveSingleModel(BricklayerTableDTO bricklayerTableDTO) {
+        //插入表
+        BricklayerTableDO bricklayerTableDO = bricklayerTableDTO.toBricklayerTableDO();
+        bricklayerTableDO.doInit();
+        bricklayerTableDao.insert(bricklayerTableDO);
+
+
+        //插入列
+        List<BricklayerColumnDTO> bricklayerColumnDTOList = bricklayerTableDTO.getBricklayerColumnDTOList();
+        bricklayerColumnDTOList.forEach(x -> {
+            BricklayerColumnDO bricklayerColumnDO = x.toBricklayerColumnDO();
+            bricklayerColumnDO.setBelongTableId(bricklayerTableDO.getId());
+            bricklayerColumnDO.doInit();
+            bricklayerColumnDao.insert(bricklayerColumnDO);
+        });
+
+    }
+
+    @Override
+    public void saveBatchModels(BricklayerTableDTO bricklayerTableDTO) {
+
+        BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
+        bricklayerDbDO.setId(bricklayerTableDTO.getDeviceId());
+        BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbById == null) {
+            throw new MessageRuntimeException("can not found the datasource");
+        }
+
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+
+
+        List<BricklayerTableDTO> dbTableModels = mysqlDataSourceInstance.getDBTableModelsByTables(bricklayerTableDTO.getSourceDataBase(), bricklayerTableDTO.getSelectedTables());
+
+        dbTableModels.stream().forEach(x -> {
+            BricklayerTableDO bricklayerTableDO = new BricklayerTableDO();
+            bricklayerTableDO.setOriginalTableName(x.getOriginalTableName());
+            bricklayerTableDO.setSourceDevice(bricklayerTableDTO.getSourceDevice());
+            bricklayerTableDO.setSourceDataBase(bricklayerTableDTO.getSourceDataBase());
+            bricklayerTableDO.setRemark(bricklayerTableDTO.getRemark());
+            bricklayerTableDO.doInit();
+            bricklayerTableDao.insert(bricklayerTableDO);
+
+
+            List<BricklayerColumnDTO> dbColumnModelList = x.getBricklayerColumnDTOList();
+            int[] index = {1};
+            dbColumnModelList.forEach(y -> {
+                BricklayerColumnDO bricklayerColumnDO = new BricklayerColumnDO();
+                bricklayerColumnDO.setColumnKey(y.getColumnKey());
+                bricklayerColumnDO.setColumnType(y.getColumnType());
+                bricklayerColumnDO.setComment(y.getComment());
+                bricklayerColumnDO.setExtra(y.getExtra());
+                bricklayerColumnDO.setOriginalColumnName(y.getOriginalColumnName());
+                bricklayerColumnDO.setSimpleColumnType(y.getSimpleColumnType());
+                bricklayerColumnDO.setBelongTableId(bricklayerTableDO.getId());
+                bricklayerColumnDO.setColumnOrder(index[0]++);
+                bricklayerColumnDO.doInit();
+                bricklayerColumnDao.insert(bricklayerColumnDO);
+            });
+
+
+        });
+
+    }
+
+    @Override
+    public List<String> getTables(TableDetailDTO tableDetailDTO) {
+        BricklayerDbDO bricklayerDbDO = new BricklayerDbDO();
+        bricklayerDbDO.setId(tableDetailDTO.getDeviceId());
+        BricklayerDbDO bricklayerDbById = bricklayerDbDao.getBricklayerDbById(bricklayerDbDO);
+        if (bricklayerDbById == null) {
+            throw new MessageRuntimeException("can not found the datasource");
+        }
+        AbstractDataSourceInstance mysqlDataSourceInstance = getMysqlAbstractDataSourceInstanceByBricklayerDbDO(bricklayerDbById);
+        List<String> tables = mysqlDataSourceInstance.getTables(tableDetailDTO.getDataSourceName());
+        return tables;
+    }
+
+    @Override
+    public List<BricklayerTableDTO> getBricklayerTablesByIds(List<Integer> ids) {
+
+
+        //default value
+        ids.add(-999);
+
+        List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTablesByIds(ids);
+        if (bricklayerColumnDOS.size() < 1) {
+            throw new MessageRuntimeException("not found data");
+        }
+        Map<String, List<BricklayerColumnDO>> collect = bricklayerColumnDOS.stream().collect(Collectors.groupingBy(x -> x.getBelongTableName()));
+
+        List<BricklayerTableDTO> rs = new ArrayList<>();
+
+        collect.forEach((k, v) -> {
+            BricklayerTableDTO bricklayerTableDTO = new BricklayerTableDTO();
+            bricklayerTableDTO.setOriginalTableName(k);
+            bricklayerTableDTO.setBricklayerColumnDTOList(BricklayerColumnDO.toBricklayerColumnDTOList(v));
+            rs.add(bricklayerTableDTO);
+        });
+        return rs;
+    }
+
+    @Override
+    public BricklayerTableDTO getBricklayerTableById(Integer id) {
+        List<BricklayerColumnDO> bricklayerColumnDOS = bricklayerColumnDao.getBricklayerTableById(id);
+        if (bricklayerColumnDOS.size() < 1) {
+            throw new MessageRuntimeException("not found data");
+        }
+
+        BricklayerTableDTO bricklayerTableDTO = new BricklayerTableDTO();
+        bricklayerTableDTO.setOriginalTableName(bricklayerColumnDOS.get(0).getBelongTableName());
+        bricklayerTableDTO.setBricklayerColumnDTOList(BricklayerColumnDO.toBricklayerColumnDTOList(bricklayerColumnDOS));
+        return bricklayerTableDTO;
+    }
+
+    @Override
+    public GenerationVO generateCode(GenerateCodeDTO generateCodeDTO) {
+
+
+        ByteArrayOutputStream zipStream = new ByteArrayOutputStream();
+        //ZipOutputStream类：完成文件或文件夹的压缩
+        ZipOutputStream zipOutputStream = new ZipOutputStream(zipStream);
+
+
+        List<BricklayerTableDTO> bricklayerTablesByIds = getBricklayerTablesByIds(generateCodeDTO.getIds());
+
+
+        BricklayerProjectDO bricklayerProjectDO = new BricklayerProjectDO();
+        bricklayerProjectDO.setId(generateCodeDTO.getProjectId());
+        BricklayerProjectDO bricklayerProjectById = bricklayerProjectDao.getBricklayerProjectById(bricklayerProjectDO);
+
+        if (bricklayerProjectById == null) {
+            throw new MessageRuntimeException("not found data");
+        }
+
+        //全局变量
+        List<BricklayerProjectGlobalVariableDO> bricklayerProjectGlobalVariableDOS = bricklayerProjectGlobalVariableDao.listByProjectId(bricklayerProjectById.getId());
+        Map<String, String> globalVariableMap = bricklayerProjectGlobalVariableDOS.stream().collect(Collectors.toMap(x -> x.getVariableKey(), x -> x.getVariableValue()));
+
+
+        //get directs by project id
+        List<BricklayerDirectDO> bricklayerDirectDOS = bricklayerDirectDao.listBricklayerDirectsByProjectId(bricklayerProjectById.getId());
+
+        List<Integer> collect = bricklayerDirectDOS.stream().map(x -> x.getId()).collect(Collectors.toList());
+
+        if (collect.size() > 0) {
+            //get template by direct
+            List<BricklayerTemplateDO> bricklayerTemplateDOS = bricklayerTemplateDao.listBricklayerTemplatesByDirectIds(collect);
+            Map<String, String> map = new HashMap<>();
+            bricklayerTemplateDOS.forEach(x -> {
+                if (x.getId() > 0) {
+                    //todo 大于0模板文件
+                    map.put(x.getTemplateName(), x.getTemplateContent());
+                }
+            });
+
+            //freeMaker template
+            Configuration configurationByTemplateMap = FreemarkerTemplateBuilder.getConfigurationByTemplateMap(map);
+
+            //目录分组
+            Map<Integer, List<BricklayerTemplateDO>> directMap = bricklayerTemplateDOS.stream().collect(Collectors.groupingBy(BricklayerTemplateDO::getBelongDirectId));
+
+
+
+
+
+            //遍历目录
+            bricklayerDirectDOS.forEach(x -> {
+                List<BricklayerTemplateDO> bricklayerTemplateDOS1 = directMap.get(x.getId());
+                if (bricklayerTemplateDOS1 != null) {
+                    //循环模板
+                    bricklayerTemplateDOS1.forEach(y -> {
+
+                        String templateName = y.getTemplateName();
+                        try {
+                            Template template = configurationByTemplateMap.getTemplate(templateName);
+                            if (y.getStringTemplate()) {
+                                //todo 字符串模板
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+                                try {
+                                    JavaBeanModel javaBeanModel = new JavaBeanModel();
+                                    javaBeanModel.setGlobal(globalVariableMap);
+                                    javaBeanModel.handleBasePath(x.getDirectFullPath());
+                                    template.process(javaBeanModel, outputStreamWriter);
+                                    byte[] bytes = byteArrayOutputStream.toByteArray();
+                                    String name = x.getDirectFullPath() + "/" + y.getNameEndString() + y.getTemplateSuffix();
+                                    zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+                                    zipOutputStream.write(bytes);
+                                    zipOutputStream.closeEntry();
+                                } catch (Exception e) {
+                                    throw new MessageRuntimeException(templateName + " 模板渲染异常：" + e.getMessage());
+                                }
+                            } else {
+                                //todo 模型模板
+                                //循环数据模型
+                                bricklayerTablesByIds.forEach(z -> {
+
+                                    JavaBeanModel of = JavaBeanModel.of(z, x.getDirectFullPath(), bricklayerProjectById.getContextPath());
+                                    of.setGlobal(globalVariableMap);
+
+
+                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, Charset.forName("utf-8"));
+                                    try {
+                                        //todo template
+                                        String name = x.getDirectFullPath() + "/" + of.getClassName() + NullToEmptyString.handle(y.getNameEndString()) + y.getTemplateSuffix();
+                                        template.process(of, outputStreamWriter);
+                                        byte[] data = byteArrayOutputStream.toByteArray();
+
+                                        zipOutputStream.putNextEntry(new ZipEntry(name.substring(1)));
+                                        zipOutputStream.write(data);
+                                        zipOutputStream.closeEntry();
+                                    } catch (Exception e) {
+                                        throw new MessageRuntimeException(templateName + " 模板渲染异常：" + e.getMessage());
+                                    }
+
+
+                                });
+                            }
+                        } catch (IOException e) {
+                            throw new MessageRuntimeException(e.getMessage());
+                        }
+
+                    });
+
+                }
+
+            });
+        }
+
+
+        try {
+            zipOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        GenerationVO generationVO = new GenerationVO();
+
+        generationVO.setData(zipStream.toByteArray());
+        generationVO.setFileName(bricklayerProjectById.getProjectName() + "_export.zip");
+
+        return generationVO;
+    }
+
+    @Transactional
+    @Override
+    public void deleteBricklayerTableBatch(BricklayerTemplateDTO bricklayerTemplateDTO) {
+
+        //仅删除当前用户
+        String currentName = LoginInterceptor.getCurrentName();
+        bricklayerTemplateDao.deleteBricklayerTableBatch(bricklayerTemplateDTO.getIds(), currentName);
+        bricklayerDirectTemplateRelationDao.deleteBricklayerTableBatch(bricklayerTemplateDTO.getIds(), currentName);
+    }
+
+
+}

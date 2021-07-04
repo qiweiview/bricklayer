@@ -1,8 +1,8 @@
 package cn.build_support.db_adapter;
 
-import cn.anicert.model.dto.BricklayerTableDTO;
-import cn.anicert.utils.JDBCResultUtils;
-import cn.anicert.utils.MessageRuntimeException;
+import cn.bricklayer.model.dto.BricklayerTableDTO;
+import cn.bricklayer.utils.JDBCResultUtils;
+import cn.bricklayer.utils.MessageRuntimeException;
 
 import java.sql.*;
 import java.util.List;

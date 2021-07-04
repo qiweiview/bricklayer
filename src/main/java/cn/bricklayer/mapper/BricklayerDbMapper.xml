@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bricklayer.dao.BricklayerDbDao">
+
+    <resultMap type="cn.bricklayer.model.d_o.BricklayerDbDO" id="BricklayerDbMap">
+        <id property="id" column="id"/>
+        <result property="dbDriverClass" column="db_driver_class"/>
+        <result property="dbIp" column="db_ip"/>
+        <result property="dbPassword" column="db_password"/>
+        <result property="dbPort" column="db_port"/>
+        <result property="dbType" column="db_type"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="serviceName" column="service_name"/>
+    </resultMap>
+
+
+    <select id="listBricklayerDbPage" parameterType="cn.bricklayer.model.d_o.BricklayerDbDO"
+            resultMap="BricklayerDbMap">
+        select
+        db_driver_class,
+        db_ip,
+        service_name,
+        db_port,
+        db_type,
+        db_user,
+        id,
+        '1'as blank_
+        from bricklayer_db
+        where 1=1
+        <if test="do.dbIp!=null  and do.dbIp!=''">
+            and db_ip like CONCAT('%',#{do.dbIp},'%')
+        </if>
+    </select>
+
+    <select id="listBricklayerDb" parameterType="cn.bricklayer.model.d_o.BricklayerDbDO" resultMap="BricklayerDbMap">
+        select
+            db_driver_class,
+            db_ip,
+            service_name,
+            db_password,
+            db_port,
+            db_type,
+            db_user,
+            id,
+        '1'as blank_
+        from bricklayer_db
+        where 1=1
+
+    </select>
+
+    <select id="getBricklayerDbById" parameterType="cn.bricklayer.model.d_o.BricklayerDbDO"
+            resultMap="BricklayerDbMap">
+        select
+        db_driver_class,
+        db_ip,
+        service_name,
+        db_password,
+        db_port,
+        db_type,
+        db_user,
+        id,
+        '1'as blank_
+        from bricklayer_db
+        where 1=1
+        and id  = #{id}
+
+    </select>
+
+    <select id="listBricklayerDbAll" resultType="cn.bricklayer.model.d_o.BricklayerDbDO">
+         select
+        db_driver_class,
+        db_ip,
+        db_password,
+        service_name,
+        db_port,
+        db_type,
+        db_user,
+        id,
+        '1'as blank_
+        from bricklayer_db
+    </select>
+
+
+    <delete id="deleteBricklayerDb" parameterType="cn.bricklayer.model.d_o.BricklayerDbDO">
+        delete
+        from bricklayer_db
+        where 1=1
+        and id  = #{id}
+    </delete>
+
+    <update id="updateBricklayerDb" parameterType="cn.bricklayer.model.d_o.BricklayerDbDO">
+        update bricklayer_db
+        set
+        <if test="dbDriverClass!=null  and dbDriverClass!=''">
+            db_driver_class = #{ dbDriverClass},
+        </if>
+        <if test="dbIp!=null  and dbIp!=''">
+            db_ip = #{ dbIp},
+        </if>
+        <if test="serviceName!=null  and serviceName!=''">
+            service_name = #{ serviceName},
+        </if>
+        <if test="dbPassword!=null  and dbPassword!=''">
+            db_password = #{ dbPassword},
+        </if>
+        <if test="dbPort!=null ">
+            db_port = #{ dbPort},
+        </if>
+        <if test="dbType!=null  and dbType!=''">
+            db_type = #{ dbType},
+        </if>
+        <if test="dbUser!=null  and dbUser!=''">
+            db_user = #{ dbUser},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>

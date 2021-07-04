@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bricklayer.dao.BricklayerDirectTemplateRelationDao">
+
+    <resultMap type="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO"
+               id="BricklayerDirectTemplateRelationMap">
+        <id property="id" column="id"/>
+        <result property="belongDirectId" column="belong_direct_id"/>
+        <result property="templateId" column="template_id"/>
+        <result property="templateName" column="template_name"/>
+    </resultMap>
+
+
+    <select id="listBricklayerDirectTemplateRelationPage"
+            parameterType="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO"
+            resultMap="BricklayerDirectTemplateRelationMap">
+        select
+        belong_direct_id,
+        id,
+        template_id,
+        '1'as blank_
+        from bricklayer_direct_template_relation
+        where 1=1
+
+    </select>
+
+    <select id="listBricklayerDirectTemplateRelation"
+            parameterType="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO"
+            resultMap="BricklayerDirectTemplateRelationMap">
+        select
+            belong_direct_id,
+            id,
+            template_id,
+        '1'as blank_
+        from bricklayer_direct_template_relation
+        where 1=1
+
+    </select>
+
+    <select id="getBricklayerDirectTemplateRelationById"
+            parameterType="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO"
+            resultMap="BricklayerDirectTemplateRelationMap">
+        select
+        belong_direct_id,
+        id,
+        template_id,
+        '1'as blank_
+        from bricklayer_direct_template_relation
+        where 1=1
+        and id  = #{id}
+
+    </select>
+
+    <select id="listBricklayerDirectTemplateRelationByDirectIds"
+            resultType="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO">
+        SELECT
+        belong_direct_id,
+        a.id,
+        template_id,
+        IFNULL(a.template_name,b.template_name) template_name,
+        '1' AS blank_
+        FROM
+        bricklayer_direct_template_relation a
+        LEFT JOIN bricklayer_template b ON a.template_id = b.id
+        where 1=1
+        and belong_direct_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="listBricklayerDirectTemplateRelationByTemplateId"
+            resultType="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO">
+         select *
+        from bricklayer_direct_template_relation
+          where 1=1
+        and template_id  = #{id}
+    </select>
+
+
+    <delete id="deleteBricklayerDirectTemplateRelation"
+            parameterType="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO">
+        delete
+        from bricklayer_direct_template_relation
+        where 1=1
+        and id  = #{id}
+
+    </delete>
+
+
+    <delete id="deleteByDirectIds" parameterType="java.util.List">
+        delete
+        from bricklayer_direct_template_relation
+        where 1=1
+        and belong_direct_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <delete id="deleteBricklayerTableBatch" parameterType="java.lang.Integer">
+        DELETE
+        FROM
+        bricklayer_direct_template_relation
+        WHERE
+        template_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteDirectTemplateRelationByProjectId" parameterType="java.lang.Integer">
+DELETE
+FROM
+	bricklayer_direct_template_relation
+WHERE
+	belong_direct_id IN ( SELECT id FROM bricklayer_direct WHERE belong_project_id = #{id})
+    </delete>
+
+
+    <update id="updateBricklayerDirectTemplateRelation"
+            parameterType="cn.bricklayer.model.d_o.BricklayerDirectTemplateRelationDO">
+        update bricklayer_direct_template_relation
+        set
+        <if test="belongDirectId!=null ">
+            belong_direct_id = #{ belongDirectId},
+        </if>
+        <if test="templateId!=null ">
+            template_id = #{ templateId},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>

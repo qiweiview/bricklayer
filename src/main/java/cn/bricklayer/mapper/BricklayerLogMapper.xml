@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bricklayer.dao.BricklayerLogDao">
+
+    <resultMap type="cn.bricklayer.model.d_o.BricklayerLogDO" id="BricklayerLogMap">
+        <id property="id" column="id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="userAgent" column="user_agent"/>
+        <result property="userName" column="user_name"/>
+        <result property="requestUri" column="request_uri"/>
+        <result property="countValue" column="count_value"/>
+
+    </resultMap>
+
+
+    <select id="listBricklayerLogPage" parameterType="cn.bricklayer.model.d_o.BricklayerLogDO"
+            resultMap="BricklayerLogMap">
+        select
+        id,
+        create_by,
+        update_by,
+        create_date,
+        update_date,
+        ip_address,
+        user_agent,
+        user_name,
+        request_uri,
+        '1'as blank_
+        from bricklayer_log
+        where 1=1
+        <if test="do.userName!=null  and do.userName!=''">
+            and ( user_name like concat('%',#{ do.userName},'%') or request_uri like
+            concat('%',#{ do.userName},'%'))
+        </if>
+    </select>
+
+    <select id="listBricklayerLog" parameterType="cn.bricklayer.model.d_o.BricklayerLogDO" resultMap="BricklayerLogMap">
+        select
+            id,
+            create_by,
+            update_by,
+            create_date,
+            update_date,
+            ip_address,
+            user_agent,
+            user_name,
+            request_uri,
+        '1'as blank_
+        from bricklayer_log
+        where 1=1
+
+    </select>
+
+
+    <select id="listBricklayerLogByIds" parameterType="cn.bricklayer.model.d_o.BricklayerLogDO"
+            resultMap="BricklayerLogMap">
+        select
+        id,
+        create_by,
+        update_by,
+        create_date,
+        update_date,
+        ip_address,
+        user_agent,
+        user_name,
+        request_uri,
+        '1'as blank_
+        from bricklayer_log
+        where 1=1
+        and id in
+        <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="getBricklayerLogById" parameterType="cn.bricklayer.model.d_o.BricklayerLogDO"
+            resultMap="BricklayerLogMap">
+        select
+        id,
+        create_by,
+        update_by,
+        create_date,
+        update_date,
+        ip_address,
+        user_agent,
+        user_name,
+        request_uri,
+        '1'as blank_
+        from bricklayer_log
+        where 1=1
+        and id  = #{id}
+
+    </select>
+    <select id="getUserCount" parameterType="java.time.LocalDate" resultMap="BricklayerLogMap">
+        select
+        count(*) count_value,
+        user_name
+        from bricklayer_log
+        where create_date>=#{startDateTime} and #{endDateTime}>=create_date
+        group by user_name
+    </select>
+    <select id="getUriCount" parameterType="java.time.LocalDate" resultMap="BricklayerLogMap">
+               select
+        count(*) count_value,
+        request_uri
+        from bricklayer_log
+        where create_date>=#{startDateTime} and #{endDateTime}>=create_date
+        group by request_uri
+    </select>
+
+
+    <delete id="deleteBricklayerLog" parameterType="cn.bricklayer.model.d_o.BricklayerLogDO">
+        delete
+        from bricklayer_log
+        where 1=1
+        and id  = #{id}
+
+    </delete>
+
+    <delete id="deleteBricklayerLogBatch" parameterType="java.util.List">
+        delete
+        from bricklayer_log
+        where 1=1
+        and id in
+        <foreach item="id" collection="ids" separator="," open="(" close=")" index="">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateBricklayerLog" parameterType="cn.bricklayer.model.d_o.BricklayerLogDO">
+        update bricklayer_log
+        set
+        <if test="createBy!=null  and createBy!=''">
+            create_by = #{ createBy},
+        </if>
+        <if test="updateBy!=null  and updateBy!=''">
+            update_by = #{ updateBy},
+        </if>
+        <if test="createDate!=null ">
+            create_date = #{ createDate},
+        </if>
+        <if test="updateDate!=null ">
+            update_date = #{ updateDate},
+        </if>
+        <if test="ipAddress!=null  and ipAddress!=''">
+            ip_address = #{ ipAddress},
+        </if>
+        <if test="userAgent!=null  and userAgent!=''">
+            user_agent = #{ userAgent},
+        </if>
+        <if test="userName!=null  and userName!=''">
+            user_name = #{ userName},
+        </if>
+        <if test="requestUri!=null  and requestUri!=''">
+            request_uri = #{ requestUri},
+        </if>
+        id=id
+        where 1=1
+        and id = #{id}
+
+    </update>
+
+
+</mapper>
