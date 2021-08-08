@@ -24,4 +24,7 @@ public interface BricklayerTableServiceI {
     public BricklayerTableDTO getBricklayerTableById(BricklayerTableDTO bricklayerTableDTO);
 
     void deleteBricklayerTableBatch(BricklayerTableDTO bricklayerTableDTO);
+
+    void importProject(byte[] bytes, String fileName);
+
 }

@@ -3,13 +3,18 @@ package cn.bricklayer.controller;
 import cn.bricklayer.model.dto.BricklayerTableDTO;
 import cn.bricklayer.model.vo.BricklayerTableVO;
 import cn.bricklayer.serviceI.BricklayerTableServiceI;
+import cn.bricklayer.utils.MessageRuntimeException;
 import cn.bricklayer.utils.ResponseVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 //import cn.anicert.university.constant.ErrorEnum;
 //import cn.anicert.university.common.entity.dto.ResponseVo;
 
@@ -102,6 +107,26 @@ public class BricklayerTableController {
         ResponseVo responseVo = new ResponseVo();
         bricklayerTableServiceI.deleteBricklayerTableBatch(bricklayerTableDTO);
         return responseVo;
+    }
+
+    /**
+     * 导出
+     *
+     * @param multipartFile
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("importModel")
+    public ResponseVo importModel(@RequestParam(value = "file", required = false) MultipartFile multipartFile) {
+        try {
+            String originalFilename = multipartFile.getOriginalFilename();
+            byte[] bytes = multipartFile.getBytes();
+            bricklayerTableServiceI.importProject(bytes, originalFilename);
+        } catch (IOException e) {
+            throw new MessageRuntimeException("read import fail cause:" + e.getMessage());
+        }
+
+        return ResponseVo.success("导入成功");
     }
 
 

@@ -6,11 +6,16 @@ import cn.bricklayer.dao.BricklayerTableDao;
 import cn.bricklayer.model.d_o.BricklayerColumnDO;
 import cn.bricklayer.model.d_o.BricklayerTableDO;
 import cn.bricklayer.model.dto.BricklayerTableDTO;
+import cn.bricklayer.serviceI.BricklayerDbServiceI;
 import cn.bricklayer.serviceI.BricklayerTableServiceI;
 import cn.bricklayer.utils.DataNotFoundException;
+import cn.bricklayer.utils.NDM2Parser;
+import cn.bricklayer.utils.NDM2Server;
+import cn.bricklayer.utils.NDM2Table;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +25,12 @@ import java.util.List;
  * create by view
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BricklayerTableServiceImpl implements BricklayerTableServiceI {
 
+    private final BricklayerDbServiceI bricklayerDbServiceI;
     private final BricklayerTableDao bricklayerTableDao;
     private final BricklayerColumnDao bricklayerColumnDao;
 
@@ -101,6 +108,27 @@ public class BricklayerTableServiceImpl implements BricklayerTableServiceI {
             bricklayerTableDao.deleteBricklayerTableBatch(ids);
             bricklayerColumnDao.deleteBricklayerColumnByBelongTableIds(ids);
         }
+    }
+
+
+    @Override
+    public void importProject(byte[] bytes, String FileName) {
+        String s = new String(bytes);
+
+        NDM2Server ndm2Server = NDM2Parser.ofString(s);
+
+        ndm2Server.getAllTables().stream().map(x -> {
+            //todo 类型转换
+            BricklayerTableDTO bricklayerTableDTO = NDM2Table.toBricklayerTableDTO(x);
+            bricklayerTableDTO.setSourceDataBase(ndm2Server.getName());
+            return bricklayerTableDTO;
+        }).forEach(x -> {
+            //todo 保存
+            x.setSourceDevice(FileName + "_import");
+            bricklayerDbServiceI.saveSingleModel(x);
+        });
+
+
     }
 
 
