@@ -15,10 +15,14 @@ public class NDM2Field {
 
     private Integer size;
 
+    private String comment = "";
+
     public static BricklayerColumnDTO toBricklayerColumnDTO(NDM2Field x) {
         BricklayerColumnDTO bricklayerColumnDTO = new BricklayerColumnDTO();
-        bricklayerColumnDTO.setColumnKey(x.getName());
+        bricklayerColumnDTO.setOriginalColumnName(x.getName());
         bricklayerColumnDTO.setColumnType(x.getType());
+        bricklayerColumnDTO.setSimpleColumnType(x.getType());
+        bricklayerColumnDTO.setComment(x.getComment());
         int size = 0;
         if (x.getLength() != null) {
             size = x.getLength();
